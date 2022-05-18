@@ -1,0 +1,860 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+#include <sys/mman.h>
+#include <dlfcn.h>
+
+typedef struct {
+	char type;
+	void * val;
+} variable;
+
+
+
+#include "safe_alloc.h"
+safe_alloc alloc;
+#include "array.h"
+#define ALLOC_SIZE 99999999
+
+char ch;
+FILE *file;
+char *buf;
+char *sbuf;
+int vars;
+
+char *prog;
+char *ind;
+char *ind_main;
+
+
+int indvar;
+int ivar;
+int type;
+int ismain;
+int last_ind;
+//int is_for_in;
+
+//int sym_stk, dstk;
+
+typedef struct
+{
+	int t;
+	char c;
+	int l;
+	int id;
+	char type;
+	char *class;
+} tokens ;
+
+tokens toks;
+array sym_stk;
+array var_stk;
+tokens ** vtoks;
+
+#include "do-x86.h";
+
+inp() {
+	ch = fgetc( file );
+}
+
+
+isid()
+{
+    return isalnum(ch) | ch == '_';
+}
+
+getq()
+{
+    if (ch == '\\') {
+        inp();
+        if (ch == 'n')
+            ch = '\n';
+    }
+}
+
+
+skip( char s ) {
+	if( toks.c == s ) {
+		//printf("%c skiped\n", toks.c);
+		next();
+	} else {
+		printf("Expected %c \n", s );
+		exit(0);
+	}
+}
+
+o(n)
+{
+    while (n && n != -1) {
+        *(char *)ind++ = n;
+        n = n >> 8;
+    }
+}
+
+char * mstrcat( char *a, char *b) {
+	char *r;
+	r = safe_alloc_new(&alloc, strlen(a)+strlen(b)+1);
+	while( *a ) {
+		*(char *)r++ = *a++;
+	}
+
+	while( *b ) {
+		*(char *)r++ = *b++;
+	}
+
+	*r = '\0';
+
+	return safe_alloc_get(&alloc);
+}
+
+tokv_id( tokens *tok1, char *cls ) {
+	char *id = tok1->id;
+	if( cls != 0 & tok1->type == 1 ) {
+		char *t;
+		t = mstrcat(cls, "%fn%");
+		id = mstrcat(t, id);
+	} else if( tok1->type == 1 ) {
+		id = mstrcat("fn%", id);	
+	} else if( tok1->type == 2 ) {
+		id = mstrcat("var%", id);
+	} else if( tok1->type == 3 ) {
+		id = mstrcat("object%", id);
+	}
+
+	return id;	
+}
+
+set_tokv( tokens *tok1, int val, char *cls ) {
+	char *id = tokv_id( tok1, cls );
+	array_set1( &sym_stk, id, val );
+}
+
+get_tokv( tokens *tok1, char *cls ) {
+	char *id = tokv_id( tok1, cls );
+	return array_get1( &sym_stk, id );
+}
+
+array mt;
+
+next() {
+	toks.t = 0;
+	toks.c = 0;
+	toks.l = 0;
+	toks.id = 0;
+
+	if( isspace(ch) ) {
+		while( isspace( ch ) ) {
+			inp();
+		}
+	}
+
+	if( ch == '#' ) {
+		toks.t = 1003;
+		inp();
+		toks.id = buf;
+		while( ch != '\n' ) {
+			*buf++ = ch;
+			inp();
+		}
+		*buf++ = 0;
+
+	} else if( isid() ) {
+
+		toks.id = buf;
+		toks.c = ch;
+		while( isid() ) {
+			*(char *)buf++ = ch;
+			inp();
+		}
+		*(char *)buf++ = 0;
+
+		int a = array_get1( &mt, toks.id );
+		if( isdigit( toks.c ) ) {
+			toks.t = 1005;
+		} else if( a != 0 ) {
+			toks.t = a;
+		} else {
+			toks.t = 999;
+		}
+
+	} else {
+
+		if( ch == '[' ) {
+			toks.t = 1007;
+			toks.c = ch;
+			inp();
+		} else if( ch == '\'' ) {
+			toks.t = 1000;
+			inp();
+			toks.id = buf;
+			while( ch != '\'' ) {
+				getq();
+				*buf++ = ch;
+				inp();
+			}
+			*buf++ = 0;
+			inp();
+		} else if( ch == '"' ) {
+			toks.t = 1000;
+			inp();
+			toks.id = buf;
+			while( ch != '"' ) {
+				getq();
+				*buf++ = ch;
+				inp();
+			}
+			*buf++ = 0;
+			inp();
+
+		
+		}  else {
+			toks.t = 1001;
+			toks.c = ch;
+			inp();
+
+            if( toks.c == '*' ) {
+                toks.l = 1;
+                toks.t = 2000;
+            } else if( toks.c == '/' ) {
+                toks.l = 1;
+                toks.t = 2021;
+				if( ch == '/' ) {
+					toks.l == 11;
+					toks.t = 1006;
+
+					while( ch != '\n' ) {
+						inp();
+					}
+
+					inp();
+															
+				} else if( ch == '*' ) {
+					toks.l == 11;
+					toks.t = 1006;
+					while( 1 ) {
+						int ch1 = ch;
+						inp();
+						if( ch == '/' & ch1 == '*' ) {
+							break;
+						}
+					}
+					inp();
+				}
+				
+            } else if( toks.c == '%' ) {
+                toks.l = 1;
+                toks.t = 2001;
+            } else if( toks.c == '+' ) {
+                toks.l = 2;
+                toks.t = 2002;
+                if( ch == '+' ) {
+                    toks.l = 11;
+                    toks.t = 2003;
+                    toks.c = ch;
+                    inp();
+                }
+            } else if( toks.c == '-' ) {
+                toks.l = 2;
+                toks.t = 2004;
+
+                if( ch == '-' ) {
+                    toks.l = 11;
+                    toks.t = 2005;
+                    toks.c = ch;
+                    inp();         
+                }
+
+            } else if( toks.c == '<' ) {
+                toks.l = 4;
+                toks.t = 2006;
+
+                if( ch == '<' ) {
+                    toks.l = 3;
+                    toks.t = 2007;
+                    toks.c = ch;
+                    inp();
+                } else if( ch == '=' ) {
+                    toks.l = 4;
+                    toks.t = 2008;
+                    toks.c = ch;
+                    inp();
+                }
+            } else if( toks.c == '>' ) {
+                toks.l = 4;
+                toks.c = 0xf;
+                toks.t = 2009;
+
+                if( ch == '>' ) {
+                    toks.l = 3;
+                    toks.t = 2010;
+                    toks.c = ch;
+                    inp();          
+                } else if( ch == '=' ) {
+                    toks.l = 4;
+                    toks.t = 2011;
+                    toks.c = ch;
+                    inp();          
+                }
+            } else if( toks.c == '!' ) {
+
+                toks.l = 2;
+               	toks.t = 2012;
+
+                if( ch == '=' ) {
+                    toks.l = 5;
+                    toks.t = 2013;
+                    inp();
+
+                }
+            } else if( toks.c == '=' ) {
+                if( ch == '=' ) {
+                    toks.l = 5;
+                    toks.t = 2014;
+                    toks.t = ch;
+                    inp();
+                }
+            } else if( toks.c == '&' ) {
+                toks.l = 6;
+                toks.t = 2015;
+                if( ch == '&' ) {
+                    toks.l = 9;
+                    toks.t = 2016;
+                    toks.c = ch;
+                    inp();
+                }       
+            } else if( toks.c == '^' ) {
+                toks.l = 7;
+                toks.t = 2017;
+
+            } else if( toks.c == '|' ) {
+                toks.l = 8;
+                toks.t = 2018;
+
+                if( ch == '|' ) {
+                    toks.l = 10;
+                    toks.t = 2019;
+                    toks.c = ch;
+                    inp();
+                }
+            } else if( toks.c == '~' ) {
+                toks.l = 2;
+                toks.t = 2020;
+            }
+		}
+	}
+
+}
+
+unary() {
+
+	if( toks.t == 1000 ) {
+		//type = 1;
+		variable *var = safe_alloc_new(&alloc, sizeof(variable));
+		var->val = toks.id;
+		var->type = 1;
+
+
+		do_call_string( var );
+		//do_convert_to_var(1);
+		next();
+		if( toks.c == '.' ) {
+			//call string functions or variables
+			printf("mov  0x4(%%eax),%%eax\n");
+			*ind++ = 0x8b;
+			*ind++ = 0x40;
+			*ind++ = 0x04;
+			next();
+			next();
+		}
+		//do_concat_string();
+		
+	} else {
+
+		tokens btoks;
+		btoks.t = toks.t;
+		btoks.id = toks.id;
+		btoks.c = toks.c;
+
+		next();
+
+		if( btoks.t == 13 ) {
+			do_create_var( 12 );
+		} else if( btoks.c == '{' ) {
+			do_create_array('}');			
+		} else if( btoks.c == '[' ) {
+			do_create_array(']');			
+		} else if( btoks.t == 1 | btoks.t == 10 | btoks.t == 14 ) {
+			//print_tok();
+			//exit(0);
+			if( toks.c == '*' ) {
+				next();
+			}
+		
+			do_create_var( 4 );
+		
+		} else if( btoks.c == '&' ) {
+			int l = array_get1( &var_stk, btoks.id);
+			//toks.type = 2;
+			//int l = get_tokv( &toks, 0 );
+			do_call_address( l );
+
+			next();
+
+		} else if( toks.t == 1000 & btoks.c == '+' ) {
+			/*printf("ddddddddddd\n");
+			exit(0);*/
+		} else if( btoks.t == 11 ) {
+			do_call_class();
+		} else if( toks.t == 2003 ) {
+			//btoks.type = 2;
+			//int l = get_tokv( &btoks, 0 );
+			int l = array_get1( &var_stk, btoks.id);
+			do_plus_plus( l );
+			next();		
+		} else if( toks.t == 2005 ) {
+			//btoks.type = 2;
+			//int l = get_tokv( &btoks, 0 );
+			int l = array_get1( &var_stk, btoks.id);
+			do_minus_minus( l );
+			next();
+		} else if( btoks.t == 1005 ) {
+		/*	type = 2;
+			variable *var = safe_alloc_new(&alloc, sizeof(variable));
+			var->val = atoi(btoks.id);
+			var->type = 2;*/
+
+			do_call_num( atoi(btoks.id) );
+			do_convert_to_var(2);
+		} else if( toks.c == '=' & toks.l == 0 ) {
+			//print_tok();
+		
+			next();
+			//btoks.type = 2;
+			//int l = get_tokv( &btoks, 0 );
+			int l = array_get1( &var_stk, btoks.id);
+			//printf("%d\n", l );
+			expr(l);
+			do_equal( l );
+
+		} else if( btoks.c == '(' ) {
+			expr();
+			skip(')');
+		} else if( toks.c == '(' ) {
+			btoks.type = 1;
+			int l = get_tokv( &btoks, 0 );
+			do_call_function( l, btoks.id );
+			//do_concat_string();
+		} else if( btoks.t == 999 ) {
+
+			//btoks.type = 2;
+			//int l = get_tokv( &btoks, 0 );
+			int l = array_get1( &var_stk, btoks.id);
+
+			do_call_var( l );
+
+			if( toks.c == '[' ) {
+				do_call_array(l);
+			} else if( toks.c == '.') {
+
+				while( toks.c == '.' ) {
+
+					skip('.');
+					tokens ctoks;
+					ctoks.t = toks.t;
+					ctoks.id = toks.id;
+					ctoks.c = toks.c;
+
+					next();
+					if( toks.c == '(' ) {
+						btoks.type = 3;
+						int cls = get_tokv( &btoks, 0 );
+						char *t;
+						t = mstrcat(cls, "%fn%");
+						t = mstrcat(t, ctoks.id);
+						int l = array_get1( &sym_stk, t);
+						//next();
+						do_call_function(l, "");
+					} else {
+						if( strcmp( ctoks.id, "val" ) == 0 ) {
+							printf("mov  0x4(%%eax),%%eax\n");
+							*ind++ = 0x8b;
+							*ind++ = 0x40;
+							*ind++ = 0x04;
+						} else if( strcmp( ctoks.id, "type" ) == 0 ) {
+							printf("mov  0x0(%%eax),%%eax\n");
+							*ind++ = 0x8b;
+							*ind++ = 0x40;
+							*ind++ = 0x00;						
+						} else {
+
+							do_call_object(&ctoks);		
+						}
+					}
+
+				}
+		
+		
+				
+
+			}			
+		} else if( toks.c == ';' ) {
+		} else {
+			//printf("%s\n", btoks.id );
+
+
+		}
+
+	}
+
+}
+
+sum(l) {
+	tokens btoks;
+	if( l-- == 1 ) {
+		unary();
+	} else {
+
+		sum(l);
+		int a = 0;
+	
+		while( l == toks.l ) {
+			btoks.t = toks.t;
+			btoks.id = toks.id;
+			btoks.c = toks.c;
+
+			next();
+
+			if( l > 8 ) {
+				if( btoks.c == '|' ) {
+					a = do_or_or( a );
+				}
+				sum(l);
+			} else {
+
+				do_push();
+				sum(l);
+				do_pop();
+				
+				if( btoks.c != '+' & btoks.c != '=' ) {
+					//get eax and ecx value from struct
+					do_get_var_value();
+				}
+
+				if( btoks.t == 2000 ) {
+					do_mul();
+				} else if( btoks.t == 2001 ) {
+					do_remain();
+				} else if( btoks.t == 2002 ) {
+					do_add();
+				} else if( btoks.t == 2003 ) {
+				} else if( btoks.t == 2004 ) {
+					do_sub();
+				} else if( btoks.t == 2005 ) {
+				} else if( btoks.t == 2006 ) {
+					do_less_than();
+				} else if( btoks.t == 2007 ) {
+					do_shift_left();
+				} else if( btoks.t == 2008 ) {
+					do_less_equal();
+				} else if( btoks.t == 2009 ) {
+					do_greater_than();
+				} else if( btoks.t == 2010 ) {
+					do_shift_right();
+				} else if( btoks.t == 2011 ) {
+					do_greater_equal();
+				} else if( btoks.t == 2012 ) {
+					do_not();
+				} else if( btoks.t == 2013 ) {
+					do_not_equal();
+				} else if( btoks.t == 2014 ) {
+					do_equal_equal();
+				} else if( btoks.t == 2015 ) {
+					do_and();
+				} else if( btoks.t == 2016 ) {
+					do_and_and();
+				} else if( btoks.t == 2017 ) {
+				} else if( btoks.t == 2018 ) {
+					do_or();
+				} else if( btoks.t == 2019 ) {
+					do_or_or();
+				} else if( btoks.t == 2020 ) {
+				} else if( btoks.t == 2021 ) {
+					do_div();
+				}
+
+				if( btoks.c != '+' & btoks.c != '=' ) {
+					//convert all output to var type ...
+					do_convert_to_var(2);
+					
+					/*
+					function_init(1);
+					do_push();
+					function_call( &do_to_var, "do_to_var" );
+					function_end(2);*/
+				}
+
+			}
+		}
+		if (a && l > 8) {
+			if( btoks.c == '|' ) {
+				int b = do_or_or( a );
+				printf("mov $0x0,%%eax\n");
+				*ind++ = 0xb8;
+				ind += 4;
+
+				printf("jmp 0x5c\n");
+				*ind++ = 0xe9;
+				*ind = 0x05;
+				ind += 4;
+
+				printf("mov $0x1,%%eax\n");
+				*ind++ = 0xb8;
+				*ind = 1;
+				ind += 4;
+
+				printf("%d\n", ind - a + 4 );
+				exit(0);
+
+				*(int *)a = ind - a + 4;
+				//00 00 00 00;
+			}
+		}
+	}
+
+}
+
+expr() {
+	sum(11);
+}
+
+test_expr() {
+	sum(11);
+	return ind - 4;	
+}
+
+print_ind() {
+	while( ind - prog ) {
+		printf("0x%02x ", *(int *)prog++ & 0xff );
+	}
+}
+
+block() {
+/*	if( ismain == 1 ) {
+		last_ind = ind;
+		ind = ind_main;
+	} else {
+		ind = last_ind;
+	}*/
+
+	if( toks.t == 1006 ) {
+		next();
+		block();
+	} else if( toks.t == 7 ) {
+		next();
+		//printf("in for \n");
+		skip('(');
+
+		expr();
+		
+		if( toks.id && strcmp( toks.id, "in" ) == 0 ) {
+
+			next();
+			do_for_in();
+
+			//next();
+		} else {
+
+			do_for_loop();								
+		}
+
+	} else if( toks.t == 4 ) {
+		//printf("in while \n");
+		next();
+		skip('(');
+
+		
+		int n = ind;
+		test_expr();
+
+		skip(')');
+
+		do_while_loop(n);
+
+	} else if( toks.t == 2 ) {
+		//printf("in if \n");
+		next();
+
+		skip('(');
+		test_expr();
+		skip(')');		
+		do_if_cond();
+		int a = ind - 4;
+
+		block();
+
+	
+		if( toks.t == 3 ) {
+			do_else_cond();
+			int n = ind - 4;
+
+			*(int *)a = (int)ind - a - 4;
+		
+			block();
+			*(int *)n = (int)ind - n - 4;	
+		} else {
+			*(int *)a = (int)ind - a - 4;	
+		}
+		//print_ind();
+
+	} else if( toks.t == 6 ) {
+		//printf("in return\n");
+		next();
+		expr();
+		do_return();
+		skip(';');
+		
+	} else if( toks.t == 5 ) {
+		printf("in break\n");
+		next();
+		skip(';');
+		block();
+	} else if( toks.c == '}' ) {
+	} else if( toks.c == '{' ) {
+		skip('{');
+		while( toks.c != '}' ) {
+			block();
+		}
+		skip('}');
+
+	} else  {
+		//print_tok();
+		expr();
+		if( toks.c == ';' ) {
+			skip(';');
+			block();
+		}	
+	}
+
+
+}
+
+
+
+decl(cls) {
+	ismain = 0;
+	if( toks.t == 1003 ) {
+		//printf("skip include\n");
+		next();
+		decl(cls);
+
+	} else if( toks.t == 10 ) {
+		next();
+		vars += 4;
+		array_set1( &var_stk, toks.id, vars );
+
+		next();
+		skip(';');
+		decl( cls );
+
+		//print_tok();
+		//exit(0);
+		//next();
+
+	} else if( toks.t == 1006 ) {
+		next();
+		decl(cls);
+	} else if( toks.t == 12 ) {
+
+		do_create_class();
+
+		decl(cls);
+	
+	} else if( toks.t == 999 | toks.t == 9 ) {
+		ivar = 0;
+
+		toks.type = 1;
+		set_tokv( &toks, ind, cls );
+		do_create_function(cls);
+		decl(cls);
+
+	} else {
+		/*print_tok();
+		exit(0);*/
+		//decl();
+		/*
+		ismain = 1;*/
+		if( ch == EOF ) return;
+		block();
+	}
+}
+
+print_tok() {
+	printf("tok : %d ", toks.t);
+	if( toks.id ) {
+		printf(", c : %s\n", toks.id );
+	} else {
+		printf(", c1 : %c\n", toks.c );
+	}		
+}
+
+main()
+{
+	buf = sbuf = safe_alloc_new( &alloc, 99999);
+	vars = safe_alloc_new( &alloc, 99999);
+
+
+    ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
+    //ind_main = malloc(ALLOC_SIZE);
+    vtoks = malloc( sizeof( tokens * ) * 20 );
+
+    if (!prog) { printf("could not mmap(%d) jit executable memory\n", ALLOC_SIZE); return -1; }
+
+	file = fopen("hello.c", "r");
+
+	int i = 1;
+	int is_for_in = 0;
+	//array_init( &mt );
+	i++;
+	//array_set1( &mt, "int", i++ );
+	array_set1( &mt, "if", i++ );
+	array_set1( &mt, "else", i++ );
+	array_set1( &mt, "while", i++ );
+	array_set1( &mt, "break", i++ );
+	array_set1( &mt, "return", i++ );
+	array_set1( &mt, "for", i++ );
+	array_set1( &mt, "define", i++ );
+	array_set1( &mt, "main", i++ );
+	array_set1( &mt, "var", i++ );
+	array_set1( &mt, "new", i++ );
+	array_set1( &mt, "class", i++ );
+	i++;
+	//array_set1( &mt, "array", i++ );
+	i++;
+	//array_set1( &mt, "char", i++ );
+
+	array_set1( &mt, "in", i++ );
+	array_set1( &mt, "this", i++ );
+
+	array_init( &sym_stk );
+	array_init( &var_stk );
+	safe_alloc_init( &alloc );
+
+	inp();
+	next();
+	decl(0);
+/* 
+    { 
+        FILE *f;
+        f = fopen("hello1", "w");
+        fwrite((void *)prog, 1, ind - prog, f);
+        fclose(f);
+    
+    }*/
+
+    int main = array_get1( &sym_stk, "fn%main");
+ 	int (*func)() = main;
+ 	print_ind();
+ 	//exit(0);
+	func();
+	safe_free( &alloc );
+}
