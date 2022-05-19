@@ -797,8 +797,10 @@ print_tok() {
 	}		
 }
 
-main()
+main(int n, char * t[] )
 {
+
+	
 	buf = sbuf = safe_alloc_new( &alloc, 99999);
 	vars = safe_alloc_new( &alloc, 99999);
 
@@ -809,7 +811,7 @@ main()
 
     if (!prog) { printf("could not mmap(%d) jit executable memory\n", ALLOC_SIZE); return -1; }
 
-	file = fopen("hello.c", "r");
+	file = fopen(t[1], "r");
 
 	int i = 1;
 	int is_for_in = 0;
@@ -853,7 +855,7 @@ main()
 
     int main = array_get1( &sym_stk, "fn%main");
  	int (*func)() = main;
- 	print_ind();
+ 	//print_ind();
  	//exit(0);
 	func();
 	safe_free( &alloc );
