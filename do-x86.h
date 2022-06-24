@@ -9,47 +9,10 @@ void mprint( variable *a );
 #include "fn.h"
 
 do_convert_to_var( type ) {
-
-/*	vars_init();
-
-	ivar = ivar - 8;
-	*(int *)indvar = -ivar;
-	
-	int l = ivar;
-
-	printf("mov %%eax,%d(%%ebp)\n", (ivar+4) );
-	*ind++ = 0x89;
-	*ind++ =  0x45;
-	*ind++ = (ivar + 4);
-
-	printf("movb $0x2,%d(%%ebp)\n", ivar );
-	*ind++ = 0xc6;
-	*ind++ =  0x45;
-	*ind++ = ivar;
-	*ind++ =  type;*/
-
 	function_init(1);
 	function_set_arg(0);
 	function_call( &do_to_var, "do_to_var" );
 	function_end(1);
-
-
-/*	printf("mov %d(%%ebp),%%eax\n", ivar+4);
-	*ind++ = 0x8b;
-	*ind++ = 0x85;
-	*(int *)ind = ivar+4;
-	ind += 4;	
-*/
-
-/*	printf("lea %d(%%ebp),%%eax\n", ivar);
-	if( -ivar < 128 ) {
-		*ind++ = 0x8d;
-		*ind++ = 0x45;
-		*ind++ = ivar;
-	} else {
-		printf("error !\n");
-		exit(0);
-	}*/
 
 }
 
@@ -64,10 +27,7 @@ do_pop() {
 }
 
 do_add() {
-/*	printf("add %%ecx,%%eax\n");
-	*ind++ = 0x01;
-	*ind++ = 0xc8;
-*/
+
 	//we can use function call or write assembly for run this
 	function_init(2);
 	function_set_arg(0);
@@ -94,29 +54,11 @@ do_get_var_value() {
 }
 
 do_mul() {
-/*	printf("imul %%ecx,%%eax\n");
-	*ind++ = 0x0f;
-	*ind++ = 0xaf;
-	*ind++ = 0xc1;*/
 
 	printf("imul %%ecx,%%eax\n");
 	*ind++ = 0x0f;
 	*ind++ = 0xaf;
 	*ind++ = 0xc1;
-
-
-/*	function_init(2);
-	function_set_arg(0);
-
-
-	printf("mov %%ecx, %%eax\n");
-	*ind++ = 0x89;
-	*ind++ = 0xc8;
-
-	function_set_arg(1);
-	function_call( &do_fn_mul, "do_fn_mul" );
-	function_end(2);
-*/
 }
 
 do_remain() {
@@ -142,22 +84,7 @@ do_sub() {
 
 }
 
-
-/*do_fn_return( variable *var ) {
-	variable *ret = safe_alloc_new( &alloc, sizeof(variable) );
-	*ret = *var;
-	return ret;
-}
-*/
 do_return() {
-	
-/*	function_init(1);
-	function_set_arg(0);
-	function_call( &do_fn_return, "do_fn_return" );
-	function_end(1);*/
-	
-	//do_equal(l);
-
 
 	printf("jmp $\n");
 	*ind++ = 0xe9;
@@ -285,41 +212,6 @@ do_minus_minus(l) {
 }
 
 do_equal_equal() {
-/*	printf("cmp  %%eax,%%ecx\n");
-	*ind++ = 0x39;
-	*ind++ = 0xc1;
-
-	printf("mov $0x0,%%eax\n");
-	*ind++ = 0xb8;
-	ind += 4;
-
-	printf("sete %%al\n");
-	*ind++ = 0x0f;
-	*ind++ = 0x94;
-	*ind++ = 0xc0;*/
-
-
-/*	do_get_var_value();
-	function_init(2);
-	printf("cmp  %%eax,%%ecx\n");
-	*ind++ = 0x39;
-	*ind++ = 0xc1;
-
-	printf("mov $0x0,%%eax\n");
-	*ind++ = 0xb8;
-	ind += 4;
-
-	function_set_arg(0);
-
-	printf("mov %%ecx, %%eax\n");
-	*ind++ = 0x89;
-	*ind++ = 0xc8;
-	function_set_arg(1);
-
-	function_call( &do_debug, "do_debug" );
-	function_end(2);
-*/
-
 
 
 	function_init(2);
@@ -333,27 +225,6 @@ do_equal_equal() {
 	function_call( &do_fn_equal_equal, "do_fn_equal_equal" );
 	function_end(2);
 
-	/*do_get_var_value();
-
-	printf("cmp  %%eax,%%ecx\n");
-	*ind++ = 0x39;
-	*ind++ = 0xc1;
-
-
-	printf("mov $0x0,%%eax\n");
-	*ind++ = 0xb8;
-	ind += 4;
-
-	printf("sete %%al\n");
-	*ind++ = 0x0f;
-	*ind++ = 0x94;
-	*ind++ = 0xc0;
-*/
-/*	function_init(1);
-	function_set_arg(0);
-	function_call( &do_debug, "do_debug" );
-	function_end(1);
-*/	
 }
 
 do_not_equal() {
@@ -373,12 +244,7 @@ do_not_equal() {
 }
 
 do_if_cond() {
-/*
-	function_init(1);
-	function_set_arg(0);
-	function_call(&do_debug, "do_debug");
-	function_end(1);
-*/
+
 	printf("mov  0x4(%%eax),%%eax\n");
 	*ind++ = 0x8b;
 	*ind++ = 0x40;
@@ -531,20 +397,8 @@ do_create_array( end ) {
 	int l = ivar;
 
 
-/*	array *arr = safe_alloc_new(&alloc, sizeof(array));
-	array_init( arr );
-
-	variable *var = safe_alloc_new(&alloc, sizeof(variable));
-	var->val = arr;
-	var->type = 3;*/
-
-
 	//init array
 	function_init(0);
-
-	//do_call_address(l);
-	//do_call_string(arr);
-	//function_set_arg(0);
 
 	function_call( &do_fn_create_array, "do_fn_create_array" );
 	function_end(0);
@@ -555,7 +409,7 @@ do_create_array( end ) {
 		function_init(3);
 
 		do_call_var(l);
-		//do_call_string(var);
+
 		function_set_arg(0);
 
 		expr();
@@ -578,7 +432,7 @@ do_create_array( end ) {
 			next();
 		}
 	}
-	//do_call_string(var);
+
 	do_call_var(l);
 
 	skip(end);
@@ -600,8 +454,6 @@ do_call_array(l) {
 		function_end(2);
 		skip(']');
 	}
-
-	//do_concat_string();
 
 	if( toks.c == '.' ) {
 		while( toks.c == '.' ) {
@@ -722,25 +574,7 @@ do_create_var( n ) {
 			}
 		}
 
-		//for in init
-		if( toks.t == 15 ) {
-			//printf("%s\n", vtoks[0]->id );
-			//printf("%s\n", vtoks[1]->id );
-			//next();
 
-			//is_for_in = 1;
-
-			//print_tok();
-
-			//skip(')');
-
-	/*		tokens btoks;
-			btoks = *(vtoks[0]);
-			btoks.type = 2;
-			set_tokv( &btoks, btoks.id, 0 );
-*/
-			//exit(0);
-		}	
 	}
 }
 
@@ -771,8 +605,6 @@ do_create_function( cls ) {
 			next();
 		}
 
-		//toks.type = 2;
-		//set_tokv( &toks, a, cls );
 		array_set1(&var_stk, toks.id, a );
 		a += 4;
 
@@ -806,28 +638,6 @@ do_plus_plus(l) {
 	function_set_arg(0);
 	function_call( &do_fn_plus_plus, "do_fn_plus_plus" );
 	function_end(1);
-
-
-	//do_fn_plus_plus();
-
-	/*printf("mov  0x4(%%eax),%%eax\n");
-	*ind++ = 0x8b;
-	*ind++ = 0x40;
-	*ind++ = 0x04;
-
-	printf("add 0x1, %%eax\n");
-	*ind++ = 0x83;
-	*ind++ = 0xc0;
-	*ind++ = 0x01;
-*/
-	//do_equal(l);
-
-/*	printf("addl $0x1,%d(%%ebp)\n", l-4);
-	*ind++ = 0x83;
-	*ind++ = 0x85;
-	*(int *)ind = l-4;
-	ind += 4;
-	*ind++ = 0x01;*/
 }
 
 do_and() {
@@ -955,10 +765,6 @@ do_for_in() {
 	int l = ivar;
 
 	do_call_var(l);
-
-/*	variable *var = safe_alloc_new(&alloc, sizeof(variable));
-	var->val = 0;
-	var->type = 2;*/
 
 	do_call_num(0);
 	do_convert_to_var(2);
