@@ -96,8 +96,8 @@ do_call_string( variable *var ) {
 	*ind++ = 0xb8;
 	int n = var;
 	while (n && n != -1) {
-	    *ind++ = n;
-	    n = n >> 8;
+		*ind++ = n;
+		n = n >> 8;
 	}
 }
 
@@ -106,7 +106,7 @@ do_call_num( int id ) {
 	printf("mov 0x%x,%%eax\n", id );
 	*ind++ = 0xb8;
 	*(int *)ind = id;
-    ind += 4;
+	ind += 4;
 }
 
 do_call_var(l) {
@@ -185,10 +185,10 @@ do_call_function( l, bid ) {
 
 		printf("call %s 0x%x\n", bid, n);
 		*ind++ = 0xe8;
-	    while (n && n != -1) {
-	        *ind++ = n;
-	        n = n >> 8;
-	    }
+		while (n && n != -1) {
+			*ind++ = n;
+			n = n >> 8;
+		}
 	}
 
 	if( i ) {
@@ -202,13 +202,13 @@ do_call_function( l, bid ) {
 
 do_minus_minus(l) {
 	do_call_var(l);
-
-    printf("addl $0xffffffff,%d(%%ebp)\n", l-4);
-    *ind++ = 0x83;
-    *ind++ = 0x85;
-    *(int *)ind = l-4;
-    ind += 4;	
-    *ind++ = -1;
+	
+	printf("addl $0xffffffff,%d(%%ebp)\n", l-4);
+	*ind++ = 0x83;
+	*ind++ = 0x85;
+	*(int *)ind = l-4;
+	ind += 4;	
+	*ind++ = -1;
 }
 
 do_equal_equal() {
@@ -282,7 +282,7 @@ do_less_than() {
 	printf("setl %%al\n");
 	*ind++ = 0x0f;
 	*ind++ = 0x9c;
-	*ind++ = 0xc0;             	
+	*ind++ = 0xc0;			 	
 }
 
 do_while_loop(n) {
@@ -323,9 +323,9 @@ do_equal(l) {
 	int n = l;
 	int i = 0;
 	while (n && n != -1) {
-	    *(int *)ind++ = n;
-	    n = n >> 8;
-	    i++;
+		*(int *)ind++ = n;
+		n = n >> 8;
+		i++;
 	}
 
 	ind += 4 - i;
@@ -346,8 +346,8 @@ function_call(a,b) {
 	printf("call %s 0x%x\n", b, n);
 	*ind++ = 0xe8;
 	while (n && n != -1) {
-	    *ind++ = n;
-	    n = n >> 8;
+		*ind++ = n;
+		n = n >> 8;
 	}
 }
 
@@ -610,7 +610,7 @@ do_create_function( cls ) {
 
 		next();
 		if (toks.c == ',')
-            next();
+			next();
 	}
 	skip(')');		
 
