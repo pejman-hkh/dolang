@@ -91,14 +91,12 @@ do_return() {
 	ind += 4;
 }
 
+
 do_call_string( variable *var ) {
 	printf("mov 0x%x,%%eax\n", var->val );
 	*ind++ = 0xb8;
-	int n = var;
-	while (n && n != -1) {
-		*ind++ = n;
-		n = n >> 8;
-	}
+	*(int *)ind = var;
+	ind += 4; 
 }
 
 do_call_num( int id ) {
@@ -110,11 +108,11 @@ do_call_num( int id ) {
 }
 
 do_call_var(l) {
-	printf("mov %d(%%ebp),%%eax\n", l);
+	printf("mov %x(%%ebp),%%eax\n", l);
 	*ind++ = 0x8b;
 	*ind++ = 0x85;
 	*(int *)ind = l;
-	ind += 4;	
+	ind += 4;
 }
 
 do_call_function( l, bid ) {
@@ -317,18 +315,17 @@ do_while_loop(n) {
 }
 
 do_equal(l) {
-	printf("mov %%eax,0x%x(%%ebp)\n", l);
+
+	if( l < 255 ) {
+		printf("mov %%eax,0x%x(%%ebp)\n", l);
+	} else {
+		printf("mov %%eax,0x%x\n", l);
+	}
 	*ind++ = 0x89;
 	*ind++ =  0x85;
-	int n = l;
-	int i = 0;
-	while (n && n != -1) {
-		*(int *)ind++ = n;
-		n = n >> 8;
-		i++;
-	}
+	*(int *)ind = l;
+	ind += 4;
 
-	ind += 4 - i;
 }
 
 function_set_arg( a ) {
@@ -352,7 +349,7 @@ function_call(a,b) {
 }
 
 function_init(a) {
-	printf("sub $,%%esp\n");
+	printf("sub $%d,%%esp\n", a*4);
 	*ind++ = 0x81; 
 	*ind++ = 0xec;
 	*(int *)ind =  a * 4; 
@@ -360,7 +357,7 @@ function_init(a) {
 }
 
 function_end(a) {
-	printf("add $,%%esp\n");
+	printf("add $%d,%%esp\n", a * 4);
 	*ind++ = 0x81;
 	*ind++ =  0xc4;
 	*(int *)ind = a * 4;

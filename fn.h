@@ -1,3 +1,9 @@
+do_debug( variable *var ) {
+
+
+}
+
+
 do_print_array( variable *arr1 ) {
 	array *arr = arr1->val;
 	printf("[");
@@ -83,26 +89,6 @@ do_to_var( int a ) {
 
 	return var;
 }
-
-
-do_debug( ) {
-
-	printf("dddddddddddd\n");
-	//printf("%d\n", b);
-/*	if(a->val) return 1;
-	return 0;*/
-	//exit(0);
-}
-
-
-/*variable *do_fn_mul( variable *a, variable *b ) {
-	variable *var = safe_alloc_new( &alloc, sizeof(variable));
-
-	var->val = (int)a->val*(int)b->val;
-	var->type = 2;
-
-	return var;
-}*/
 
 
 do_fn_equal_equal( variable *a, variable *b ) {

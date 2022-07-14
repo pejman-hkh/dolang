@@ -353,6 +353,7 @@ unary() {
 		var->val = toks.id;
 		var->type = 1;
 
+		//vars_init();
 
 		do_call_string( var );
 		//do_convert_to_var(1);
@@ -433,8 +434,12 @@ unary() {
 			//int l = get_tokv( &btoks, 0 );
 			int l = array_get1( &var_stk, btoks.id);
 			//printf("%d\n", l );
+					//vars_init();
+
 			expr(l);
+
 			do_equal( l );
+			//do_debug();
 
 		} else if( btoks.c == '(' ) {
 			expr();
@@ -727,7 +732,7 @@ block() {
 		skip('}');
 
 	} else  {
-		//print_tok();
+
 		expr();
 		if( toks.c == ';' ) {
 			skip(';');
@@ -743,22 +748,20 @@ block() {
 decl(cls) {
 	ismain = 0;
 	if( toks.t == 1003 ) {
-		//printf("skip include\n");
+
 		next();
 		decl(cls);
 
 	} else if( toks.t == 10 ) {
+
 		next();
-		vars += 4;
 		array_set1( &var_stk, toks.id, vars );
+		vars += 4;
+		
 
 		next();
 		skip(';');
 		decl( cls );
-
-		//print_tok();
-		//exit(0);
-		//next();
 
 	} else if( toks.t == 1006 ) {
 		next();
@@ -778,11 +781,7 @@ decl(cls) {
 		decl(cls);
 
 	} else {
-		/*print_tok();
-		exit(0);*/
-		//decl();
-		/*
-		ismain = 1;*/
+
 		if( ch == EOF ) return;
 		block();
 	}
@@ -801,8 +800,8 @@ main(int n, char * t[] )
 {
 
 	
-	buf = sbuf = safe_alloc_new( &alloc, 99999);
-	vars = safe_alloc_new( &alloc, 99999);
+	buf = sbuf = safe_alloc_new( &alloc, 99999999);
+	vars = safe_alloc_new( &alloc, 99999999);
 
 
     ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
@@ -844,19 +843,20 @@ main(int n, char * t[] )
 	inp();
 	next();
 	decl(0);
-/* 
-    { 
+
+
+/*    {
+ 
         FILE *f;
-        f = fopen("hello1", "w");
+        f = fopen( t[2], "w");
         fwrite((void *)prog, 1, ind - prog, f);
         fclose(f);
-    
-    }*/
+        //return 0;
+    }
+*/
 
     int main = array_get1( &sym_stk, "fn%main");
  	int (*func)() = main;
- 	//print_ind();
- 	//exit(0);
-	func();
+ 	func();
 	safe_free( &alloc );
 }
