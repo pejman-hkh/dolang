@@ -77,16 +77,16 @@ inp() {
 
 isid()
 {
-    return isalnum(ch) | ch == '_';
+	return isalnum(ch) | ch == '_';
 }
 
 getq()
 {
-    if (ch == '\\') {
-        inp();
-        if (ch == 'n')
-            ch = '\n';
-    }
+	if (ch == '\\') {
+		inp();
+		if (ch == 'n')
+			ch = '\n';
+	}
 }
 
 
@@ -102,10 +102,10 @@ skip( char s ) {
 
 o(n)
 {
-    while (n && n != -1) {
-        *(char *)ind++ = n;
-        n = n >> 8;
-    }
+	while (n && n != -1) {
+		*(char *)ind++ = n;
+		n = n >> 8;
+	}
 }
 
 char * mstrcat( char *a, char *b) {
@@ -229,12 +229,12 @@ next() {
 			toks.c = ch;
 			inp();
 
-            if( toks.c == '*' ) {
-                toks.l = 1;
-                toks.t = 2000;
-            } else if( toks.c == '/' ) {
-                toks.l = 1;
-                toks.t = 2021;
+			if( toks.c == '*' ) {
+				toks.l = 1;
+				toks.t = 2000;
+			} else if( toks.c == '/' ) {
+				toks.l = 1;
+				toks.t = 2021;
 				if( ch == '/' ) {
 					toks.l == 11;
 					toks.t = 1006;
@@ -258,105 +258,105 @@ next() {
 					inp();
 				}
 				
-            } else if( toks.c == '%' ) {
-                toks.l = 1;
-                toks.t = 2001;
-            } else if( toks.c == '+' ) {
-                toks.l = 2;
-                toks.t = 2002;
-                if( ch == '+' ) {
-                    toks.l = 11;
-                    toks.t = 2003;
-                    toks.c = ch;
-                    inp();
-                }
-            } else if( toks.c == '-' ) {
-                toks.l = 2;
-                toks.t = 2004;
+			} else if( toks.c == '%' ) {
+				toks.l = 1;
+				toks.t = 2001;
+			} else if( toks.c == '+' ) {
+				toks.l = 2;
+				toks.t = 2002;
+				if( ch == '+' ) {
+					toks.l = 11;
+					toks.t = 2003;
+					toks.c = ch;
+					inp();
+				}
+			} else if( toks.c == '-' ) {
+				toks.l = 2;
+				toks.t = 2004;
 
-                if( ch == '-' ) {
-                    toks.l = 11;
-                    toks.t = 2005;
-                    toks.c = ch;
-                    inp();         
-                }
+				if( ch == '-' ) {
+					toks.l = 11;
+					toks.t = 2005;
+					toks.c = ch;
+					inp();		 
+				}
 
-            } else if( toks.c == '<' ) {
-                toks.l = 4;
-                toks.t = 2006;
+			} else if( toks.c == '<' ) {
+				toks.l = 4;
+				toks.t = 2006;
 
-                if( ch == '<' ) {
-                    toks.l = 3;
-                    toks.t = 2007;
-                    toks.c = ch;
-                    inp();
-                } else if( ch == '=' ) {
-                    toks.l = 4;
-                    toks.t = 2008;
-                    toks.c = ch;
-                    inp();
-                }
-            } else if( toks.c == '>' ) {
-                toks.l = 4;
-                toks.c = 0xf;
-                toks.t = 2009;
+				if( ch == '<' ) {
+					toks.l = 3;
+					toks.t = 2007;
+					toks.c = ch;
+					inp();
+				} else if( ch == '=' ) {
+					toks.l = 4;
+					toks.t = 2008;
+					toks.c = ch;
+					inp();
+				}
+			} else if( toks.c == '>' ) {
+				toks.l = 4;
+				toks.c = 0xf;
+				toks.t = 2009;
 
-                if( ch == '>' ) {
-                    toks.l = 3;
-                    toks.t = 2010;
-                    toks.c = ch;
-                    inp();          
-                } else if( ch == '=' ) {
-                    toks.l = 4;
-                    toks.t = 2011;
-                    toks.c = ch;
-                    inp();          
-                }
-            } else if( toks.c == '!' ) {
+				if( ch == '>' ) {
+					toks.l = 3;
+					toks.t = 2010;
+					toks.c = ch;
+					inp();		  
+				} else if( ch == '=' ) {
+					toks.l = 4;
+					toks.t = 2011;
+					toks.c = ch;
+					inp();		  
+				}
+			} else if( toks.c == '!' ) {
 
-                toks.l = 2;
-               	toks.t = 2012;
+				toks.l = 2;
+			   	toks.t = 2012;
 
-                if( ch == '=' ) {
-                    toks.l = 5;
-                    toks.t = 2013;
-                    inp();
+				if( ch == '=' ) {
+					toks.l = 5;
+					toks.t = 2013;
+					inp();
 
-                }
-            } else if( toks.c == '=' ) {
-                if( ch == '=' ) {
-                    toks.l = 5;
-                    toks.t = 2014;
-                    toks.t = ch;
-                    inp();
-                }
-            } else if( toks.c == '&' ) {
-                toks.l = 6;
-                toks.t = 2015;
-                if( ch == '&' ) {
-                    toks.l = 9;
-                    toks.t = 2016;
-                    toks.c = ch;
-                    inp();
-                }       
-            } else if( toks.c == '^' ) {
-                toks.l = 7;
-                toks.t = 2017;
+				}
+			} else if( toks.c == '=' ) {
+				if( ch == '=' ) {
+					toks.l = 5;
+					toks.t = 2014;
+					toks.t = ch;
+					inp();
+				}
+			} else if( toks.c == '&' ) {
+				toks.l = 6;
+				toks.t = 2015;
+				if( ch == '&' ) {
+					toks.l = 9;
+					toks.t = 2016;
+					toks.c = ch;
+					inp();
+				}	   
+			} else if( toks.c == '^' ) {
+				toks.l = 7;
+				toks.t = 2017;
 
-            } else if( toks.c == '|' ) {
-                toks.l = 8;
-                toks.t = 2018;
+			} else if( toks.c == '|' ) {
+				toks.l = 8;
+				toks.t = 2018;
 
-                if( ch == '|' ) {
-                    toks.l = 10;
-                    toks.t = 2019;
-                    toks.c = ch;
-                    inp();
-                }
-            } else if( toks.c == '~' ) {
-                toks.l = 2;
-                toks.t = 2020;
-            }
+				if( ch == '|' ) {
+					toks.l = 10;
+					toks.t = 2019;
+					toks.c = ch;
+					inp();
+				}
+			} else if( toks.c == '~' ) {
+				toks.l = 2;
+				toks.t = 2020;
+			}
 		}
 	}
 
@@ -812,10 +812,10 @@ main(int n, char * t[] )
 	vars = safe_alloc_new( &alloc, 99999999);
 
 
-    ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
-    vtoks = malloc( sizeof( tokens * ) * 20 );
+	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
+	vtoks = malloc( sizeof( tokens * ) * 20 );
 
-    if (!prog) { printf("could not mmap(%d) jit executable memory\n", ALLOC_SIZE); return -1; }
+	if (!prog) { printf("could not mmap(%d) jit executable memory\n", ALLOC_SIZE); return -1; }
 
 	file = fopen(t[1], "r");
 
@@ -851,17 +851,17 @@ main(int n, char * t[] )
 	next();
 	decl(0);
 
-/*    {
+/*	{
  
-        FILE *f;
-        f = fopen( t[2], "w");
-        fwrite((void *)prog, 1, ind - prog, f);
-        fclose(f);
-        //return 0;
-    }
+		FILE *f;
+		f = fopen( t[2], "w");
+		fwrite((void *)prog, 1, ind - prog, f);
+		fclose(f);
+		//return 0;
+	}
 */
 
-    int main = array_get1( &sym_stk, "fn%main");
+	int main = array_get1( &sym_stk, "fn%main");
  	int (*func)() = main;
  	func();
 	safe_free( &alloc );
