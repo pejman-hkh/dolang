@@ -117,6 +117,11 @@ variable * array_len( variable *arr1 ) {
 	return v;
 }
 
+
+int array_len1( array *arr1 ) {
+	return arr1->length;
+}
+
 /*variable *array_iter( array *arr ) {
 	return arr->i++ < arr->length;
 }*/

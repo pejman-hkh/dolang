@@ -8,6 +8,13 @@ void mprint( variable *a );
 
 #include "fn.h"
 
+do_get_val() {
+	printf("mov  0x4(%%eax),%%eax\n");
+	*ind++ = 0x8b;
+	*ind++ = 0x40;
+	*ind++ = 0x04;	
+}
+
 do_convert_to_var( type ) {
 	function_init(1);
 	function_set_arg(0);
@@ -154,28 +161,16 @@ do_call_function( l, bid ) {
 		ind += 4;
 
 	} else {
-		int n;
-		if( strcmp( bid, "array_init" ) == 0 ) {
-			n = &array_init;
-		} else if( strcmp( bid, "typeof" ) == 0 ) {
-			n = &do_typeof;		
-		} else if( strcmp( bid, "print" ) == 0 ) {
-			n = &do_print;
-		} else if( strcmp( bid, "array_len" ) == 0 ) {
-			n = &array_len;
-		} else if( strcmp( bid, "array_value" ) == 0 ) {
-			n = &array_value;
-		} else if( strcmp( bid, "array_key" ) == 0 ) {
-			n = &array_key;
-		} else if( strcmp( bid, "array_set" ) == 0 ) {
-			n = &array_set;
-		} else if( strcmp( bid, "set_val" ) == 0 ) {
-			n = &set_val;
-		} else if( strcmp( bid, "array_get" ) == 0 ) {
-			n = &array_get;
-		} else if( strcmp( bid, "mstrcat" ) == 0 ) {
-			n = &mstrcat;
-		} else {
+		int n = 0;
+
+		for( int i = 0; i <  ext.length; i++ ) {
+			if( strcmp( bid, ext.key[i] ) == 0 ) {
+				n = ext.value[i];
+				break;
+			}
+		}
+
+		if( ! n ) {
 			n = dlsym(0, bid);
 		}
 
@@ -183,10 +178,9 @@ do_call_function( l, bid ) {
 
 		printf("call %s 0x%x\n", bid, n);
 		*ind++ = 0xe8;
-		while (n && n != -1) {
-			*ind++ = n;
-			n = n >> 8;
-		}
+		*(int *)ind = n;
+		ind += 4;
+	
 	}
 
 	if( i ) {

@@ -10,6 +10,21 @@ typedef struct {
 } variable;
 
 
+#define TOK_IF 2
+#define TOK_ELSE 3
+#define TOK_WHILE 4
+#define TOK_BREAK 5
+#define TOK_RETURN 6
+#define TOK_FOR 7
+#define TOK_DEFINE 8
+#define TOK_MAIN 9
+#define TOK_VAR 10
+#define TOK_NEW 11
+#define TOK_CLASS 12
+#define TOK_IN 13
+#define TOK_THIS 14
+
+
 
 #include "safe_alloc.h"
 safe_alloc alloc;
@@ -32,7 +47,8 @@ int ivar;
 int type;
 int ismain;
 int last_ind;
-//int is_for_in;
+array ext;
+
 
 //int sym_stk, dstk;
 
@@ -52,6 +68,7 @@ array var_stk;
 tokens ** vtoks;
 
 #include "do-x86.h";
+#include "ext.h";
 
 inp() {
 	ch = fgetc( file );
@@ -360,10 +377,7 @@ unary() {
 		next();
 		if( toks.c == '.' ) {
 			//call string functions or variables
-			printf("mov  0x4(%%eax),%%eax\n");
-			*ind++ = 0x8b;
-			*ind++ = 0x40;
-			*ind++ = 0x04;
+			do_get_val();
 			next();
 			next();
 		}
@@ -384,7 +398,7 @@ unary() {
 			do_create_array('}');			
 		} else if( btoks.c == '[' ) {
 			do_create_array(']');			
-		} else if( btoks.t == 1 | btoks.t == 10 | btoks.t == 14 ) {
+		} else if( btoks.t == 1 | btoks.t == TOK_VAR | btoks.t == TOK_THIS ) {
 			//print_tok();
 			//exit(0);
 			if( toks.c == '*' ) {
@@ -404,7 +418,7 @@ unary() {
 		} else if( toks.t == 1000 & btoks.c == '+' ) {
 			/*printf("ddddddddddd\n");
 			exit(0);*/
-		} else if( btoks.t == 11 ) {
+		} else if( btoks.t == TOK_NEW ) {
 			do_call_class();
 		} else if( toks.t == 2003 ) {
 			//btoks.type = 2;
@@ -481,15 +495,9 @@ unary() {
 						do_call_function(l, "");
 					} else {
 						if( strcmp( ctoks.id, "val" ) == 0 ) {
-							printf("mov  0x4(%%eax),%%eax\n");
-							*ind++ = 0x8b;
-							*ind++ = 0x40;
-							*ind++ = 0x04;
+							do_get_val();
 						} else if( strcmp( ctoks.id, "type" ) == 0 ) {
-							printf("mov  0x0(%%eax),%%eax\n");
-							*ind++ = 0x8b;
-							*ind++ = 0x40;
-							*ind++ = 0x00;						
+							do_get_val();					
 						} else {
 
 							do_call_object(&ctoks);		
@@ -654,9 +662,8 @@ block() {
 	if( toks.t == 1006 ) {
 		next();
 		block();
-	} else if( toks.t == 7 ) {
+	} else if( toks.t == TOK_FOR ) {
 		next();
-		//printf("in for \n");
 		skip('(');
 
 		expr();
@@ -672,7 +679,7 @@ block() {
 			do_for_loop();								
 		}
 
-	} else if( toks.t == 4 ) {
+	} else if( toks.t == TOK_WHILE ) {
 		//printf("in while \n");
 		next();
 		skip('(');
@@ -685,8 +692,8 @@ block() {
 
 		do_while_loop(n);
 
-	} else if( toks.t == 2 ) {
-		//printf("in if \n");
+	} else if( toks.t == TOK_IF ) {
+	
 		next();
 
 		skip('(');
@@ -698,7 +705,7 @@ block() {
 		block();
 
 	
-		if( toks.t == 3 ) {
+		if( toks.t == TOK_ELSE ) {
 			do_else_cond();
 			int n = ind - 4;
 
@@ -711,14 +718,14 @@ block() {
 		}
 		//print_ind();
 
-	} else if( toks.t == 6 ) {
+	} else if( toks.t == TOK_RETURN ) {
 		//printf("in return\n");
 		next();
 		expr();
 		do_return();
 		skip(';');
 		
-	} else if( toks.t == 5 ) {
+	} else if( toks.t == TOK_BREAK ) {
 		printf("in break\n");
 		next();
 		skip(';');
@@ -752,11 +759,11 @@ decl(cls) {
 		next();
 		decl(cls);
 
-	} else if( toks.t == 10 ) {
+	} else if( toks.t == TOK_VAR ) {
 
 		next();
 		array_set1( &var_stk, toks.id, vars );
-		vars += 4;
+		vars += 8;
 		
 
 		next();
@@ -766,13 +773,13 @@ decl(cls) {
 	} else if( toks.t == 1006 ) {
 		next();
 		decl(cls);
-	} else if( toks.t == 12 ) {
+	} else if( toks.t == TOK_CLASS ) {
 
 		do_create_class();
 
 		decl(cls);
 	
-	} else if( toks.t == 999 | toks.t == 9 ) {
+	} else if( toks.t == 999 | toks.t == TOK_MAIN ) {
 		ivar = 0;
 
 		toks.type = 1;
@@ -799,13 +806,13 @@ print_tok() {
 main(int n, char * t[] )
 {
 
-	
+	set_extensions();
+		
 	buf = sbuf = safe_alloc_new( &alloc, 99999999);
 	vars = safe_alloc_new( &alloc, 99999999);
 
 
     ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
-    //ind_main = malloc(ALLOC_SIZE);
     vtoks = malloc( sizeof( tokens * ) * 20 );
 
     if (!prog) { printf("could not mmap(%d) jit executable memory\n", ALLOC_SIZE); return -1; }
@@ -813,7 +820,7 @@ main(int n, char * t[] )
 	file = fopen(t[1], "r");
 
 	int i = 1;
-	int is_for_in = 0;
+	
 	//array_init( &mt );
 	i++;
 	//array_set1( &mt, "int", i++ );
@@ -843,7 +850,6 @@ main(int n, char * t[] )
 	inp();
 	next();
 	decl(0);
-
 
 /*    {
  
