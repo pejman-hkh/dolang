@@ -115,11 +115,15 @@ do_call_num( int id ) {
 }
 
 do_call_var(l) {
-	printf("mov %x(%%ebp),%%eax\n", l);
-	*ind++ = 0x8b;
-	*ind++ = 0x85;
-	*(int *)ind = l;
-	ind += 4;
+	if( l < 255 & l > 0 ) {
+		printf("mov %x(%%ebp),%%eax\n", l);
+		*ind++ = 0x8b;
+		*ind++ = 0x85;
+		*(int *)ind = l;
+		ind += 4;
+	} else {
+		do_call_num(l);
+	}
 }
 
 do_call_function( l, bid ) {
@@ -127,7 +131,7 @@ do_call_function( l, bid ) {
 	*ind++ = 0x81; 
 	*ind++ = 0xec;
 	int st = ind;
-	*ind =  0; 
+	*(int *)ind =  0; 
 	ind += 4;
 
 	skip('(');
@@ -138,7 +142,7 @@ do_call_function( l, bid ) {
 		*ind++ = 0x89;
 		*ind++ = 0x84; 
 		*ind++ = 0x24;
-		*ind = i;
+		*(int *)ind = i;
 		ind += 4;
 
 		if( toks.c == ',' )
@@ -187,7 +191,7 @@ do_call_function( l, bid ) {
 		printf("add $,%%esp\n");
 		*ind++ = 0x81;
 		*ind++ =  0xc4;
-		*ind = i;
+		*(int *)ind = i;
 		ind += 4;
 	}	
 }
@@ -309,17 +313,35 @@ do_while_loop(n) {
 }
 
 do_equal(l) {
-
-	if( l < 255 ) {
+	if( l < 255 & l > 0 ) {
 		printf("mov %%eax,0x%x(%%ebp)\n", l);
+		*ind++ = 0x89;
+		*ind++ =  0x85;
+		*(int *)ind = l;
+		ind += 4;
 	} else {
-		printf("mov %%eax,0x%x\n", l);
-	}
-	*ind++ = 0x89;
-	*ind++ =  0x85;
-	*(int *)ind = l;
-	ind += 4;
 
+		function_init(2);
+		function_set_arg(0);
+
+		do_call_num(l);
+		function_set_arg(1);
+		function_call( &do_set_val, "do_set_val" );
+		function_end(2);
+	}
+
+
+
+	
+	//printf("%x\n", l);
+/*	function_init(2);
+	function_set_arg(0);
+	do_call_num(l);
+	function_set_arg(1);
+
+	function_call( &do_debug, "do_debug" );
+	function_end(2);
+*/
 }
 
 function_set_arg( a ) {
@@ -509,7 +531,7 @@ do_call_object( tokens *ctoks ) {
 
 do_call_address( l ) {
 			
-	printf("leal %d(%%ebp),%%eax\n", l);
+	printf("leal %x(%%ebp),%%eax\n", l);
 	*ind++ = 0x8d;
 	*ind++ = 0x85;
 	*(int *)ind = l;
@@ -618,7 +640,7 @@ do_create_function( cls ) {
 	printf("ret\n");
 	*ind++ = 0xc3;
 	//array_print( &var_stk );
-	array_reset( &var_stk );
+	//array_reset( &var_stk );
 }
 
 do_plus_plus(l) {

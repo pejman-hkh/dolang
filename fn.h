@@ -1,8 +1,11 @@
-do_debug( variable *var ) {
-
-
+do_debug( variable * a, variable * b ) {
+	*b = *a;
 }
 
+
+do_set_val( variable *a, variable *b ) {
+	*b = *a;
+}
 
 do_print_array( variable *arr1 ) {
 	array *arr = arr1->val;

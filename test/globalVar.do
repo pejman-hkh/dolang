@@ -1,9 +1,21 @@
+var test_var;
 
-var b;
-var d;
+test_b() {
+	test_var = "bbb\n";	
+}
+
+test_a() {
+	test_var = "aaa\n";
+}
+
 main() {
-	b = "test";
-	d = "aaa";
-	print(b+"\n");
-	print(d);
+	test_var = "test";
+
+	test_a();
+	print(test_var);
+
+	test_var = "test1";
+	test_b();
+	print(test_var);
+
 }

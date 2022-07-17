@@ -23,6 +23,7 @@ typedef struct {
 #define TOK_CLASS 12
 #define TOK_IN 13
 #define TOK_THIS 14
+#define TOK_IDENT 999
 
 
 
@@ -191,7 +192,7 @@ next() {
 		} else if( a != 0 ) {
 			toks.t = a;
 		} else {
-			toks.t = 999;
+			toks.t = TOK_IDENT;
 		}
 
 	} else {
@@ -441,20 +442,11 @@ unary() {
 			do_call_num( atoi(btoks.id) );
 			do_convert_to_var(2);
 		} else if( toks.c == '=' & toks.l == 0 ) {
-			//print_tok();
-		
 			next();
-			//btoks.type = 2;
-			//int l = get_tokv( &btoks, 0 );
 			int l = array_get1( &var_stk, btoks.id);
-			//printf("%d\n", l );
-					//vars_init();
 
 			expr(l);
-
 			do_equal( l );
-			//do_debug();
-
 		} else if( btoks.c == '(' ) {
 			expr();
 			skip(')');
@@ -463,11 +455,12 @@ unary() {
 			int l = get_tokv( &btoks, 0 );
 			do_call_function( l, btoks.id );
 			//do_concat_string();
-		} else if( btoks.t == 999 ) {
+		} else if( btoks.t == TOK_IDENT ) {
 
 			//btoks.type = 2;
 			//int l = get_tokv( &btoks, 0 );
 			int l = array_get1( &var_stk, btoks.id);
+
 
 			do_call_var( l );
 
@@ -761,11 +754,17 @@ decl(cls) {
 
 	} else if( toks.t == TOK_VAR ) {
 
-		next();
-		array_set1( &var_stk, toks.id, vars );
-		vars += 8;
-		
 
+	
+		next();
+	
+	
+		variable *a = safe_alloc_new( &alloc, sizeof(variable) );
+	
+		array_set1( &var_stk, toks.id, a );
+		//printf("%x\n", vars );
+		//vars += 8;
+		
 		next();
 		skip(';');
 		decl( cls );
@@ -779,7 +778,7 @@ decl(cls) {
 
 		decl(cls);
 	
-	} else if( toks.t == 999 | toks.t == TOK_MAIN ) {
+	} else if( toks.t == TOK_IDENT | toks.t == TOK_MAIN ) {
 		ivar = 0;
 
 		toks.type = 1;
@@ -806,10 +805,11 @@ print_tok() {
 main(int n, char * t[] )
 {
 
+
 	set_extensions();
-		
-	buf = sbuf = safe_alloc_new( &alloc, 99999999);
-	vars = safe_alloc_new( &alloc, 99999999);
+
+	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
+	vars = safe_alloc_new( &alloc, ALLOC_SIZE);
 
 
 	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
@@ -851,18 +851,16 @@ main(int n, char * t[] )
 	next();
 	decl(0);
 
-/*	{
- 
+	if( t[2] ) {
 		FILE *f;
 		f = fopen( t[2], "w");
 		fwrite((void *)prog, 1, ind - prog, f);
 		fclose(f);
-		//return 0;
 	}
-*/
 
 	int main = array_get1( &sym_stk, "fn%main");
  	int (*func)() = main;
  	func();
+
 	safe_free( &alloc );
 }
