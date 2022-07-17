@@ -36,7 +36,7 @@ char ch;
 FILE *file;
 char *buf;
 char *sbuf;
-int vars;
+//int vars;
 
 char *prog;
 char *ind;
@@ -760,7 +760,7 @@ decl(cls) {
 	
 	
 		variable *a = safe_alloc_new( &alloc, sizeof(variable) );
-	
+
 		array_set1( &var_stk, toks.id, a );
 
 		next();
@@ -807,7 +807,7 @@ main(int n, char * t[] )
 	set_extensions();
 
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
-	vars = safe_alloc_new( &alloc, ALLOC_SIZE);
+	//vars = safe_alloc_new( &alloc, ALLOC_SIZE);
 
 
 	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);

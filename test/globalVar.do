@@ -18,4 +18,6 @@ main() {
 	test_b();
 	print(test_var);
 
+	var a = "test";
+
 }

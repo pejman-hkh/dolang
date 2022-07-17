@@ -115,7 +115,7 @@ do_call_num( int id ) {
 }
 
 do_call_var(l) {
-	if( l < 255 & l > 0 ) {
+	if( l < 255 & l > -255 ) {
 		printf("mov %x(%%ebp),%%eax\n", l);
 		*ind++ = 0x8b;
 		*ind++ = 0x85;
@@ -313,7 +313,8 @@ do_while_loop(n) {
 }
 
 do_equal(l) {
-	if( l < 255 & l > 0 ) {
+
+	if( l < 255 & l > -255 ) {
 		printf("mov %%eax,0x%x(%%ebp)\n", l);
 		*ind++ = 0x89;
 		*ind++ =  0x85;
