@@ -77,7 +77,17 @@ variable * array_get( variable *arr1, variable *key ) {
 }
 
 void *array_set1( array *arr, void *key, void *value ) {
+
 	int index = arr->length;
+	for( int i = 0; i < arr->length; i++ ) {
+
+		if( strcmp( arr->key[i], key ) == 0 ) {
+
+			arr->value[ i ] = value;
+
+			return;
+		}
+	}
 
 	array_relloc( arr );
 

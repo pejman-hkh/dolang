@@ -330,18 +330,6 @@ do_equal(l) {
 		function_end(2);
 	}
 
-
-
-	
-	//printf("%x\n", l);
-/*	function_init(2);
-	function_set_arg(0);
-	do_call_num(l);
-	function_set_arg(1);
-
-	function_call( &do_debug, "do_debug" );
-	function_end(2);
-*/
 }
 
 function_set_arg( a ) {

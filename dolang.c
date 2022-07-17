@@ -762,9 +762,7 @@ decl(cls) {
 		variable *a = safe_alloc_new( &alloc, sizeof(variable) );
 	
 		array_set1( &var_stk, toks.id, a );
-		//printf("%x\n", vars );
-		//vars += 8;
-		
+
 		next();
 		skip(';');
 		decl( cls );
