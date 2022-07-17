@@ -1,5 +1,8 @@
 class test {
+	var a;
+
 	b() {
+		this.a = "test";
 		print("in b method\n");
 	}
 	c() {
@@ -10,6 +13,7 @@ class test {
 main() {
 	
 	var a = new test;
+
 	a.b();
 	a.c();
 }

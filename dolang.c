@@ -400,8 +400,7 @@ unary() {
 		} else if( btoks.c == '[' ) {
 			do_create_array(']');			
 		} else if( btoks.t == 1 | btoks.t == TOK_VAR | btoks.t == TOK_THIS ) {
-			//print_tok();
-			//exit(0);
+		
 			if( toks.c == '*' ) {
 				next();
 			}
