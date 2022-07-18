@@ -798,7 +798,6 @@ print_tok() {
 main(int n, char * t[] )
 {
 
-
 	set_extensions();
 
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
