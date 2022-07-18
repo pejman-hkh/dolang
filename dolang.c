@@ -752,11 +752,7 @@ decl(cls) {
 		decl(cls);
 
 	} else if( toks.t == TOK_VAR ) {
-
-
-	
 		next();
-	
 	
 		variable *a = safe_alloc_new( &alloc, sizeof(variable) );
 

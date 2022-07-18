@@ -51,9 +51,7 @@ do_fn_plus_plus( variable *a ) {
 
 variable *do_fn_add( variable *a, variable *b ) {
 	variable *var = safe_alloc_new( &alloc, sizeof(variable));
-/*	printf("%d ", a->type );
-	printf("%d", b->type );
-	printf("\n");*/
+
 	if( a->type == 1 && b->type == 2 ) {
 		int x = b->val;
 		int length = snprintf( NULL, 0, "%d", x );

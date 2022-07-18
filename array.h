@@ -137,19 +137,7 @@ int array_len1( array *arr1 ) {
 }*/
 
 void * set_val( variable *a, variable *b ) {
-/*	a->type = b->type;
-
-	memcpy( a->val, b->val );
-*/
-	
-	//do_print(a);
-
-	//do_print(b);
-
 	*a = *b;
-	//*(a->val) = *(b->val);
-
-	//memcpy(a,b,sizeof(a));
 }
 
 void *array_reset(array *arr) {

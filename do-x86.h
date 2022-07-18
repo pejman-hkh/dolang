@@ -115,15 +115,17 @@ do_call_num( int id ) {
 }
 
 do_call_var(l) {
-	if( l < 255 & l > -255 ) {
+
+	if( l > 0 ) {
+		do_call_num(l);
+	} else {	
 		printf("mov %x(%%ebp),%%eax\n", l);
 		*ind++ = 0x8b;
 		*ind++ = 0x85;
 		*(int *)ind = l;
 		ind += 4;
-	} else {
-		do_call_num(l);
 	}
+
 }
 
 do_call_function( l, bid ) {
@@ -314,14 +316,7 @@ do_while_loop(n) {
 
 do_equal(l) {
 
-	if( l < 255 & l > -255 ) {
-		printf("mov %%eax,0x%x(%%ebp)\n", l);
-		*ind++ = 0x89;
-		*ind++ =  0x85;
-		*(int *)ind = l;
-		ind += 4;
-	} else {
-
+	if( l > 0 ) {
 		function_init(2);
 		function_set_arg(0);
 
@@ -329,8 +324,14 @@ do_equal(l) {
 		function_set_arg(1);
 		function_call( &do_set_val, "do_set_val" );
 		function_end(2);
-	}
+	} else {
 
+		printf("mov %%eax,%d(%%ebp)\n", l);
+		*ind++ = 0x89;
+		*ind++ =  0x85;
+		*(int *)ind = l;
+		ind += 4;
+	}
 }
 
 function_set_arg( a ) {
@@ -511,11 +512,8 @@ do_call_object( tokens *ctoks ) {
 
 		function_set_arg(1);
 		function_call( &set_val, "set_val" );
-
 		function_end(2);
-
-	}
-									
+	}								
 }
 
 do_call_address( l ) {
@@ -536,9 +534,6 @@ do_create_var( n ) {
 	while( toks.c != ';' && toks.t != 15 ) {
 
 		ivar = ivar - n;
-		//toks.type = 2;
-		//set_tokv( &toks, ivar, 0 );
-
 		array_set1( &var_stk, toks.id, ivar );
 
 		*(int *)indvar = -ivar;
