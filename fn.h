@@ -1,7 +1,13 @@
+#include <sys/time.h>
+
 do_debug( variable * a, variable * b ) {
 	*b = *a;
 }
 
+
+do_microtime() {
+
+}
 
 do_set_val( variable *a, variable *b ) {
 	*b = *a;

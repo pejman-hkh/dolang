@@ -7,9 +7,13 @@ char * mstrcat();
 void mprint( variable *a );
 
 #include "fn.h"
+#define ASS 0
+
 
 do_get_val() {
-	printf("mov  0x4(%%eax),%%eax\n");
+#if ASS
+ printf("mov  0x4(%%eax),%%eax\n"); 
+#endif
 	*ind++ = 0x8b;
 	*ind++ = 0x40;
 	*ind++ = 0x04;	
@@ -24,12 +28,16 @@ do_convert_to_var( type ) {
 }
 
 do_push() {
-	printf("push %%eax\n");
+#if ASS
+ printf("push %%eax\n"); 
+#endif
 	o(0x50);	
 }
 
 do_pop() {
-	printf("pop %%ecx\n");
+#if ASS
+ printf("pop %%ecx\n"); 
+#endif
 	o(0x59);	
 }
 
@@ -39,7 +47,9 @@ do_add() {
 	function_init(2);
 	function_set_arg(0);
 
-	printf("mov %%ecx, %%eax\n");
+#if ASS
+ printf("mov %%ecx, %%eax\n"); 
+#endif
 	*ind++ = 0x89;
 	*ind++ = 0xc8;
 
@@ -49,12 +59,16 @@ do_add() {
 }
 
 do_get_var_value() {
-	printf("mov  0x4(%%eax),%%eax\n");
+#if ASS
+ printf("mov  0x4(%%eax),%%eax\n"); 
+#endif
 	*ind++ = 0x8b;
 	*ind++ = 0x40;
 	*ind++ = 0x04;
 
-	printf("mov  0x4(%%ecx),%%ecx\n");
+#if ASS
+ printf("mov  0x4(%%ecx),%%ecx\n"); 
+#endif
 	*ind++ = 0x8b;
 	*ind++ = 0x49;
 	*ind++ = 0x04;	
@@ -62,24 +76,34 @@ do_get_var_value() {
 
 do_mul() {
 
-	printf("imul %%ecx,%%eax\n");
+#if ASS
+ printf("imul %%ecx,%%eax\n"); 
+#endif
 	*ind++ = 0x0f;
 	*ind++ = 0xaf;
 	*ind++ = 0xc1;
 }
 
 do_remain() {
-	printf("xchg %%eax,%%ecx\n");
+#if ASS
+ printf("xchg %%eax,%%ecx\n"); 
+#endif
 	*ind++ = 0x91;
 
-	printf("cltd\n");
+#if ASS
+ printf("cltd\n"); 
+#endif
 	*ind++ = 0x99;
 
-	printf("idiv %%ecx\n");
+#if ASS
+ printf("idiv %%ecx\n"); 
+#endif
 	*ind++ = 0xf7;
 	*ind++ = 0xf9;
 
-	printf("xchg %%eax,%%edx\n");
+#if ASS
+ printf("xchg %%eax,%%edx\n"); 
+#endif
 	*ind++ = 0x92;
 }
 
@@ -93,14 +117,18 @@ do_sub() {
 
 do_return() {
 
-	printf("jmp $\n");
+#if ASS
+ printf("jmp $\n"); 
+#endif
 	*ind++ = 0xe9;
 	ind += 4;
 }
 
 
 do_call_string( variable *var ) {
-	printf("mov 0x%x,%%eax\n", var->val );
+#if ASS
+ printf("mov 0x%x,%%eax\n", var->val ); 
+#endif
 	*ind++ = 0xb8;
 	*(int *)ind = var;
 	ind += 4; 
@@ -108,7 +136,9 @@ do_call_string( variable *var ) {
 
 do_call_num( int id ) {
 
-	printf("mov 0x%x,%%eax\n", id );
+#if ASS
+ printf("mov 0x%x,%%eax\n", id ); 
+#endif
 	*ind++ = 0xb8;
 	*(int *)ind = id;
 	ind += 4;
@@ -119,7 +149,9 @@ do_call_var(l) {
 	if( l > 0 ) {
 		do_call_num(l);
 	} else {	
-		printf("mov %x(%%ebp),%%eax\n", l);
+	#if ASS
+ printf("mov %x(%%ebp),%%eax\n", l); 
+#endif
 		*ind++ = 0x8b;
 		*ind++ = 0x85;
 		*(int *)ind = l;
@@ -129,7 +161,9 @@ do_call_var(l) {
 }
 
 do_call_function( l, bid ) {
-	printf("sub $,%%esp\n");
+#if ASS
+ printf("sub $,%%esp\n"); 
+#endif
 	*ind++ = 0x81; 
 	*ind++ = 0xec;
 	int st = ind;
@@ -140,7 +174,9 @@ do_call_function( l, bid ) {
 	int i = 0;
 	while( toks.c != ')' ) {
 		expr();
-		printf("mov %%eax,%x(%%esp)\n", i);
+	#if ASS
+ printf("mov %%eax,%x(%%esp)\n", i); 
+#endif
 		*ind++ = 0x89;
 		*ind++ = 0x84; 
 		*ind++ = 0x24;
@@ -161,7 +197,9 @@ do_call_function( l, bid ) {
 
 		int n = l - (int)ind - 5;
 
-		printf("call %s 0x%x\n", bid, n);
+	#if ASS
+ printf("call %s 0x%x\n", bid, n); 
+#endif
 		*ind++ = 0xe8;
 		*(int *)ind = n;
 		ind += 4;
@@ -182,7 +220,9 @@ do_call_function( l, bid ) {
 
 		n = n - (int)ind - 5;
 
-		printf("call %s 0x%x\n", bid, n);
+	#if ASS
+ printf("call %s 0x%x\n", bid, n); 
+#endif
 		*ind++ = 0xe8;
 		*(int *)ind = n;
 		ind += 4;
@@ -190,7 +230,9 @@ do_call_function( l, bid ) {
 	}
 
 	if( i ) {
-		printf("add $,%%esp\n");
+	#if ASS
+ printf("add $,%%esp\n"); 
+#endif
 		*ind++ = 0x81;
 		*ind++ =  0xc4;
 		*(int *)ind = i;
@@ -201,7 +243,9 @@ do_call_function( l, bid ) {
 do_minus_minus(l) {
 	do_call_var(l);
 	
-	printf("addl $0xffffffff,%d(%%ebp)\n", l-4);
+#if ASS
+ printf("addl $0xffffffff,%d(%%ebp)\n", l-4); 
+#endif
 	*ind++ = 0x83;
 	*ind++ = 0x85;
 	*(int *)ind = l-4;
@@ -215,7 +259,9 @@ do_equal_equal() {
 	function_init(2);
 	function_set_arg(0);
 
-	printf("mov %%ecx, %%eax\n");
+#if ASS
+ printf("mov %%ecx, %%eax\n"); 
+#endif
 	*ind++ = 0x89;
 	*ind++ = 0xc8;
 	function_set_arg(1);
@@ -226,15 +272,21 @@ do_equal_equal() {
 }
 
 do_not_equal() {
-	printf("cmp  %%eax,%%ecx\n");
+#if ASS
+ printf("cmp  %%eax,%%ecx\n"); 
+#endif
 	*ind++ = 0x39;
 	*ind++ = 0xc1;
 
-	printf("mov $0x0,%%eax\n");
+#if ASS
+ printf("mov $0x0,%%eax\n"); 
+#endif
 	*ind++ = 0xb8;
 	ind += 4;
 
-	printf("setne %%al\n");
+#if ASS
+ printf("setne %%al\n"); 
+#endif
 	*ind++ = 0x0f;
 	*ind++ = 0x95;
 	*ind++ = 0xc0;
@@ -243,16 +295,22 @@ do_not_equal() {
 
 do_if_cond() {
 
-	printf("mov  0x4(%%eax),%%eax\n");
+#if ASS
+ printf("mov  0x4(%%eax),%%eax\n"); 
+#endif
 	*ind++ = 0x8b;
 	*ind++ = 0x40;
 	*ind++ = 0x04;
 
-	printf("test %%eax,%%eax\n");
+#if ASS
+ printf("test %%eax,%%eax\n"); 
+#endif
 	*ind++ = 0x85;
 	*ind++ = 0xc0;
 
-	printf("je  0x$\n");
+#if ASS
+ printf("je  0x$\n"); 
+#endif
 	*ind++ = 0x0f;
 	*ind++ =  0x84;
 	*(int *)ind = 0;
@@ -262,7 +320,9 @@ do_if_cond() {
 
 do_else_cond() {
 	next();
-	printf("jmpq $\n");
+#if ASS
+ printf("jmpq $\n"); 
+#endif
 	*ind++ = 0xe9; 
 	*(int *)ind = 0;
 	ind += 4;
@@ -270,14 +330,20 @@ do_else_cond() {
 }
 
 do_less_than() {
-	printf("cmp %%eax,%%ecx\n");	
+#if ASS
+ printf("cmp %%eax,%%ecx\n"); 
+#endif	
 	*ind++ = 0x39;
 	*ind++ = 0xc1;
-	printf("mov $0x0,%%eax\n");
+#if ASS
+ printf("mov $0x0,%%eax\n"); 
+#endif
 	*ind++ = 0xb8;
 	ind += 4;
 
-	printf("setl %%al\n");
+#if ASS
+ printf("setl %%al\n"); 
+#endif
 	*ind++ = 0x0f;
 	*ind++ = 0x9c;
 	*ind++ = 0xc0;			 	
@@ -285,16 +351,22 @@ do_less_than() {
 
 do_while_loop(n) {
 
-	printf("mov  0x4(%%eax),%%eax\n");
+#if ASS
+ printf("mov  0x4(%%eax),%%eax\n"); 
+#endif
 	*ind++ = 0x8b;
 	*ind++ = 0x40;
 	*ind++ = 0x04;
 
-	printf("test %%eax,%%eax\n");
+#if ASS
+ printf("test %%eax,%%eax\n"); 
+#endif
 	*ind++ = 0x85;
 	*ind++ = 0xc0;
 
-	printf("je $\n");
+#if ASS
+ printf("je $\n"); 
+#endif
 	*ind++ = 0x0f; 
 	*ind++ = 0x84; 
 	*(int *)ind = 0;
@@ -308,7 +380,9 @@ do_while_loop(n) {
 	*(int *)b = (int)ind - b + 1;
 
 	n = n - (int)ind - 5;
-	printf("jmp  $\n");
+#if ASS
+ printf("jmp  $\n"); 
+#endif
 	*ind++ = 0xe9;
 	*(int *)ind = n;
 	ind += 4;	
@@ -326,7 +400,9 @@ do_equal(l) {
 		function_end(2);
 	} else {
 
-		printf("mov %%eax,%d(%%ebp)\n", l);
+	#if ASS
+ printf("mov %%eax,%d(%%ebp)\n", l); 
+#endif
 		*ind++ = 0x89;
 		*ind++ =  0x85;
 		*(int *)ind = l;
@@ -335,7 +411,9 @@ do_equal(l) {
 }
 
 function_set_arg( a ) {
-	printf("mov %%eax,%x(%%esp)\n", a * 4);
+#if ASS
+ printf("mov %%eax,%x(%%esp)\n", a * 4); 
+#endif
 	*ind++ = 0x89;
 	*ind++ = 0x84; 
 	*ind++ = 0x24;
@@ -346,7 +424,9 @@ function_set_arg( a ) {
 function_call(a,b) {
 	int n = a;
 	n = n - (int)ind - 5;
-	printf("call %s 0x%x\n", b, n);
+#if ASS
+ printf("call %s 0x%x\n", b, n); 
+#endif
 	*ind++ = 0xe8;
 	while (n && n != -1) {
 		*ind++ = n;
@@ -355,7 +435,9 @@ function_call(a,b) {
 }
 
 function_init(a) {
-	printf("sub $%d,%%esp\n", a*4);
+#if ASS
+ printf("sub $%d,%%esp\n", a*4); 
+#endif
 	*ind++ = 0x81; 
 	*ind++ = 0xec;
 	*(int *)ind =  a * 4; 
@@ -363,7 +445,9 @@ function_init(a) {
 }
 
 function_end(a) {
-	printf("add $%d,%%esp\n", a * 4);
+#if ASS
+ printf("add $%d,%%esp\n", a * 4); 
+#endif
 	*ind++ = 0x81;
 	*ind++ =  0xc4;
 	*(int *)ind = a * 4;
@@ -372,7 +456,9 @@ function_end(a) {
 
 vars_init() {
 	if( ivar == 0 ) {
-		printf("sub $%c,%%esp\n", indvar);
+	#if ASS
+ printf("sub $%c,%%esp\n", indvar); 
+#endif
 		*ind++ = 0x81;
 		*ind++ = 0xec;
 		indvar = ind;
@@ -518,7 +604,9 @@ do_call_object( tokens *ctoks ) {
 
 do_call_address( l ) {
 			
-	printf("leal %x(%%ebp),%%eax\n", l);
+#if ASS
+ printf("leal %x(%%ebp),%%eax\n", l); 
+#endif
 	*ind++ = 0x8d;
 	*ind++ = 0x85;
 	*(int *)ind = l;
@@ -611,17 +699,25 @@ do_create_function( cls ) {
 	}
 	skip(')');		
 
-	printf("push %%ebp\n");
+#if ASS
+ printf("push %%ebp\n"); 
+#endif
 	*ind++ = 0x55;
 
-	printf("mov %%esp,%%ebp\n");					
+#if ASS
+ printf("mov %%esp,%%ebp\n"); 
+#endif					
 	*ind++ = 0x89;
 	*ind++ = 0xe5;
 
 	block();
-	printf("leave\n");
+#if ASS
+ printf("leave\n"); 
+#endif
 	*ind++ = 0xc9;
-	printf("ret\n");
+#if ASS
+ printf("ret\n"); 
+#endif
 	*ind++ = 0xc3;
 	//array_print( &var_stk );
 	//array_reset( &var_stk );
@@ -638,23 +734,31 @@ do_plus_plus(l) {
 }
 
 do_and() {
-	printf("and %%ecx,%%eax\n");
+#if ASS
+ printf("and %%ecx,%%eax\n"); 
+#endif
 	*ind++ = 0x21;
 	*ind++ = 0xc8;
 }
 
 do_or() {
-	printf("or %%ecx,%%eax\n");
+#if ASS
+ printf("or %%ecx,%%eax\n"); 
+#endif
 	*ind++ = 0x09;
 	*ind++ = 0xc8;
 }
 
 do_or_or(a) {
-	printf("test %%eax,%%eax\n");
+#if ASS
+ printf("test %%eax,%%eax\n"); 
+#endif
 	*ind++ = 0x85;
 	*ind++ = 0xc0;
 
-	printf("jne $\n");
+#if ASS
+ printf("jne $\n"); 
+#endif
 	*ind++ = 0x0f;
 	*ind++ = 0x85;
 	int indp = ind;
@@ -675,7 +779,9 @@ do_for_loop() {
 	skip(';');
 
 
-	printf("jmp  $\n");
+#if ASS
+ printf("jmp  $\n"); 
+#endif
 	*ind++ = 0xe9;
 	*(int *)ind = 0;
 	ind += 4;
@@ -683,7 +789,9 @@ do_for_loop() {
 	int t = ind - 4;
 	expr();
 
-	printf("jmp  $\n");
+#if ASS
+ printf("jmp  $\n"); 
+#endif
 	*ind++ = 0xe9;
 	*(int *)ind = n - (int)ind - 4;
 	ind += 4;
@@ -691,16 +799,22 @@ do_for_loop() {
 	n = t + 4;
 	skip(')');
 
-	printf("mov  0x4(%%eax),%%eax\n");
+#if ASS
+ printf("mov  0x4(%%eax),%%eax\n"); 
+#endif
 	*ind++ = 0x8b;
 	*ind++ = 0x40;
 	*ind++ = 0x04;
 
-	printf("test %%eax,%%eax\n");
+#if ASS
+ printf("test %%eax,%%eax\n"); 
+#endif
 	*ind++ = 0x85;
 	*ind++ = 0xc0;
 
-	printf("je $\n");
+#if ASS
+ printf("je $\n"); 
+#endif
 	*ind++ = 0x0f; 
 	*ind++ = 0x84; 
 	*(int *)ind = 0;
@@ -714,7 +828,9 @@ do_for_loop() {
 	*(int *)b = (int)ind - b + 1;
 
 	n = n - (int)ind - 5;
-	printf("jmp  $\n");
+#if ASS
+ printf("jmp  $\n"); 
+#endif
 	*ind++ = 0xe9;
 	*(int *)ind = n;
 	ind += 4;
@@ -790,11 +906,15 @@ do_for_in() {
 	do_less_than();
 	skip(')');
 
-	printf("test %%eax,%%eax\n");
+#if ASS
+ printf("test %%eax,%%eax\n"); 
+#endif
 	*ind++ = 0x85;
 	*ind++ = 0xc0;
 
-	printf("je $\n");
+#if ASS
+ printf("je $\n"); 
+#endif
 	*ind++ = 0x0f; 
 	*ind++ = 0x84; 
 	*(int *)ind = 0;
@@ -835,7 +955,9 @@ do_for_in() {
 	*(int *)b = (int)ind - b + 1;
 
 	n = n - (int)ind - 5;
-	printf("jmp  $\n");
+#if ASS
+ printf("jmp  $\n"); 
+#endif
 	*ind++ = 0xe9;
 	*(int *)ind = n;
 	ind += 4;
