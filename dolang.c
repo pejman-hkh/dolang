@@ -21,9 +21,10 @@ typedef struct {
 #define TOK_VAR 10
 #define TOK_NEW 11
 #define TOK_CLASS 12
-#define TOK_IN 13
-#define TOK_THIS 14
+#define TOK_IN 15
+#define TOK_THIS 16
 #define TOK_IDENT 999
+#define TOK_STRING 1000
 
 
 
@@ -46,10 +47,9 @@ char *ind_main;
 int indvar;
 int ivar;
 int type;
-int ismain;
-int last_ind;
 array ext;
 
+char *thisClass;
 
 //int sym_stk, dstk;
 
@@ -202,7 +202,7 @@ next() {
 			toks.c = ch;
 			inp();
 		} else if( ch == '\'' ) {
-			toks.t = 1000;
+			toks.t = TOK_STRING;
 			inp();
 			toks.id = buf;
 			while( ch != '\'' ) {
@@ -213,7 +213,7 @@ next() {
 			*buf++ = 0;
 			inp();
 		} else if( ch == '"' ) {
-			toks.t = 1000;
+			toks.t = TOK_STRING;
 			inp();
 			toks.id = buf;
 			while( ch != '"' ) {
@@ -365,16 +365,14 @@ next() {
 
 unary() {
 
-	if( toks.t == 1000 ) {
+	if( toks.t == TOK_STRING ) {
 		//type = 1;
 		variable *var = safe_alloc_new(&alloc, sizeof(variable));
 		var->val = toks.id;
 		var->type = 1;
 
-		//vars_init();
-
 		do_call_string( var );
-		//do_convert_to_var(1);
+
 		next();
 		if( toks.c == '.' ) {
 			//call string functions or variables
@@ -382,8 +380,7 @@ unary() {
 			next();
 			next();
 		}
-		//do_concat_string();
-		
+
 	} else {
 
 		tokens btoks;
@@ -393,29 +390,37 @@ unary() {
 
 		next();
 
-		if( btoks.t == 13 ) {
+
+		/*if( btoks.t == 13 ) {
 			do_create_var( 12 );
-		} else if( btoks.c == '{' ) {
+		} else */
+
+		if( btoks.c == '{' ) {
 			do_create_array('}');			
 		} else if( btoks.c == '[' ) {
 			do_create_array(']');			
-		} else if( btoks.t == 1 | btoks.t == TOK_VAR | btoks.t == TOK_THIS ) {
-		
-			if( toks.c == '*' ) {
-				next();
+		} else if( btoks.t == 1 | btoks.t == TOK_VAR  ) {
+
+			if( btoks.t == TOK_THIS ) {
+
+				next();				
+				do_create_var( 4 );
+			} else {
+				if( toks.c == '*' ) {
+					next();
+				}
+
+				do_create_var( 4 );
 			}
-		
-			do_create_var( 4 );
+
 		
 		} else if( btoks.c == '&' ) {
 			int l = array_get1( &var_stk, btoks.id);
-			//toks.type = 2;
-			//int l = get_tokv( &toks, 0 );
 			do_call_address( l );
 
 			next();
 
-		} else if( toks.t == 1000 & btoks.c == '+' ) {
+		} else if( toks.t == TOK_STRING & btoks.c == '+' ) {
 			/*printf("ddddddddddd\n");
 			exit(0);*/
 		} else if( btoks.t == TOK_NEW ) {
@@ -442,7 +447,14 @@ unary() {
 			do_convert_to_var(2);
 		} else if( toks.c == '=' & toks.l == 0 ) {
 			next();
-			int l = array_get1( &var_stk, btoks.id);
+
+			char *id = btoks.id;
+			if( thisClass ) {
+				id = mstrcat( thisClass, "_");
+				id = mstrcat(id, btoks.id);
+			}
+
+			int l = array_get1( &var_stk, id);
 
 			expr(l);
 			do_equal( l );
@@ -454,13 +466,20 @@ unary() {
 			int l = get_tokv( &btoks, 0 );
 			do_call_function( l, btoks.id );
 			//do_concat_string();
-		} else if( btoks.t == TOK_IDENT ) {
+		} else if( btoks.t == TOK_IDENT | btoks.t == TOK_THIS ) {
 
-			//btoks.type = 2;
-			//int l = get_tokv( &btoks, 0 );
-			int l = array_get1( &var_stk, btoks.id);
+			char *id = btoks.id;
+			if( btoks.t == TOK_THIS ) {
+				next();
 
+				if( thisClass ) {
+					id = mstrcat( thisClass, "_");
+					id = mstrcat(id, toks.id);
+				}
 
+			}
+
+			int l = array_get1( &var_stk, id);
 			do_call_var( l );
 
 			if( toks.c == '[' ) {
@@ -497,10 +516,6 @@ unary() {
 					}
 
 				}
-		
-		
-				
-
 			}			
 		} else if( toks.c == ';' ) {
 		} else {
@@ -726,7 +741,9 @@ block() {
 
 
 decl(cls) {
-	ismain = 0;
+
+	thisClass = cls;
+
 	if( toks.t == 1003 ) {
 
 		next();

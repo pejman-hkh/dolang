@@ -621,7 +621,13 @@ do_create_var( n ) {
 	while( toks.c != ';' && toks.t != 15 ) {
 
 		ivar = ivar - n;
-		array_set1( &var_stk, toks.id, ivar );
+		char *id = toks.id;
+		if( thisClass ) {
+			id = mstrcat( thisClass, "_");
+			id = mstrcat(id, toks.id);
+		}
+
+		array_set1( &var_stk, id, ivar );
 
 		*(int *)indvar = -ivar;
 
@@ -650,9 +656,12 @@ do_create_var( n ) {
 				next();
 
 			} else {
-				//btoks.type = 2;
-				//int l = get_tokv( &btoks, 0 );
-				int l = array_get1( &var_stk, btoks.id );
+				char *id = btoks.id;
+				if( thisClass ) {
+					id = mstrcat( thisClass, "_");
+					id = mstrcat(id, btoks.id);
+				}
+				int l = array_get1( &var_stk, id );
 				expr();
 				do_equal( l );
 			}

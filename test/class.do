@@ -2,17 +2,15 @@ class test {
 	var a;
 
 	b() {
-		print("in b method\n");
+		this.a = "this is test";
+		print( this.a );
 	}
-	c() {
-		print("in c method\n");
-	}
+
 }
 
 main() {
 	
 	var a = new test;
-
 	a.b();
-	a.c();
+
 }

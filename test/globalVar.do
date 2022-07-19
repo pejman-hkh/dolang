@@ -19,5 +19,4 @@ main() {
 	print(test_var);
 
 	var a = "test";
-
 }
