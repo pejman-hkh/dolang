@@ -500,12 +500,13 @@ unary() {
 						//next();
 						do_call_function(l, "");
 					} else if( type == 3 ) {
+				
 
 						int ref = array_get1( &var_ref, id );
 
 						char *id1;
 						id1 = mstrcat( ref, "_");
-						id1 = mstrcat(id1, btoks.id);
+						id1 = mstrcat(id1, ctoks.id);
 						
 						int l = array_get1( &var_stk, id1 );
 
@@ -513,9 +514,7 @@ unary() {
 						if( toks.c == '=' ) {
 							next();
 							expr();
-							do_equal(l);
-							
-					
+							do_equal(l);				
 						}
 
 					} else {

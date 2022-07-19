@@ -13,15 +13,8 @@ class test {
 
 main() {
 	
-	var a = new test;
-	a.b();
-	a.a = "test1\n";
-	a.c();	
-
-
-	var b = new test;
-	b.b();
-
-	b.c();
-
+	var n = new test;
+	n.b();
+	n.a = "test1\n";
+	n.c();
 }
