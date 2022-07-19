@@ -2,7 +2,7 @@ class test {
 	var a;
 
 	b() {
-		this.a = "this is test\n";
+		this.a = "this is test";
 	}
 
 	c() {
@@ -15,7 +15,7 @@ main() {
 	
 	var a = new test;
 	a.b();
-	a.a = "test1\n";
+	a.a = "test1";
 	a.c();	
 
 
