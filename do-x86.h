@@ -649,8 +649,13 @@ do_create_var( n ) {
 		if( toks.c == '=' ) {
 			next();
 			//call object
-			if( toks.t == 11 ) {		
+			if( toks.t == TOK_NEW ) {
+
+
 				next();
+				array_set1( &var_type, btoks.id, 3);
+				array_set1( &var_ref, btoks.id, toks.id);
+
 				btoks.type = 3;
 				set_tokv( &btoks, toks.id, 0 );
 				next();
@@ -661,6 +666,7 @@ do_create_var( n ) {
 					id = mstrcat( thisClass, "_");
 					id = mstrcat(id, btoks.id);
 				}
+
 				int l = array_get1( &var_stk, id );
 				expr();
 				do_equal( l );

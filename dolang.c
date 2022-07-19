@@ -66,6 +66,8 @@ typedef struct
 tokens toks;
 array sym_stk;
 array var_stk;
+array var_type;
+array var_ref;
 tokens ** vtoks;
 
 #include "do-x86.h";
@@ -93,7 +95,6 @@ getq()
 
 skip( char s ) {
 	if( toks.c == s ) {
-		//printf("%c skiped\n", toks.c);
 		next();
 	} else {
 		printf("Expected %c \n", s );
@@ -400,20 +401,12 @@ unary() {
 		} else if( btoks.c == '[' ) {
 			do_create_array(']');			
 		} else if( btoks.t == 1 | btoks.t == TOK_VAR  ) {
-
-			if( btoks.t == TOK_THIS ) {
-
-				next();				
-				do_create_var( 4 );
-			} else {
-				if( toks.c == '*' ) {
-					next();
-				}
-
-				do_create_var( 4 );
+			if( toks.c == '*' ) {
+				next();
 			}
 
-		
+			do_create_var( 4 );
+	
 		} else if( btoks.c == '&' ) {
 			int l = array_get1( &var_stk, btoks.id);
 			do_call_address( l );
@@ -424,6 +417,7 @@ unary() {
 			/*printf("ddddddddddd\n");
 			exit(0);*/
 		} else if( btoks.t == TOK_NEW ) {
+
 			do_call_class();
 		} else if( toks.t == 2003 ) {
 			//btoks.type = 2;
@@ -486,8 +480,9 @@ unary() {
 				do_call_array(l);
 			} else if( toks.c == '.') {
 
-				while( toks.c == '.' ) {
+				int type = array_get1( &var_type, btoks.id );
 
+				while( toks.c == '.' ) {					
 					skip('.');
 					tokens ctoks;
 					ctoks.t = toks.t;
@@ -504,6 +499,25 @@ unary() {
 						int l = array_get1( &sym_stk, t);
 						//next();
 						do_call_function(l, "");
+					} else if( type == 3 ) {
+
+						int ref = array_get1( &var_ref, id );
+
+						char *id1;
+						id1 = mstrcat( ref, "_");
+						id1 = mstrcat(id1, btoks.id);
+						
+						int l = array_get1( &var_stk, id1 );
+
+						do_call_var(l);
+						if( toks.c == '=' ) {
+							next();
+							expr();
+							do_equal(l);
+							
+					
+						}
+
 					} else {
 						if( strcmp( ctoks.id, "val" ) == 0 ) {
 							do_get_val();
@@ -805,8 +819,6 @@ main(int n, char * t[] )
 	set_extensions();
 
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
-	//vars = safe_alloc_new( &alloc, ALLOC_SIZE);
-
 
 	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
 	vtoks = malloc( sizeof( tokens * ) * 20 );
@@ -816,10 +828,8 @@ main(int n, char * t[] )
 	file = fopen(t[1], "r");
 
 	int i = 1;
-	
-	//array_init( &mt );
+
 	i++;
-	//array_set1( &mt, "int", i++ );
 	array_set1( &mt, "if", i++ );
 	array_set1( &mt, "else", i++ );
 	array_set1( &mt, "while", i++ );
@@ -832,15 +842,14 @@ main(int n, char * t[] )
 	array_set1( &mt, "new", i++ );
 	array_set1( &mt, "class", i++ );
 	i++;
-	//array_set1( &mt, "array", i++ );
 	i++;
-	//array_set1( &mt, "char", i++ );
-
 	array_set1( &mt, "in", i++ );
 	array_set1( &mt, "this", i++ );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );
+	array_init( &var_type );
+	array_init( &var_ref );
 	safe_alloc_init( &alloc );
 
 	inp();
