@@ -541,7 +541,6 @@ sum(l) {
 				do_pop();
 				
 				if( btoks.c != '+' & btoks.c != '=' ) {
-					//get eax and ecx value from struct
 					do_get_var_value();
 				}
 
@@ -588,14 +587,7 @@ sum(l) {
 				}
 
 				if( btoks.c != '+' & btoks.c != '=' ) {
-					//convert all output to var type ...
 					do_convert_to_var(2);
-					
-					/*
-					function_init(1);
-					do_push();
-					function_call( &do_to_var, "do_to_var" );
-					function_end(2);*/
 				}
 
 			}
@@ -644,12 +636,6 @@ print_ind() {
 }
 
 block() {
-/*	if( ismain == 1 ) {
-		last_ind = ind;
-		ind = ind_main;
-	} else {
-		ind = last_ind;
-	}*/
 
 	if( toks.t == 1006 ) {
 		next();
@@ -664,15 +650,12 @@ block() {
 
 			next();
 			do_for_in();
-
-			//next();
 		} else {
 
 			do_for_loop();								
 		}
 
 	} else if( toks.t == TOK_WHILE ) {
-		//printf("in while \n");
 		next();
 		skip('(');
 
@@ -708,10 +691,8 @@ block() {
 		} else {
 			*(int *)a = (int)ind - a - 4;	
 		}
-		//print_ind();
 
 	} else if( toks.t == TOK_RETURN ) {
-		//printf("in return\n");
 		next();
 		expr();
 		do_return();
@@ -756,7 +737,13 @@ decl(cls) {
 	
 		variable *a = safe_alloc_new( &alloc, sizeof(variable) );
 
-		array_set1( &var_stk, toks.id, a );
+		char *id = toks.id;
+		if( cls ) {
+			id = mstrcat( cls, "_");
+			id = mstrcat(id, toks.id);
+		}
+
+		array_set1( &var_stk, id, a );
 
 		next();
 		skip(';');

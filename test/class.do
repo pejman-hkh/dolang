@@ -2,7 +2,6 @@ class test {
 	var a;
 
 	b() {
-		this.a = "test";
 		print("in b method\n");
 	}
 	c() {
