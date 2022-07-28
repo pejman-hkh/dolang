@@ -461,10 +461,10 @@ unary() {
 			int l = get_tokv( &btoks, 0 );
 			do_call_function( l, btoks.id );
 			//do_concat_string();
-		} else if( btoks.t == TOK_IDENT | btoks.t == TOK_THIS ) {
+		} else if( btoks.t == TOK_IDENT /*| btoks.t == TOK_THIS*/ ) {
 
 			char *id = btoks.id;
-			if( btoks.t == TOK_THIS ) {
+	/*		if( btoks.t == TOK_THIS ) {
 				next();
 
 				if( thisClass ) {
@@ -472,7 +472,7 @@ unary() {
 					id = mstrcat(id, toks.id);
 				}
 
-			}
+			}*/
 
 			int l = array_get1( &var_stk, id);
 			do_call_var( l );
@@ -852,7 +852,7 @@ main(int n, char * t[] )
 	i++;
 	i++;
 	array_set1( &mt, "in", i++ );
-	array_set1( &mt, "this", i++ );
+	array_set1( &mt, "this11111", i++ );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );

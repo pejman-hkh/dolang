@@ -1,11 +1,10 @@
 
-test( a ) {
-	
-	a.d = 321;
+test( this ) {
+	this.d = 321;
 }
 
 main() {
-	var a = { 'd' : 123 };
-	test( a );
-	print( a );
+	var this = {};
+	test( this );
+	print( this );
 }
