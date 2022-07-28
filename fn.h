@@ -27,6 +27,7 @@ do_print_array( variable *arr1 ) {
 	printf("]");
 }
 
+
 void do_print( variable *a ) {
 	//printf("%d\n", a->type );
 	if( a->type == 1 ) {

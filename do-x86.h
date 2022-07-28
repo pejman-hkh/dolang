@@ -145,11 +145,11 @@ do_call_num( int id ) {
 
 do_call_var(l) {
 
-	if( l > 0 ) {
+	if( l > 0 & l > 10000 ) {
 		do_call_num(l);
 	} else {	
 		#if Assembly 
-		printf("mov %x(%%ebp),%%eax\n", l);
+		printf("mov %d(%%ebp),%%eax\n", l);
 		#endif
 		*ind++ = 0x8b;
 		*ind++ = 0x85;
@@ -389,7 +389,7 @@ do_while_loop(n) {
 
 do_equal(l) {
 
-	if( l > 0 ) {
+	if( l > 0 & l > 10000 ) {
 		function_init(2);
 		function_set_arg(0);
 
@@ -397,6 +397,7 @@ do_equal(l) {
 		function_set_arg(1);
 		function_call( &do_set_val, "do_set_val" );
 		function_end(2);
+
 	} else {
 
 		#if Assembly 
@@ -481,13 +482,11 @@ do_create_array( end ) {
 
 	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
-	
 	int l = ivar;
 
 
 	//init array
 	function_init(0);
-
 	function_call( &do_fn_create_array, "do_fn_create_array" );
 	function_end(0);
 	do_equal(l);
@@ -570,21 +569,16 @@ do_call_array(l) {
 
 
 do_call_object( tokens *ctoks ) {
+
 	function_init(2);
-
 	function_set_arg(0);
-
 	variable *var = safe_alloc_new(&alloc, sizeof(variable));
 	var->val = ctoks->id;
 	var->type = 1;
 
-
 	do_call_string( var );
-
 	function_set_arg(1);
-
 	function_call( &array_get, "array_get" );
-
 	function_end(2);
 
 	if( toks.c == '=' ) {
@@ -604,7 +598,7 @@ do_call_object( tokens *ctoks ) {
 do_call_address( l ) {
 			
 	#if Assembly 
-	printf("leal %x(%%ebp),%%eax\n", l);
+	printf("leal %d(%%ebp),%%eax\n", l);
 	#endif
 	*ind++ = 0x8d;
 	*ind++ = 0x85;
@@ -623,7 +617,7 @@ do_create_var( n ) {
 		ivar = ivar - n;
 		char *id = toks.id;
 		if( thisClass ) {
-			id = mstrcat( thisClass, "_");
+			id = mstrcat( thisClass, "%");
 			id = mstrcat(id, toks.id);
 		}
 
@@ -650,20 +644,12 @@ do_create_var( n ) {
 			next();
 			//call object
 			if( toks.t == TOK_NEW ) {
-
-
-				next();
-				array_set1( &var_type, btoks.id, 3);
-				array_set1( &var_ref, btoks.id, toks.id);
-
-				btoks.type = 3;
-				set_tokv( &btoks, toks.id, 0 );
-				next();
+				do_call_class( &btoks, &toks );
 
 			} else {
 				char *id = btoks.id;
 				if( thisClass ) {
-					id = mstrcat( thisClass, "_");
+					id = mstrcat( thisClass, "%");
 					id = mstrcat(id, btoks.id);
 				}
 
@@ -677,8 +663,39 @@ do_create_var( n ) {
 	}
 }
 
-do_call_class() {
+do_call_class( tokens *btoks, tokens *toks ) {	
 	next();
+	array_set1( &var_type, btoks->id, 3);
+	array_set1( &var_ref, btoks->id, toks->id);
+
+/*	printf("%s\n", toks->id );
+	exit(0);
+*/
+
+/*	ivar = ivar - 4;
+	*(int *)indvar = -ivar;
+	int l1 = ivar;*/
+
+
+	next();
+
+
+	vars_init();
+
+	ivar = ivar - 4;
+	*(int *)indvar = -ivar;
+	int l = ivar;
+
+	btoks->type = 3;
+	set_tokv( btoks, l, 0 );
+	
+	//init array
+	function_init(0);
+	function_call( &do_fn_create_array, "do_fn_create_array" );
+	function_end(0);
+	do_equal(l);
+	do_call_var(l);
+
 }
 
 do_create_class() {

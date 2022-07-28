@@ -408,7 +408,8 @@ unary() {
 			do_create_var( 4 );
 	
 		} else if( btoks.c == '&' ) {
-			int l = array_get1( &var_stk, btoks.id);
+	
+			int l = array_get1( &var_stk, toks.id);
 			do_call_address( l );
 
 			next();
@@ -418,7 +419,7 @@ unary() {
 			exit(0);*/
 		} else if( btoks.t == TOK_NEW ) {
 
-			do_call_class();
+			do_call_class( &btoks, &toks );
 		} else if( toks.t == 2003 ) {
 			//btoks.type = 2;
 			//int l = get_tokv( &btoks, 0 );
@@ -444,7 +445,7 @@ unary() {
 
 			char *id = btoks.id;
 			if( thisClass ) {
-				id = mstrcat( thisClass, "_");
+				id = mstrcat( thisClass, "%");
 				id = mstrcat(id, btoks.id);
 			}
 
@@ -467,7 +468,7 @@ unary() {
 				next();
 
 				if( thisClass ) {
-					id = mstrcat( thisClass, "_");
+					id = mstrcat( thisClass, "%");
 					id = mstrcat(id, toks.id);
 				}
 
@@ -480,8 +481,17 @@ unary() {
 				do_call_array(l);
 			} else if( toks.c == '.') {
 
+
 				int type = array_get1( &var_type, btoks.id );
 
+				int ref = array_get1( &var_ref, id );
+
+				char *id1;
+				if( ref ) {
+					id1 = mstrcat( ref, "%");
+				}
+
+				char *pre = "";
 				while( toks.c == '.' ) {					
 					skip('.');
 					tokens ctoks;
@@ -499,25 +509,23 @@ unary() {
 						int l = array_get1( &sym_stk, t);
 						//next();
 						do_call_function(l, "");
-					} else if( type == 3 ) {
-				
-
-						int ref = array_get1( &var_ref, id );
-
-						char *id1;
-						id1 = mstrcat( ref, "_");
+					} /*else if( type == 3 ) {
+						id1 = mstrcat(id1, pre);
 						id1 = mstrcat(id1, ctoks.id);
-						
+
+						pre = "%";
+
 						int l = array_get1( &var_stk, id1 );
 
 						do_call_var(l);
+
 						if( toks.c == '=' ) {
 							next();
 							expr();
 							do_equal(l);				
 						}
 
-					} else {
+					}*/ else {
 						if( strcmp( ctoks.id, "val" ) == 0 ) {
 							do_get_val();
 						} else if( strcmp( ctoks.id, "type" ) == 0 ) {
@@ -769,7 +777,7 @@ decl(cls) {
 
 		char *id = toks.id;
 		if( cls ) {
-			id = mstrcat( cls, "_");
+			id = mstrcat( cls, "%");
 			id = mstrcat(id, toks.id);
 		}
 
@@ -811,6 +819,7 @@ print_tok() {
 		printf(", c1 : %c\n", toks.c );
 	}		
 }
+
 
 main(int n, char * t[] )
 {
@@ -856,10 +865,15 @@ main(int n, char * t[] )
 	decl(0);
 
 	if( t[2] ) {
-		FILE *f;
-		f = fopen( t[2], "w");
-		fwrite((void *)prog, 1, ind - prog, f);
-		fclose(f);
+		if( strcmp(t[2], "-p") == 0 ) {
+			print_ind();
+		} else {
+			FILE *f;
+			f = fopen( t[2], "w");
+			fwrite((void *)prog, 1, ind - prog, f);
+			fclose(f);
+		}
+
 	}
 
 	int main = array_get1( &sym_stk, "fn%main");
