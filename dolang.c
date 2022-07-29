@@ -482,7 +482,7 @@ unary() {
 			} else if( toks.c == '.') {
 
 
-				int type = array_get1( &var_type, btoks.id );
+	/*			int type = array_get1( &var_type, btoks.id );
 
 				int ref = array_get1( &var_ref, id );
 
@@ -490,8 +490,8 @@ unary() {
 				if( ref ) {
 					id1 = mstrcat( ref, "%");
 				}
-
-				char *pre = "";
+*/
+				//char *pre = "";
 				while( toks.c == '.' ) {					
 					skip('.');
 					tokens ctoks;
@@ -501,31 +501,23 @@ unary() {
 
 					next();
 					if( toks.c == '(' ) {
+
 						btoks.type = 3;
 						int cls = get_tokv( &btoks, 0 );
+
 						char *t;
+
 						t = mstrcat(cls, "%fn%");
 						t = mstrcat(t, ctoks.id);
+
+
 						int l = array_get1( &sym_stk, t);
-						//next();
-						do_call_function(l, "");
-					} /*else if( type == 3 ) {
-						id1 = mstrcat(id1, pre);
-						id1 = mstrcat(id1, ctoks.id);
 
-						pre = "%";
+						int l1 = array_get1( &var_stk, id);
+						do_call_var( l1 );
 
-						int l = array_get1( &var_stk, id1 );
-
-						do_call_var(l);
-
-						if( toks.c == '=' ) {
-							next();
-							expr();
-							do_equal(l);				
-						}
-
-					}*/ else {
+						do_call_function_class(l, "");
+					} else {
 						if( strcmp( ctoks.id, "val" ) == 0 ) {
 							do_get_val();
 						} else if( strcmp( ctoks.id, "type" ) == 0 ) {
@@ -852,7 +844,8 @@ main(int n, char * t[] )
 	i++;
 	i++;
 	array_set1( &mt, "in", i++ );
-	array_set1( &mt, "this11111", i++ );
+	//array_set1( &mt, "this11111", i++ );
+	i++;
 
 	array_init( &sym_stk );
 	array_init( &var_stk );

@@ -159,7 +159,7 @@ do_call_var(l) {
 
 }
 
-do_call_function( l, bid ) {
+do_before_call_function() {
 	#if Assembly 
 	printf("sub $,%%esp\n");
 	#endif
@@ -191,7 +191,24 @@ do_call_function( l, bid ) {
 	*(int *)st = i;
 
 	skip(')');
+
+	return i;
 	
+}
+
+do_after_call_function( i ) {
+	if( i ) {
+		#if Assembly 
+		printf("add $,%%esp\n");
+		#endif
+		*ind++ = 0x81;
+		*ind++ =  0xc4;
+		*(int *)ind = i;
+		ind += 4;
+	}
+}
+
+do_main_call_function( l, bid ) {
 	if( l ) {
 
 		int n = l - (int)ind - 5;
@@ -228,15 +245,67 @@ do_call_function( l, bid ) {
 	
 	}
 
-	if( i ) {
+}
+
+do_call_function( l, bid ) {
+
+	int i = do_before_call_function();
+
+	do_main_call_function( l, bid );
+
+	do_after_call_function( i );
+}
+
+
+do_call_function_class( l, bid ) {
+
+	#if Assembly 
+	printf("sub $,%%esp\n");
+	#endif
+	*ind++ = 0x81; 
+	*ind++ = 0xec;
+	int st = ind;
+	*(int *)ind =  0; 
+	ind += 4;
+
+	skip('(');
+	int i = 0;
+	
+	#if Assembly 
+	printf("mov %%eax,%x(%%esp)\n", i);
+	#endif
+	*ind++ = 0x89;
+	*ind++ = 0x84; 
+	*ind++ = 0x24;
+	*(int *)ind = i;
+	ind += 4;
+
+	i += 4;
+
+	while( toks.c != ')' ) {
+		expr();
 		#if Assembly 
-		printf("add $,%%esp\n");
+		printf("mov %%eax,%x(%%esp)\n", i);
 		#endif
-		*ind++ = 0x81;
-		*ind++ =  0xc4;
+		*ind++ = 0x89;
+		*ind++ = 0x84; 
+		*ind++ = 0x24;
 		*(int *)ind = i;
 		ind += 4;
-	}	
+
+		if( toks.c == ',' )
+			next();
+
+		i += 4;
+	}
+
+	*(int *)st = i;
+
+	skip(')');
+
+	do_main_call_function( l, bid );
+
+	do_after_call_function( i );
 }
 
 do_minus_minus(l) {
@@ -665,37 +734,28 @@ do_create_var( n ) {
 
 do_call_class( tokens *btoks, tokens *toks ) {	
 	next();
-	array_set1( &var_type, btoks->id, 3);
-	array_set1( &var_ref, btoks->id, toks->id);
 
-/*	printf("%s\n", toks->id );
-	exit(0);
-*/
-
-/*	ivar = ivar - 4;
-	*(int *)indvar = -ivar;
-	int l1 = ivar;*/
-
-
+	btoks->type = 3;
+	set_tokv( btoks, toks->id, 0 );
+		
 	next();
 
-
+/*
 	vars_init();
 
 	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
 	int l = ivar;
+*/
 
-	btoks->type = 3;
-	set_tokv( btoks, l, 0 );
-	
-	//init array
 	function_init(0);
 	function_call( &do_fn_create_array, "do_fn_create_array" );
 	function_end(0);
-	do_equal(l);
-	do_call_var(l);
+	//do_equal(l);
+	//do_call_var(l);
 
+	int l = array_get1( &var_stk, btoks->id );
+	do_equal(l);
 }
 
 do_create_class() {
@@ -716,6 +776,12 @@ do_create_function( cls ) {
 	next();
 	skip('(');
 	int a = 8;
+
+	if( thisClass ) {
+		array_set1(&var_stk, "this", a );
+		a += 4;
+	}
+
 	while( toks.c != ')' ) {
 		if( toks.t == 1 | toks.t == 10 ) {
 			next();

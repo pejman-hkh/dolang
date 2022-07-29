@@ -24,4 +24,5 @@ main() {
 
 	b.c();
 
+	print( a );
 }

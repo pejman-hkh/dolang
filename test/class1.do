@@ -1,20 +1,17 @@
 class test {
-	var a;
+	a() {
+		this.a = "this is a";
+	}
 
 	b() {
-		this.a = "this is test\n";
+		this.b = "this is b";
 	}
-
-	c() {
-		print( this.a );
-	}
-
 }
 
 main() {
 	
 	var a = new test;
-	a.b().c();
-	a.a = "test1\n";
-	a.c();
+	a.a().b();
+	print( a );
+
 }
