@@ -8,20 +8,20 @@ test_b( this ) {
 
 main() {
 	
-	var this1 = {};
-	test_a( this1 );
-	test_b( this1 );
-	print( this1 );	
+	var a = {};
+	test_a( a );
+	test_b( a );
+	print( a );	
 
 
 
-	var this2 = {};
-	test_a( this2 );
-	this2.a = "test_a2";
-	test_b( this2 );
-	this2.b = "test_b2";
-	print( this2 );
+	var b = {};
+	test_a( b );
+	b.a = "test_a2";
+	test_b( b );
+	b.b = "test_b2";
+	print( b );
 	
-	print( this1 );
+	print( a );
 
 }

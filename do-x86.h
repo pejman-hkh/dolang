@@ -772,8 +772,8 @@ do_create_class() {
 
 do_create_function( cls ) {
 	char *fn_name = toks.id;
-
 	next();
+
 	skip('(');
 	int a = 8;
 
