@@ -1,7 +1,8 @@
 #include <sys/time.h>
 
-do_debug( variable * a, variable * b ) {
-	*b = *a;
+do_debug( int a) {
+	printf("%d\n", a);
+	exit(0);
 }
 
 

@@ -159,6 +159,54 @@ do_call_var(l) {
 
 }
 
+do_call_function_callback( l ) {
+
+	int i = do_before_call_function();
+
+	do_call_var( l );
+
+/*	int *a = safe_alloc_new( &alloc, 4 );
+
+	function_init(1);
+	function_set_arg(0);
+	do_call_num( a );
+	function_set_arg(1);
+	function_call( &do_debug, "do_debug" );
+	function_end(1);
+	*(int *)a = ind;
+*/
+
+
+	#if Assembly
+	printf("mov %d, %%ecx\n", ind);
+	#endif
+	*ind++ = 0xb9;
+	*(int *)ind = ind + 8;
+	ind += 4;
+
+	#if Assembly
+	printf("sub %%ecx,%%eax\n", ind);
+	#endif
+	*ind++ = 0x29;
+	*ind++ = 0xc8;
+
+
+	function_init(1);
+	function_set_arg(0);
+	function_call( &do_debug, "do_debug" );
+	function_end(1);
+
+
+
+	#if Assembly
+	printf("call %%eax\n");
+	#endif
+	*ind++ = 0xff;
+	*ind++ = 0xd0;
+
+	do_after_call_function( i );
+}
+
 do_before_call_function() {
 	#if Assembly 
 	printf("sub $,%%esp\n");
@@ -711,18 +759,21 @@ do_create_var( n ) {
 
 		if( toks.c == '=' ) {
 			next();
+
+			char *id = btoks.id;
+			int l = array_get1( &var_stk, id );
+
 			//call object
-			if( toks.t == TOK_NEW ) {
+			if( toks.t == TOK_FUNC ) {
+				next();
+				do_create_callback_function();
+				do_equal(l);
+				expr();
+
+			} else if( toks.t == TOK_NEW ) {
 				do_call_class( &btoks, &toks );
-
 			} else {
-				char *id = btoks.id;
-				if( thisClass ) {
-					id = mstrcat( thisClass, "%");
-					id = mstrcat(id, btoks.id);
-				}
 
-				int l = array_get1( &var_stk, id );
 				expr();
 				do_equal( l );
 			}
@@ -770,10 +821,24 @@ do_create_class() {
 	skip('}');
 }
 
-do_create_function( cls ) {
-	char *fn_name = toks.id;
-	next();
 
+do_create_callback_function() {
+	#if Assembly 
+	printf("jmp  $\n");
+	#endif
+	*ind++ = 0xe9;
+	*(int *)ind = 0;
+	int b = ind;
+	ind += 4;
+
+	do_main_create_function();
+
+	*(int *)b = ind - b - 4;
+
+	do_call_num(b + 4);
+}
+
+do_main_create_function( cls ) {
 	skip('(');
 	int a = 8;
 
@@ -808,6 +873,7 @@ do_create_function( cls ) {
 	*ind++ = 0xe5;
 
 	block();
+
 	#if Assembly 
 	printf("leave\n");
 	#endif
@@ -816,8 +882,13 @@ do_create_function( cls ) {
 	printf("ret\n");
 	#endif
 	*ind++ = 0xc3;
-	//array_print( &var_stk );
-	//array_reset( &var_stk );
+}
+
+do_create_function( cls ) {
+	char *fn_name = toks.id;
+	next();
+
+	do_main_create_function( cls );
 }
 
 do_plus_plus(l) {

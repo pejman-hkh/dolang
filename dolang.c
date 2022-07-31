@@ -23,6 +23,8 @@ typedef struct {
 #define TOK_CLASS 12
 #define TOK_IN 15
 #define TOK_THIS 16
+#define TOK_FUNC 17
+
 #define TOK_IDENT 999
 #define TOK_STRING 1000
 
@@ -66,8 +68,8 @@ typedef struct
 tokens toks;
 array sym_stk;
 array var_stk;
-array var_type;
-array var_ref;
+//array var_type;
+//array var_ref;
 tokens ** vtoks;
 
 #include "do-x86.h";
@@ -384,6 +386,7 @@ unary() {
 
 	} else {
 
+
 		tokens btoks;
 		btoks.t = toks.t;
 		btoks.id = toks.id;
@@ -391,15 +394,14 @@ unary() {
 
 		next();
 
-
-		/*if( btoks.t == 13 ) {
-			do_create_var( 12 );
-		} else */
-
 		if( btoks.c == '{' ) {
 			do_create_array('}');			
 		} else if( btoks.c == '[' ) {
-			do_create_array(']');			
+			do_create_array(']');
+
+		} else if( btoks.t == TOK_FUNC ) {
+			do_create_callback_function();
+
 		} else if( btoks.t == 1 | btoks.t == TOK_VAR  ) {
 			if( toks.c == '*' ) {
 				next();
@@ -417,6 +419,7 @@ unary() {
 		} else if( toks.t == TOK_STRING & btoks.c == '+' ) {
 			/*printf("ddddddddddd\n");
 			exit(0);*/
+
 		} else if( btoks.t == TOK_NEW ) {
 
 			do_call_class( &btoks, &toks );
@@ -457,22 +460,23 @@ unary() {
 			expr();
 			skip(')');
 		} else if( toks.c == '(' ) {
-			btoks.type = 1;
-			int l = get_tokv( &btoks, 0 );
-			do_call_function( l, btoks.id );
+
+			int l1 = array_get1( &var_stk, btoks.id );
+			if( l1 ) {
+				//is function callback
+
+				do_call_function_callback( l1 );
+
+			} else {			
+				btoks.type = 1;
+				int l = get_tokv( &btoks, 0 );
+				do_call_function( l, btoks.id );
+			}
+
 			//do_concat_string();
-		} else if( btoks.t == TOK_IDENT /*| btoks.t == TOK_THIS*/ ) {
+		} else if( btoks.t == TOK_IDENT  ) {
 
 			char *id = btoks.id;
-	/*		if( btoks.t == TOK_THIS ) {
-				next();
-
-				if( thisClass ) {
-					id = mstrcat( thisClass, "%");
-					id = mstrcat(id, toks.id);
-				}
-
-			}*/
 
 			int l = array_get1( &var_stk, id);
 			do_call_var( l );
@@ -481,17 +485,7 @@ unary() {
 				do_call_array(l);
 			} else if( toks.c == '.') {
 
-
-	/*			int type = array_get1( &var_type, btoks.id );
-
-				int ref = array_get1( &var_ref, id );
-
-				char *id1;
-				if( ref ) {
-					id1 = mstrcat( ref, "%");
-				}
-*/
-				//char *pre = "";
+				int i = 0;
 				while( toks.c == '.' ) {					
 					skip('.');
 					tokens ctoks;
@@ -500,21 +494,36 @@ unary() {
 					ctoks.c = toks.c;
 
 					next();
-					if( toks.c == '(' ) {
+
+					if( strcmp(id, "this") == 0 ) {
+						if( toks.c == '(') {
+							char *ht;
+							ht = mstrcat(thisClass, "%fn%");
+							ht = mstrcat(ht, ctoks.id);
+						
+							int l1 = array_get1( &sym_stk, ht );
+							do_call_function_class( l1, "" );
+						} else {
+							do_call_object( &ctoks );
+						}
+
+					} else if( toks.c == '(' ) {
 
 						btoks.type = 3;
 						int cls = get_tokv( &btoks, 0 );
-
 						char *t;
-
 						t = mstrcat(cls, "%fn%");
 						t = mstrcat(t, ctoks.id);
 
 
 						int l = array_get1( &sym_stk, t);
 
-						int l1 = array_get1( &var_stk, id);
-						do_call_var( l1 );
+						if( i > 0 ) {
+							int l1 = array_get1( &var_stk, id);
+							do_call_var( l1 );
+						}
+
+						i++;
 
 						do_call_function_class(l, "");
 					} else {
@@ -776,6 +785,9 @@ decl(cls) {
 		array_set1( &var_stk, id, a );
 
 		next();
+
+		//expr();
+
 		skip(';');
 		decl( cls );
 
@@ -804,7 +816,7 @@ decl(cls) {
 }
 
 print_tok() {
-	printf("tok : %d ", toks.t);
+	printf("------------------------------------tok : %d ", toks.t);
 	if( toks.id ) {
 		printf(", c : %s\n", toks.id );
 	} else {
@@ -844,13 +856,11 @@ main(int n, char * t[] )
 	i++;
 	i++;
 	array_set1( &mt, "in", i++ );
-	//array_set1( &mt, "this11111", i++ );
 	i++;
+	array_set1( &mt, "func", i++ );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );
-	array_init( &var_type );
-	array_init( &var_ref );
 	safe_alloc_init( &alloc );
 
 	inp();
