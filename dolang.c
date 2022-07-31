@@ -401,7 +401,6 @@ unary() {
 
 		} else if( btoks.t == TOK_FUNC ) {
 			do_create_callback_function();
-
 		} else if( btoks.t == 1 | btoks.t == TOK_VAR  ) {
 			if( toks.c == '*' ) {
 				next();
@@ -527,23 +526,13 @@ unary() {
 
 						do_call_function_class(l, "");
 					} else {
-						if( strcmp( ctoks.id, "val" ) == 0 ) {
-							do_get_val();
-						} else if( strcmp( ctoks.id, "type" ) == 0 ) {
-							do_get_val();					
-						} else {
-
-							do_call_object(&ctoks);		
-						}
+						do_call_object(&ctoks);
 					}
-
 				}
 			}			
 		} else if( toks.c == ';' ) {
 		} else {
 			//printf("%s\n", btoks.id );
-
-
 		}
 
 	}

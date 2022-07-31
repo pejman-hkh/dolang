@@ -687,28 +687,35 @@ do_call_array(l) {
 
 do_call_object( tokens *ctoks ) {
 
-	function_init(2);
-	function_set_arg(0);
-	variable *var = safe_alloc_new(&alloc, sizeof(variable));
-	var->val = ctoks->id;
-	var->type = 1;
-
-	do_call_string( var );
-	function_set_arg(1);
-	function_call( &array_get, "array_get" );
-	function_end(2);
-
-	if( toks.c == '=' ) {
-		next();
+	if( strcmp( ctoks->id, "val" ) == 0 ) {
+		do_get_val();
+	} else if( strcmp( ctoks->id, "type" ) == 0 ) {
+		do_get_val();					
+	} else {
 
 		function_init(2);
 		function_set_arg(0);
+		variable *var = safe_alloc_new(&alloc, sizeof(variable));
+		var->val = ctoks->id;
+		var->type = 1;
 
-		expr();
-
+		do_call_string( var );
 		function_set_arg(1);
-		function_call( &set_val, "set_val" );
+		function_call( &array_get, "array_get" );
 		function_end(2);
+
+		if( toks.c == '=' ) {
+			next();
+
+			function_init(2);
+			function_set_arg(0);
+
+			expr();
+
+			function_set_arg(1);
+			function_call( &set_val, "set_val" );
+			function_end(2);
+		}
 	}								
 }
 
