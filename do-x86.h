@@ -165,18 +165,6 @@ do_call_function_callback( l ) {
 
 	do_call_var( l );
 
-/*	int *a = safe_alloc_new( &alloc, 4 );
-
-	function_init(1);
-	function_set_arg(0);
-	do_call_num( a );
-	function_set_arg(1);
-	function_call( &do_debug, "do_debug" );
-	function_end(1);
-	*(int *)a = ind;
-*/
-
-
 	#if Assembly
 	printf("mov %d, %%ecx\n", ind);
 	#endif
