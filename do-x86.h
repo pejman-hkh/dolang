@@ -185,18 +185,10 @@ do_call_function_callback( l ) {
 	ind += 4;
 
 	#if Assembly
-	printf("sub %%ecx,%%eax\n", ind);
+	printf("sub %%eax,%%ecx\n", ind);
 	#endif
 	*ind++ = 0x29;
-	*ind++ = 0xc8;
-
-
-	function_init(1);
-	function_set_arg(0);
-	function_call( &do_debug, "do_debug" );
-	function_end(1);
-
-
+	*ind++ = 0xc1;
 
 	#if Assembly
 	printf("call %%eax\n");
