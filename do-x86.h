@@ -7,7 +7,7 @@ char * mstrcat();
 void mprint( variable *a );
 
 #include "fn.h"
-#define Assembly 0
+#include "conf.h"
 
 do_get_val() {
 	#if Assembly 

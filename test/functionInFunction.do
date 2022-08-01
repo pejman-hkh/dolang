@@ -1,4 +1,5 @@
 main() {
+
 	func test( a ) {
 		print( a );
 	}

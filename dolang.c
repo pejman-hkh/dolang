@@ -72,6 +72,9 @@ array var_stk;
 //array var_ref;
 tokens ** vtoks;
 
+
+int inMain = 0;
+
 #include "do-x86.h";
 #include "ext.h";
 
@@ -370,11 +373,17 @@ unary() {
 
 	if( toks.t == TOK_FUNC ) {
 		next();
-		toks.type = 1;
-		set_tokv( &toks, ind + 5, 0 );
-		next();
-		do_create_callback_function();
+		if( toks.c == '(') {
+			do_create_callback_function();
+		} else {		
+			toks.type = 1;
+			set_tokv( &toks, ind + 5, 0 );
+			next();
+			do_create_callback_function();
+		}
 
+	} else if( toks.t == TOK_CLASS ) {
+		do_create_class();
 	} else if( toks.t == TOK_STRING ) {
 		//type = 1;
 		variable *var = safe_alloc_new(&alloc, sizeof(variable));
@@ -756,8 +765,6 @@ block() {
 
 }
 
-
-
 decl(cls) {
 
 	thisClass = cls;
@@ -797,12 +804,29 @@ decl(cls) {
 		decl(cls);
 	
 	} else if( toks.t == TOK_IDENT | toks.t == TOK_MAIN ) {
-		ivar = 0;
+		if( toks.t == TOK_MAIN ) {
+			inMain = 1;
+		}
 
-		toks.type = 1;
-		set_tokv( &toks, ind, cls );
-		do_create_function(cls);
-		decl(cls);
+
+		if( thisClass && inMain ) {
+			ivar = 0;
+			toks.type = 1;
+			set_tokv( &toks, ind + 5, cls );
+
+
+			next();
+			do_create_callback_function();
+			decl(cls);
+
+		} else {
+			ivar = 0;
+			toks.type = 1;
+			set_tokv( &toks, ind, cls );
+			do_create_function(cls);
+			decl(cls);
+		}
+
 
 	} else {
 
