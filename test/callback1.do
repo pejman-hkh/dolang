@@ -1,6 +1,9 @@
 main() {
 
+
+	var s = "test s";
 	var l = func( a ) {
+	
 		print("in callback\n");
 		print( a );
 	}

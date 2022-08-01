@@ -368,7 +368,14 @@ next() {
 
 unary() {
 
-	if( toks.t == TOK_STRING ) {
+	if( toks.t == TOK_FUNC ) {
+		next();
+		toks.type = 1;
+		set_tokv( &toks, ind + 5, 0 );
+		next();
+		do_create_callback_function();
+
+	} else if( toks.t == TOK_STRING ) {
 		//type = 1;
 		variable *var = safe_alloc_new(&alloc, sizeof(variable));
 		var->val = toks.id;
