@@ -25,7 +25,7 @@ do_print_array( variable *arr1 ) {
 		do_print( arr->value[i] );
 		pre = ",";
 	}
-	printf("]");
+	printf("]\n");
 }
 
 

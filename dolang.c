@@ -9,6 +9,11 @@ typedef struct {
 	void * val;
 } variable;
 
+#define dovar(a,b,c) \
+variable *a = malloc( sizeof( variable *) );\
+a->val = b;\
+a->type = c;
+
 
 #define TOK_IF 2
 #define TOK_ELSE 3
@@ -25,10 +30,9 @@ typedef struct {
 #define TOK_THIS 16
 #define TOK_FUNC 17
 
+
 #define TOK_IDENT 999
 #define TOK_STRING 1000
-
-
 
 #include "safe_alloc.h"
 safe_alloc alloc;
@@ -386,10 +390,12 @@ unary() {
 		do_create_class();
 	} else if( toks.t == TOK_STRING ) {
 		//type = 1;
+		dovar( var, toks.id, 1 );
+	/*	
 		variable *var = safe_alloc_new(&alloc, sizeof(variable));
 		var->val = toks.id;
 		var->type = 1;
-
+*/
 		do_call_string( var );
 
 		next();
@@ -741,7 +747,7 @@ block() {
 		skip(';');
 		
 	} else if( toks.t == TOK_BREAK ) {
-		printf("in break\n");
+		//printf("in break\n");
 		next();
 		skip(';');
 		block();
