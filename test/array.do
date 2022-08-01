@@ -5,3 +5,7 @@ class Array {
 
 	}
 }
+
+main() {
+	
+}

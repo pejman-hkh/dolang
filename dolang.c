@@ -859,25 +859,19 @@ main(int n, char * t[] )
 
 	file = fopen(t[1], "r");
 
-	int i = 1;
-
-	i++;
-	array_set1( &mt, "if", i++ );
-	array_set1( &mt, "else", i++ );
-	array_set1( &mt, "while", i++ );
-	array_set1( &mt, "break", i++ );
-	array_set1( &mt, "return", i++ );
-	array_set1( &mt, "for", i++ );
-	array_set1( &mt, "define", i++ );
-	array_set1( &mt, "main", i++ );
-	array_set1( &mt, "var", i++ );
-	array_set1( &mt, "new", i++ );
-	array_set1( &mt, "class", i++ );
-	i++;
-	i++;
-	array_set1( &mt, "in", i++ );
-	i++;
-	array_set1( &mt, "func", i++ );
+	array_set1( &mt, "if", TOK_IF );
+	array_set1( &mt, "else", TOK_ELSE );
+	array_set1( &mt, "while", TOK_WHILE );
+	array_set1( &mt, "break", TOK_BREAK );
+	array_set1( &mt, "return", TOK_RETURN );
+	array_set1( &mt, "for", TOK_FOR );
+	array_set1( &mt, "define", TOK_DEFINE );
+	array_set1( &mt, "main", TOK_MAIN );
+	array_set1( &mt, "var", TOK_VAR );
+	array_set1( &mt, "new", TOK_NEW );
+	array_set1( &mt, "class", TOK_CLASS );
+	array_set1( &mt, "in", TOK_IN );
+	array_set1( &mt, "func", TOK_FUNC );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );

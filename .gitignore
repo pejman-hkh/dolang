@@ -6,3 +6,4 @@
 *.s
 !Makefile
 testc
+conf.h
