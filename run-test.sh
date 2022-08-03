@@ -1,4 +1,3 @@
-
 for entry in "test"/*
 do
 

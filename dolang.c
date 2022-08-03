@@ -31,6 +31,7 @@ a->type = c;
 #define TOK_FUNC 17
 #define TOK_LET 18
 #define TOK_EXTENDS 19
+#define TOK_IMPORT 20
 
 
 #define TOK_IDENT 999
@@ -42,9 +43,12 @@ safe_alloc alloc;
 #define ALLOC_SIZE 99999999
 
 char ch;
+FILE *mainFile;
 FILE *file;
 char *buf;
 char *sbuf;
+char * mainPath;
+
 //int vars;
 
 char *prog;
@@ -84,8 +88,11 @@ int inMain = 0;
 #include "do-x86.h";
 #include "ext.h";
 
+
 inp() {
 	ch = fgetc( file );
+
+	//printf("%c", ch);
 }
 
 
@@ -795,6 +802,29 @@ decl(cls) {
 		next();
 		decl(cls);
 
+	} else if( toks.t == TOK_IMPORT ) {
+
+		next();
+		char *fn = mstrcat(mainPath, toks.id);
+		fn = mstrcat( fn ,".do");
+		next();
+		//skip(';');
+
+		FILE *f1;
+		f1 = fopen( fn, "r");
+		if( f1 == NULL ) {
+			printf("file not exists !\n");
+			exit(0);
+		}
+
+		do_run( f1 );
+		fclose(f1);
+		file = mainFile;
+		next();
+		next();
+
+		decl(cls);
+
 	} else if( toks.t == TOK_VAR ) {
 		next();
 	
@@ -865,6 +895,19 @@ print_tok() {
 	}		
 }
 
+do_run( f ) {
+	file = f;
+	inp();
+	next();
+	decl(0);
+}
+
+do_get_path(fn) {
+	int ls = strrchr(fn, '/');
+	mainPath = fn;
+	mainPath[ ls - fn ] = '/';
+	mainPath[ ls - fn + 1 ] = '\0';
+}
 
 main(int n, char * t[] )
 {
@@ -878,7 +921,7 @@ main(int n, char * t[] )
 
 	if (!prog) { printf("could not mmap(%d) jit executable memory\n", ALLOC_SIZE); return -1; }
 
-	file = fopen(t[1], "r");
+	
 
 	array_set1( &mt, "if", TOK_IF );
 	array_set1( &mt, "else", TOK_ELSE );
@@ -895,14 +938,18 @@ main(int n, char * t[] )
 	array_set1( &mt, "func", TOK_FUNC );
 	array_set1( &mt, "let", TOK_LET );
 	array_set1( &mt, "extends", TOK_EXTENDS );
+	array_set1( &mt, "import", TOK_IMPORT );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );
 	safe_alloc_init( &alloc );
 
-	inp();
-	next();
-	decl(0);
+
+	mainFile = fopen(t[1], "r");
+	do_get_path(t[1]);
+
+	do_run( mainFile );
+	fclose(mainFile);
 
 	if( t[2] ) {
 		if( strcmp(t[2], "-p") == 0 ) {

@@ -1,5 +1,5 @@
 class test {
-	test() {
-	
+	a() {
+		print("here\n");
 	}
 }
