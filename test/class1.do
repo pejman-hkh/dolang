@@ -2,6 +2,7 @@ class test {
 	a() {
 		this.a = "this is a";
 		print( this.c );
+		return this;
 	}
 
 	b() {

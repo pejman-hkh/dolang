@@ -14,41 +14,39 @@ do_set_val( variable *a, variable *b ) {
 	*b = *a;
 }
 
-do_print_array( variable *arr1 ) {
+do_print_array( variable *ths, variable *arr1 ) {
 	array *arr = arr1->val;
 	printf("[");
 	char *pre = "";
 	for( int i = 0; i < arr->length; i++ ) {
 		printf("%s", pre);
-		do_print( arr->key[i] );
+		do_print( ths, arr->key[i] );
 		variable *k = arr->key[i];
-		if( strstr( k->val, "fn%" ) ) {
-			printf(":method");
-		} else {
-			printf(":");
-			do_print( arr->value[i] );
-		}
+
+		printf(":");
+		do_print( ths, arr->value[i] );
+		
 		pre = ",";
 	}
 	printf("]\n");
 }
 
 
-void do_print( variable *a ) {
+void do_print( variable *ths, variable *a ) {
 	//printf("%d\n", a->type );
 	if( a->type == 1 ) {
 		printf("%s", a->val );
 	} else if( a->type == 2 ) {
 		printf("%d", a->val );
 	} else if( a->type == 3 ) {
-		do_print_array(a);
+		do_print_array(ths, a);
 	} else {
 		printf("%d", a );
 	}
 	fflush(stdout);
 }
 
-void do_typeof( variable *a ) {
+void do_typeof( variable *ths, variable *a ) {
 	//printf("%d\n", a->type );
 
 	variable *v = safe_alloc_new( &alloc, sizeof(variable) );

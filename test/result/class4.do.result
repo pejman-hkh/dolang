@@ -1,1 +1,1 @@
-test ...[class:test,fn%c:method,fn%b:method,fn%a:method,d:123,s:ddd]
+test ...[class:test,c:-337543168,b:-337543085,a:-337542942,d:123,s:ddd]

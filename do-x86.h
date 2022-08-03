@@ -179,6 +179,7 @@ do_call_function_callback( l ) {
 	*ind++ = 0x29;
 	*ind++ = 0xc1;
 
+
 	#if Assembly
 	printf("call %%eax\n");
 	#endif
@@ -200,6 +201,19 @@ do_before_call_function() {
 
 	skip('(');
 	int i = 0;
+
+	#if Assembly 
+	printf("mov %%eax,%x(%%esp)\n", i);
+	#endif
+	*ind++ = 0x89;
+	*ind++ = 0x84; 
+	*ind++ = 0x24;
+	*(int *)ind = i;
+	ind += 4;
+
+	i += 4;
+
+
 	while( toks.c != ')' ) {
 		expr();
 		#if Assembly 
@@ -717,7 +731,7 @@ do_create_var( n ) {
 
 
 	int i = 0;
-	while( toks.c != ';' && toks.t != 15 ) {
+	while( toks.c != ';' && toks.t != TOK_IN ) {
 
 		ivar = ivar - n;
 		char *id = toks.id;
@@ -812,7 +826,7 @@ do_call_class( tokens *btoks, tokens *toks ) {
 			int len = strlen(cls);
 			char *v = safe_alloc_new(&alloc, sizeof( char *) );
 			v = sym_stk.key[i];
-			v += len+1;
+			v += len+4;
 
 			do_call_var(l);
 
@@ -821,8 +835,8 @@ do_call_class( tokens *btoks, tokens *toks ) {
 			dovar(a1,v,1);
 			do_call_num(a1);
 			function_set_arg(1);
-			dovar(b1,ll,2);
-			do_call_num(b1);
+			//dovar(b1,ll,2);
+			do_call_num(ll);
 			function_set_arg(2);
 			function_call( &array_set, "array_set" );
 			function_end(3);
@@ -864,10 +878,10 @@ do_main_create_function( cls ) {
 	skip('(');
 	int a = 8;
 
-	if( thisClass ) {
-		array_set1(&var_stk, "this", a );
-		a += 4;
-	}
+	//if( thisClass ) {
+	array_set1(&var_stk, "this", a );
+	a += 4;
+	//}
 
 	while( toks.c != ')' ) {
 		if( toks.t == 1 | toks.t == 10 ) {

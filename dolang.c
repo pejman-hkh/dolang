@@ -29,6 +29,7 @@ a->type = c;
 #define TOK_IN 15
 #define TOK_THIS 16
 #define TOK_FUNC 17
+#define TOK_LET 18
 
 
 #define TOK_IDENT 999
@@ -498,7 +499,9 @@ unary() {
 		} else if( btoks.t == TOK_IDENT  ) {
 
 			char *id = btoks.id;
-
+		/*	printf("%s\n", id );
+			exit(0);
+			*/
 			int l = array_get1( &var_stk, id);
 			do_call_var( l );
 
@@ -516,32 +519,12 @@ unary() {
 
 					next();
 
-					if( strcmp(id, "this") == 0 ) {
-						if( toks.c == '(') {
-							char *ht;
-							ht = mstrcat(thisClass, "%fn%");
-							ht = mstrcat(ht, ctoks.id);
-						
-							int l1 = array_get1( &sym_stk, ht );
-							do_call_function_class( l1, "" );
-						} else {
-							do_call_object( &ctoks );
-						}
+			
+					if( toks.c == '(' ) {
 
-					} else if( toks.c == '(' ) {
+						char *t = ctoks.id;
 
-
-						char *t;
-						t = mstrcat("fn%", ctoks.id);
-					
-						if( i > 0 ) {
-							int l1 = array_get1( &var_stk, id);
-							do_call_var( l1 );
-						}
-
-						i++;
-
-
+			
 						function_init(2);
 						function_set_arg(0);
 						dovar(a,t,1);
@@ -549,10 +532,19 @@ unary() {
 						function_set_arg(1);
 						function_call( &array_get, "array_get" );
 						function_end(2);
+					
+						vars_init();
 
-						do_get_val();
+						ivar = ivar - 4;
+						*(int *)indvar = -ivar;
+						int ld = ivar;
+						
+					
+						do_equal(ld);
 
-						do_call_function_callback(0);
+						do_call_var( l );
+
+						do_call_function_callback(ld);
 
 					} else {
 						do_call_object(&ctoks);
@@ -790,7 +782,7 @@ decl(cls) {
 	} else if( toks.t == TOK_VAR ) {
 		next();
 	
-		variable *a = safe_alloc_new( &alloc, sizeof(variable) );
+		variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
 
 		char *id = toks.id;
 		if( cls ) {
@@ -885,6 +877,7 @@ main(int n, char * t[] )
 	array_set1( &mt, "class", TOK_CLASS );
 	array_set1( &mt, "in", TOK_IN );
 	array_set1( &mt, "func", TOK_FUNC );
+	array_set1( &mt, "let", TOK_LET );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );

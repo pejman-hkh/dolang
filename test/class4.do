@@ -10,6 +10,7 @@ class test {
 
 	a() {
 		this.b();
+		return this;
 	}
 
 }

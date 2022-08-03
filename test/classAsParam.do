@@ -1,6 +1,9 @@
 class test {
 	a() {
+		//this.d = "ddd";
+
 		print("in a\n");
+		return this;
 	}		
 
 	b() {
@@ -16,10 +19,8 @@ test(d) {
 main() {
 	
 	var a = new test;
-	a.b = "Test";
-	print("Test");
-
 	print( a );
+	a.a();
 
 	test( a );
 

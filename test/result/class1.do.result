@@ -1,4 +1,4 @@
 this is c
 this is c
-[class:test,fn%a:method,fn%b:method,c:this is c
-,a:this is a,b:this is b]
+[class:test,a:this is a,b:this is b,c:this is c
+]
