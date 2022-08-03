@@ -166,6 +166,8 @@ do_call_function_callback( l ) {
 	if( l )
 		do_call_var( l );
 
+	do_get_val();
+
 	#if Assembly
 	printf("mov %d, %%ecx\n", ind);
 	#endif
@@ -767,6 +769,7 @@ do_create_var( n ) {
 
 			//call object
 			if( toks.t == TOK_FUNC ) {
+
 				next();
 				do_create_callback_function();
 				do_equal(l);
@@ -835,8 +838,8 @@ do_call_class( tokens *btoks, tokens *toks ) {
 			dovar(a1,v,1);
 			do_call_num(a1);
 			function_set_arg(1);
-			//dovar(b1,ll,2);
-			do_call_num(ll);
+			dovar(b1,ll,2);
+			do_call_num(b1);
 			function_set_arg(2);
 			function_call( &array_set, "array_set" );
 			function_end(3);
@@ -871,7 +874,8 @@ do_create_callback_function() {
 
 	*(int *)b = ind - b - 4;
 
-	do_call_num(b + 4);
+	dovar(a, b+4, 2);
+	do_call_num(a);
 }
 
 do_main_create_function( cls ) {

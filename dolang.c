@@ -376,10 +376,12 @@ next() {
 
 unary() {
 
-	if( toks.t == TOK_FUNC ) {
+	if( toks.t == TOK_FUNC ) {			
 		next();
 		if( toks.c == '(') {
+			int l = ind+5;
 			do_create_callback_function();
+
 		} else {		
 			toks.type = 1;
 			set_tokv( &toks, ind + 5, 0 );
@@ -532,18 +534,19 @@ unary() {
 						function_set_arg(1);
 						function_call( &array_get, "array_get" );
 						function_end(2);
-					
+						
+
 						vars_init();
 
 						ivar = ivar - 4;
 						*(int *)indvar = -ivar;
 						int ld = ivar;
 						
-					
+				
+			
 						do_equal(ld);
 
 						do_call_var( l );
-
 						do_call_function_callback(ld);
 
 					} else {

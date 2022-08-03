@@ -14,6 +14,6 @@ main() {
 	
 	var a = new test;
 	a.c = "Test";
-
+	
 	a.a();
 }
