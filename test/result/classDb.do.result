@@ -1,0 +1,4 @@
+connect to db
+prepare sql
+execute sql
+in next
