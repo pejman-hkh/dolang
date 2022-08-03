@@ -30,6 +30,7 @@ a->type = c;
 #define TOK_THIS 16
 #define TOK_FUNC 17
 #define TOK_LET 18
+#define TOK_EXTENDS 19
 
 
 #define TOK_IDENT 999
@@ -889,6 +890,7 @@ main(int n, char * t[] )
 	array_set1( &mt, "in", TOK_IN );
 	array_set1( &mt, "func", TOK_FUNC );
 	array_set1( &mt, "let", TOK_LET );
+	array_set1( &mt, "extends", TOK_EXTENDS );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );

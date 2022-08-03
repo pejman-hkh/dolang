@@ -788,13 +788,14 @@ do_create_var( n ) {
 	}
 }
 
-do_call_class( tokens *btoks, tokens *toks ) {	
+do_call_class( tokens *btoks, tokens *toks1 ) {	
 	next();
 
 	btoks->type = 3;
-	set_tokv( btoks, toks->id, 0 );
+	set_tokv( btoks, toks1->id, 0 );
 		
-	char *cls = toks->id;
+	char *cls = toks1->id;
+
 
 	next();
 
@@ -802,10 +803,22 @@ do_call_class( tokens *btoks, tokens *toks ) {
 	function_init(0);
 	function_call( &do_fn_create_array, "do_fn_create_array" );
 	function_end(0);
-
 	int l = array_get1( &var_stk, btoks->id );
 	do_equal(l);
 
+	if( toks.c == '(' ) {
+	
+		char *t;
+		t = mstrcat( cls, "%fn%");
+		t = mstrcat( t, "construct");
+
+		int l1 = array_get1( &sym_stk, t );
+		dovar(a,l1,2);
+		do_call_function_callback( a );
+	}
+
+	
+	do_call_var(l);
 	//set class name and all methods address in object
 	char *t;
 	t = mstrcat(cls, "%fn%");
@@ -854,6 +867,39 @@ do_create_class() {
 	toks.type = 3;
 	set_tokv( &toks, cls, 0 );
 	next();
+
+	if( toks.t == TOK_EXTENDS ) {
+		//printf("ddddddddd\n");
+		//exit(0);
+
+		next();
+		char *t;
+		t = mstrcat( toks.id, "%fn%");
+
+		for( int i = 0; i < sym_stk.length ; i++ ) {
+			int p = strstr(sym_stk.key[i], t );
+
+			if( p ) {
+
+				int len = strlen( toks.id );
+				char *d = safe_alloc_new( &alloc, sizeof( char *) );
+				d = sym_stk.key[i];
+				d += len+4;
+
+				char *t1;
+				t1 = mstrcat( cls, "%fn%");
+				t1 = mstrcat( t1, d);
+
+				int ll = sym_stk.value[i];
+				//printf("%s\n", sym_stk.key[i]);
+
+				array_set1( &sym_stk, t1, ll);
+			}
+		}
+
+		next();
+
+	}
 
 	skip('{');
 	decl(cls);
