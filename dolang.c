@@ -964,8 +964,12 @@ main(int n, char * t[] )
 	}
 
 	int main = array_get1( &sym_stk, "fn%main");
- 	int (*func)() = main;
- 	func();
+	if( main ) {
+ 		int (*func)() = main;
+ 		func();
+	} else {
+		printf("main function not exists !\n");
+	}
 
 	safe_free( &alloc );
 }
