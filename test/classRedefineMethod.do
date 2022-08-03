@@ -16,6 +16,7 @@ main() {
 	a.c = "Test";
 
 	a.a = func() {
+		this.b();
 		print("here\n");
 	}
 
