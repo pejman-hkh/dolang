@@ -4,6 +4,7 @@ do
   if [[ ${entry} =~ ^(.*)\.do$ ]]; then
     f="$(basename -- $entry)"
 
+    echo $entry
     ./dolang $entry > "test/result/"$f".result"
   fi
 
