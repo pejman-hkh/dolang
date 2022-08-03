@@ -495,6 +495,14 @@ unary() {
 				btoks.type = 1;
 				int l = get_tokv( &btoks, 0 );
 				do_call_function( l, btoks.id );
+				if( toks.c == '.' ) {
+					vars_init();
+					ivar = ivar - 4;
+					*(int *)indvar = -ivar;
+					int ld = ivar;
+					do_equal(ld);
+					do_dot(ld);
+				}
 			}
 
 			//do_concat_string();
@@ -511,48 +519,7 @@ unary() {
 				do_call_array(l);
 			} else if( toks.c == '.') {
 
-				int i = 0;
-				while( toks.c == '.' ) {					
-					skip('.');
-					tokens ctoks;
-					ctoks.t = toks.t;
-					ctoks.id = toks.id;
-					ctoks.c = toks.c;
-
-					next();
-
-			
-					if( toks.c == '(' ) {
-
-						char *t = ctoks.id;
-
-			
-						function_init(2);
-						function_set_arg(0);
-						dovar(a,t,1);
-						do_call_num(a);
-						function_set_arg(1);
-						function_call( &array_get, "array_get" );
-						function_end(2);
-						
-
-						vars_init();
-
-						ivar = ivar - 4;
-						*(int *)indvar = -ivar;
-						int ld = ivar;
-						
-				
-			
-						do_equal(ld);
-
-						do_call_var( l );
-						do_call_function_callback(ld);
-
-					} else {
-						do_call_object(&ctoks);
-					}
-				}
+				do_dot( l );
 			}			
 		} else if( toks.c == ';' ) {
 		} else {
@@ -561,6 +528,47 @@ unary() {
 
 	}
 
+}
+
+do_dot( l ) {
+	int i = 0;
+	while( toks.c == '.' ) {					
+		skip('.');
+		tokens ctoks;
+		ctoks.t = toks.t;
+		ctoks.id = toks.id;
+		ctoks.c = toks.c;
+
+		next();
+
+		if( toks.c == '(' ) {
+
+			char *t = ctoks.id;
+
+
+			function_init(2);
+			function_set_arg(0);
+			dovar(a,t,1);
+			do_call_num(a);
+			function_set_arg(1);
+			function_call( &array_get, "array_get" );
+			function_end(2);
+			
+
+			vars_init();
+
+			ivar = ivar - 4;
+			*(int *)indvar = -ivar;
+			int ld = ivar;
+			do_equal(ld);
+
+			do_call_var( l );
+			do_call_function_callback(ld);
+
+		} else {
+			do_call_object(&ctoks);
+		}
+	}	
 }
 
 sum(l) {

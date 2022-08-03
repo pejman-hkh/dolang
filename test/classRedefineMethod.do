@@ -15,5 +15,9 @@ main() {
 	var a = new test;
 	a.c = "Test";
 
+	a.a = func() {
+		print("here\n");
+	}
+
 	a.a();
 }
