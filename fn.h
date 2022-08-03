@@ -21,8 +21,13 @@ do_print_array( variable *arr1 ) {
 	for( int i = 0; i < arr->length; i++ ) {
 		printf("%s", pre);
 		do_print( arr->key[i] );
-		printf(":");
-		do_print( arr->value[i] );
+		variable *k = arr->key[i];
+		if( strstr( k->val, "fn%" ) ) {
+			printf(":method");
+		} else {
+			printf(":");
+			do_print( arr->value[i] );
+		}
 		pre = ",";
 	}
 	printf("]\n");
