@@ -2,4 +2,4 @@ in construct test
 here
 in a
 in b
-[class:test,construct:-337481728,a:-337481570,b:-337481518]
+[class:test,construct:func(),a:func(),b:func()]

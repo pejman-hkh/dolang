@@ -39,7 +39,9 @@ void do_print( variable *ths, variable *a ) {
 	} else if( a->type == 2 ) {
 		printf("%d", a->val );
 	} else if( a->type == 3 ) {
-		do_print_array(ths, a);
+		do_print_array(ths, a);	
+	} else if( a->type == 4 ) {
+		printf("func()");
 	} else {
 		printf("%d", a );
 	}

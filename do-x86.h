@@ -776,7 +776,16 @@ do_create_var( n ) {
 				expr();
 
 			} else if( toks.t == TOK_NEW ) {
-				do_call_class( &btoks, &toks );
+	
+				next();
+				char *cls = toks.id;
+				next();
+
+				do_call_class( cls );
+
+				int l = array_get1( &var_stk, btoks.id );
+				do_equal(l);
+
 			} else {
 
 				expr();
@@ -788,22 +797,18 @@ do_create_var( n ) {
 	}
 }
 
-do_call_class( tokens *btoks, tokens *toks1 ) {	
-	next();
-
-	btoks->type = 3;
-	set_tokv( btoks, toks1->id, 0 );
-		
-	char *cls = toks1->id;
-
-
-	next();
+do_call_class( cls ) {	
 
 	//create object for class
 	function_init(0);
 	function_call( &do_fn_create_array, "do_fn_create_array" );
 	function_end(0);
-	int l = array_get1( &var_stk, btoks->id );
+
+	vars_init();
+	ivar = ivar - 4;
+	*(int *)indvar = -ivar;
+	int l = ivar;
+
 	do_equal(l);
 
 	if( toks.c == '(' ) {
@@ -813,7 +818,7 @@ do_call_class( tokens *btoks, tokens *toks1 ) {
 		t = mstrcat( t, "construct");
 
 		int l1 = array_get1( &sym_stk, t );
-		dovar(a,l1,2);
+		dovar(a,l1,4);
 		do_call_function_callback( a );
 	}
 
@@ -851,7 +856,7 @@ do_call_class( tokens *btoks, tokens *toks1 ) {
 			dovar(a1,v,1);
 			do_call_num(a1);
 			function_set_arg(1);
-			dovar(b1,ll,2);
+			dovar(b1,ll,4);
 			do_call_num(b1);
 			function_set_arg(2);
 			function_call( &array_set, "array_set" );
@@ -859,6 +864,8 @@ do_call_class( tokens *btoks, tokens *toks1 ) {
 
 		}
 	}
+
+	do_call_var(l);
 }
 
 do_create_class() {
@@ -920,7 +927,7 @@ do_create_callback_function() {
 
 	*(int *)b = ind - b - 4;
 
-	dovar(a, b+4, 2);
+	dovar(a, b+4, 4);
 	do_call_num(a);
 }
 

@@ -377,7 +377,16 @@ next() {
 
 unary() {
 
-	if( toks.t == TOK_FUNC ) {			
+	if( toks.t == TOK_NEW ) {
+		
+		next();
+		char *cls = toks.id;
+		next();
+
+		do_call_class( cls );
+
+
+	} else if( toks.t == TOK_FUNC ) {		
 		next();
 		if( toks.c == '(') {
 			int l = ind+5;
@@ -393,13 +402,8 @@ unary() {
 	} else if( toks.t == TOK_CLASS ) {
 		do_create_class();
 	} else if( toks.t == TOK_STRING ) {
-		//type = 1;
+
 		dovar( var, toks.id, 1 );
-	/*	
-		variable *var = safe_alloc_new(&alloc, sizeof(variable));
-		var->val = toks.id;
-		var->type = 1;
-*/
 		do_call_string( var );
 
 		next();
@@ -447,7 +451,7 @@ unary() {
 
 		} else if( btoks.t == TOK_NEW ) {
 
-			do_call_class( &btoks, &toks );
+			//do_call_class( &btoks, &toks );
 		} else if( toks.t == 2003 ) {
 			//btoks.type = 2;
 			//int l = get_tokv( &btoks, 0 );
