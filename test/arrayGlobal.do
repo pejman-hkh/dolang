@@ -6,11 +6,6 @@ test() {
 }
 
 main() {
-
-	var test1 = "test";
-	print(test1);
-
-
 	a = [];
 	a['t'] = 'test1';
 	a['2'] = 'test2';
