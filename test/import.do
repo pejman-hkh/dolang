@@ -13,4 +13,8 @@ main() {
 	a.a();
 
 	test();
+
+
+	var n = new n();
+	n.a();
 }
