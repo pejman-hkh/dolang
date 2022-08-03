@@ -613,7 +613,16 @@ do_create_array( end ) {
 
 		function_set_arg(0);
 
-		expr();
+		if( toks.t == TOK_IDENT ) {
+	
+			dovar(a,toks.id,1);
+			do_call_string(a);
+			next();
+
+		} else {
+			expr();
+		}
+
 		function_set_arg(1);
 		int ntype = type;
 
@@ -776,7 +785,7 @@ do_create_var( n ) {
 				expr();
 
 			} else if( toks.t == TOK_NEW ) {
-	
+
 				next();
 				char *cls = toks.id;
 				next();
