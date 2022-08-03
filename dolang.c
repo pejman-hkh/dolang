@@ -530,15 +530,10 @@ unary() {
 
 					} else if( toks.c == '(' ) {
 
-						btoks.type = 3;
-						int cls = get_tokv( &btoks, 0 );
+
 						char *t;
-						t = mstrcat(cls, "%fn%");
-						t = mstrcat(t, ctoks.id);
-
-
-						int l = array_get1( &sym_stk, t);
-
+						t = mstrcat("fn%", ctoks.id);
+					
 						if( i > 0 ) {
 							int l1 = array_get1( &var_stk, id);
 							do_call_var( l1 );
@@ -546,7 +541,19 @@ unary() {
 
 						i++;
 
-						do_call_function_class(l, "");
+
+						function_init(2);
+						function_set_arg(0);
+						dovar(a,t,1);
+						do_call_num(a);
+						function_set_arg(1);
+						function_call( &array_get, "array_get" );
+						function_end(2);
+
+						do_get_val();
+
+						do_call_function_callback(0);
+
 					} else {
 						do_call_object(&ctoks);
 					}
@@ -628,7 +635,7 @@ sum(l) {
 				} else if( btoks.t == 2018 ) {
 					do_or();
 				} else if( btoks.t == 2019 ) {
-					do_or_or();
+					//do_or_or();
 				} else if( btoks.t == 2020 ) {
 				} else if( btoks.t == 2021 ) {
 					do_div();
@@ -656,10 +663,10 @@ sum(l) {
 				*ind++ = 0xb8;
 				*ind = 1;
 				ind += 4;
-
+/*
 				printf("%d\n", ind - a + 4 );
 				exit(0);
-
+*/
 				*(int *)a = ind - a + 4;
 				//00 00 00 00;
 			}

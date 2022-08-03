@@ -163,7 +163,8 @@ do_call_function_callback( l ) {
 
 	int i = do_before_call_function();
 
-	do_call_var( l );
+	if( l )
+		do_call_var( l );
 
 	#if Assembly
 	printf("mov %d, %%ecx\n", ind);
@@ -657,7 +658,7 @@ do_call_array(l) {
 		expr();
 
 		function_set_arg(1);
-		function_call( &set_val, "set_val" );
+		function_call( &array_set_val, "array_set_val" );
 
 		function_end(2);
 
@@ -693,7 +694,7 @@ do_call_object( tokens *ctoks ) {
 			expr();
 
 			function_set_arg(1);
-			function_call( &set_val, "set_val" );
+			function_call( &array_set_val, "array_set_val" );
 			function_end(2);
 		}
 	}								
@@ -776,24 +777,58 @@ do_call_class( tokens *btoks, tokens *toks ) {
 	btoks->type = 3;
 	set_tokv( btoks, toks->id, 0 );
 		
+	char *cls = toks->id;
+
 	next();
 
-/*
-	vars_init();
-
-	ivar = ivar - 4;
-	*(int *)indvar = -ivar;
-	int l = ivar;
-*/
-
+	//create object for class
 	function_init(0);
 	function_call( &do_fn_create_array, "do_fn_create_array" );
 	function_end(0);
-	//do_equal(l);
-	//do_call_var(l);
 
 	int l = array_get1( &var_stk, btoks->id );
 	do_equal(l);
+
+	//set class name and all methods address in object
+	char *t;
+	t = mstrcat(cls, "%fn%");
+
+	function_init(3);
+	function_set_arg(0);
+	dovar(a,"class",1);
+	do_call_num(a);
+	function_set_arg(1);
+	dovar(b,cls,1);
+	do_call_num(b);
+	function_set_arg(2);
+	function_call( &array_set, "array_set" );
+	function_end(3);
+
+	for( int i = 0; i < sym_stk.length ; i++ ) {
+		int p = strstr(sym_stk.key[i], t );
+		if( p ) {
+			int ll = sym_stk.value[i];
+
+			int len = strlen(cls);
+			char *v = safe_alloc_new(&alloc, sizeof( char *) );
+			v = sym_stk.key[i];
+			v += len+1;
+
+			do_call_var(l);
+
+			function_init(3);
+			function_set_arg(0);
+			dovar(a1,v,1);
+			do_call_num(a1);
+			function_set_arg(1);
+			dovar(b1,ll,2);
+			do_call_num(b1);
+			function_set_arg(2);
+			function_call( &array_set, "array_set" );
+			function_end(3);
+
+		}
+	}
 }
 
 do_create_class() {
@@ -992,13 +1027,6 @@ do_for_loop() {
 }
 
 
-do_class() {
-
-}
-
-do_new() {
-	
-}
 
 do_shift_left() {
 

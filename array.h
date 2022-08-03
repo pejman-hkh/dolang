@@ -53,6 +53,7 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 	if( ! exists ) {
 		arr->length++;
 	}
+	
 }
 
 variable * array_get( variable *arr1, variable *key ) {
@@ -136,7 +137,7 @@ int array_len1( array *arr1 ) {
 	return arr->i++ < arr->length;
 }*/
 
-void * set_val( variable *a, variable *b ) {
+void * array_set_val( variable *a, variable *b ) {
 	*a = *b;
 }
 
