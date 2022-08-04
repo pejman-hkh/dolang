@@ -208,7 +208,7 @@ do_before_call_function() {
 	printf("mov %%eax,%x(%%esp)\n", i);
 	#endif
 	*ind++ = 0x89;
-	*ind++ = 0x84; 
+	*ind++ = 0x84;
 	*ind++ = 0x24;
 	*(int *)ind = i;
 	ind += 4;
@@ -541,9 +541,11 @@ variable *do_fn_create_array() {
 	array *arr = safe_alloc_new(&alloc, sizeof(array));
 	array_init( arr );
 
-	variable *var = safe_alloc_new(&alloc, sizeof(variable));
+	/*variable *var = safe_alloc_new(&alloc, sizeof(variable));
 	var->val = arr;
 	var->type = 3;
+*/
+	dovar( var, arr, 3 );
 
 	return var;
 }
@@ -703,10 +705,10 @@ do_create_var( n ) {
 
 		ivar = ivar - n;
 		char *id = toks.id;
-		if( thisClass ) {
+		/*if( thisClass ) {
 			id = mstrcat( thisClass, "%");
 			id = mstrcat(id, toks.id);
-		}
+		}*/
 
 		array_set1( &var_stk, id, ivar );
 
@@ -901,10 +903,9 @@ do_main_create_function( cls ) {
 	skip('(');
 	int a = 8;
 
-	//if( thisClass ) {
+
 	array_set1(&var_stk, "this", a );
 	a += 4;
-	//}
 
 	while( toks.c != ')' ) {
 		if( toks.t == 1 | toks.t == 10 ) {

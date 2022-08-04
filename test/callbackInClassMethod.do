@@ -15,7 +15,6 @@ main() {
 	var a = new test;
 	a.a('/', func( b ) {
 		b.f("is test\n");
-		print("here2\n");
 
 	});
 

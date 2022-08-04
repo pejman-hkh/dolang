@@ -484,10 +484,10 @@ unary() {
 			next();
 
 			char *id = btoks.id;
-			if( thisClass ) {
+			/*if( thisClass ) {
 				id = mstrcat( thisClass, "%");
 				id = mstrcat(id, btoks.id);
-			}
+			}*/
 
 			int l = array_get1( &var_stk, id);
 
