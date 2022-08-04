@@ -78,6 +78,7 @@ typedef struct
 tokens toks;
 array sym_stk;
 array var_stk;
+array ind_fns;
 //array var_type;
 //array var_ref;
 tokens ** vtoks;
@@ -506,7 +507,12 @@ unary() {
 			} else {			
 				btoks.type = 1;
 				int l = get_tokv( &btoks, 0 );
-				do_call_function( l, btoks.id );
+				int ind_fn = do_call_function( l, btoks.id );
+
+				if( ind_fn ) {
+					array_set1( &ind_fns, ind_fn, btoks.id );
+				}
+
 				if( toks.c == '.' ) {
 					vars_init();
 					ivar = ivar - 4;
@@ -942,6 +948,7 @@ main(int n, char * t[] )
 
 	array_init( &sym_stk );
 	array_init( &var_stk );
+	array_init( &ind_fns );
 	safe_alloc_init( &alloc );
 
 
@@ -960,6 +967,20 @@ main(int n, char * t[] )
 			fwrite((void *)prog, 1, ind - prog, f);
 			fclose(f);
 		}
+
+	}
+
+
+	//call functions after defination
+	for( int i = 0; i < ind_fns.length; i++ ) {
+		char *t;
+		t = mstrcat("fn%", ind_fns.value[i]);
+		int l = array_get1( &sym_stk, t );
+		int mind = ind_fns.key[i];
+		int n = l - (mind -1) - 5;
+	
+
+		*(int *)mind = n;
 
 	}
 

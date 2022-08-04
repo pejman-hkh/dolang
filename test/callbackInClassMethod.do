@@ -6,6 +6,7 @@ class test {
 		}
 
 		cb(l);
+		print("here1\n");
 	}
 }
 
@@ -14,6 +15,8 @@ main() {
 	var a = new test;
 	a.a('/', func( b ) {
 		b.f("is test\n");
+		print("here2\n");
+
 	});
 
 	print("here\n");

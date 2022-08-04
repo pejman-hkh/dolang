@@ -130,7 +130,7 @@ do_call_string( variable *var ) {
 	#endif
 	*ind++ = 0xb8;
 	*(int *)ind = var;
-	ind += 4; 
+	ind += 4;
 }
 
 do_call_num( int id ) {
@@ -253,104 +253,61 @@ do_after_call_function( i ) {
 	}
 }
 
-do_main_call_function( l, bid ) {
-	if( l ) {
+int do_main_call_function( l, bid ) {
+	int ind_ret = 0;
 
-		int n = l - (int)ind - 5;
-
-		#if Assembly 
-		printf("call %s 0x%x\n", bid, n);
-		#endif
-		*ind++ = 0xe8;
-		*(int *)ind = n;
-		ind += 4;
-
-	} else {
-		int n = 0;
-
-		for( int i = 0; i <  ext.length; i++ ) {
-			if( strcmp( bid, ext.key[i] ) == 0 ) {
-				n = ext.value[i];
-				break;
-			}
+	int n = 0;
+	int n1 = 0;
+	for( int i = 0; i <  ext.length; i++ ) {
+		if( strcmp( bid, ext.key[i] ) == 0 ) {
+			n = ext.value[i];
+			break;
 		}
-
-		if( ! n ) {
-			n = dlsym(0, bid);
-		}
-
-		n = n - (int)ind - 5;
-
-		#if Assembly 
-		printf("call %s 0x%x\n", bid, n);
-		#endif
-		*ind++ = 0xe8;
-		*(int *)ind = n;
-		ind += 4;
-	
 	}
 
+	if( ! n ) {
+		n = dlsym(0, bid);
+	}
+
+	if( n ) {
+		n = n - (int)ind - 5;
+	} else {
+		if( l ) {
+			n = l - (int)ind - 5;
+		}
+	}
+
+
+/*	if( ! n ) {
+		n = l - (int)ind - 5;
+	} else {
+		n = n - (int)ind - 5;
+	}*/
+
+	#if Assembly 
+	printf("call %s 0x%x\n", bid, n);
+	#endif
+	*ind++ = 0xe8;
+	*(int *)ind = n;
+	if( ! n )
+		ind_ret = ind;
+	ind += 4;
+
+	//printf("ddddddddddddddddddddddddddddd %d %s %d \n", n, bid, ind_ret );
+
+	return ind_ret;
 }
 
-do_call_function( l, bid ) {
+int do_call_function( l, bid ) {
 
 	int i = do_before_call_function();
 
-	do_main_call_function( l, bid );
+	int ind_ret = do_main_call_function( l, bid );
 
 	do_after_call_function( i );
-}
-
-
-do_call_function_class( l, bid ) {
-
-	#if Assembly 
-	printf("sub $,%%esp\n");
-	#endif
-	*ind++ = 0x81; 
-	*ind++ = 0xec;
-	int st = ind;
-	*(int *)ind =  0; 
-	ind += 4;
-
-	skip('(');
-	int i = 0;
 	
-	#if Assembly 
-	printf("mov %%eax,%x(%%esp)\n", i);
-	#endif
-	*ind++ = 0x89;
-	*ind++ = 0x84; 
-	*ind++ = 0x24;
-	*(int *)ind = i;
-	ind += 4;
+	return ind_ret;
 
-	i += 4;
-
-	while( toks.c != ')' ) {
-		expr();
-		#if Assembly 
-		printf("mov %%eax,%x(%%esp)\n", i);
-		#endif
-		*ind++ = 0x89;
-		*ind++ = 0x84; 
-		*ind++ = 0x24;
-		*(int *)ind = i;
-		ind += 4;
-
-		if( toks.c == ',' )
-			next();
-
-		i += 4;
-	}
-
-	*(int *)st = i;
-
-	skip(')');
-
-	do_main_call_function( l, bid );
-
-	do_after_call_function( i );
 }
 
 do_minus_minus(l) {

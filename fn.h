@@ -33,6 +33,7 @@ do_print_array( variable *ths, variable *arr1 ) {
 
 
 void do_print( variable *ths, variable *a ) {
+
 	//printf("%d\n", a->type );
 	if( a->type == 1 ) {
 		printf("%s", a->val );
