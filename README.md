@@ -20,8 +20,6 @@ Usage :
 # Samples
 
 ```
-
-
 class Array {
 	push() {
 
@@ -34,7 +32,6 @@ main() {
 ```
 
 ```
-
 var a;
 
 test() {
