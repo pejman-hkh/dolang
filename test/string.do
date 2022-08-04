@@ -1,9 +1,11 @@
 main() {
-	String.prototype.len = :( str ) {
+
+	var String = {};
+	String.prototype = {};
+
+	String.prototype.len = func( str ) {
 		return str.length;
-	}	
+	}
 
-	print( "test".length );
-	print( "test".len() );
-
+	print( "test" );
 }

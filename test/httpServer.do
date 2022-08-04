@@ -1,16 +1,18 @@
 
-/*class httpServer {
+class httpServer {
 	
 	listen( port ) {
-
+		print("listen on port"+port+"\n");
 	}
 
 	route( a, cb ) {
+		print("route for "+a+"\n");
 
 		var res = {};
-		res.write = func( a) {
-			print( a );
+		res.write = func( a1 ) {
+			print( a1 );
 		}
+
 
 		var req = {};
 
@@ -22,10 +24,12 @@ main() {
 	
 
 	var h = new httpServer;
-	h.listen(8080);
 
+	print(h);
+
+	h.listen(8080);
 
 	h.route('/', func( req, res ) {
 		res.write("this is test");
 	});
-}*/
+}
