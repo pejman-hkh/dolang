@@ -1,4 +1,16 @@
 
+class httpResult {
+	write( a ) {
+		print( a );
+	}
+}
+
+
+class httpRequest {
+	
+}
+
+
 class httpServer {
 	
 	listen( port ) {
@@ -8,13 +20,8 @@ class httpServer {
 	route( a, cb ) {
 		print("route for "+a+"\n");
 
-		var res = {};
-		res.write = func( a1 ) {
-			print( a1 );
-		}
-
-
-		var req = {};
+		var res = new httpResult;
+		var req = new httpRequest;
 
 		cb( req, res );
 	}
