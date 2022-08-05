@@ -18,7 +18,7 @@ main() {
 	a.a = func() {
 		this.b();
 		print("here\n");
-	}
+	};
 
 	a.a();
 }

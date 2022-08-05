@@ -395,7 +395,7 @@ unary() {
 		do_call_class( cls );
 
 
-	} else if( toks.t == TOK_FUNC ) {	
+	} else if( toks.t == TOK_FUNC ) {
 		next();
 		if( toks.c == '(') {
 			int l = ind+5;

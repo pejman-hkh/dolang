@@ -736,36 +736,9 @@ do_create_var( n ) {
 			char *id = btoks.id;
 			int l = array_get1( &var_stk, id );
 
-			//call object
-/*			if( toks.t == TOK_FUNC ) {
-
-				next();
-				do_create_callback_function();
-				do_equal(l);
-				//print_tok();
-				//exit(0);
-
-				//block();
-
-				expr();
-
-			} else if( toks.t == TOK_NEW ) {
-
-				next();
-				char *cls = toks.id;
-				next();
-
-				do_call_class( cls );
-
-				//int l = array_get1( &var_stk, btoks.id );
-				do_equal(l);
-
-			} else {*/
-
 			expr();
 			do_equal( l );
-				//print_tok();
-			//}
+
 		}
 
 
