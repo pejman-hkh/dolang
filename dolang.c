@@ -78,6 +78,7 @@ typedef struct
 tokens toks;
 array sym_stk;
 array var_stk;
+array let_stk;
 array ind_fns;
 //array var_type;
 //array var_ref;
@@ -394,7 +395,7 @@ unary() {
 		do_call_class( cls );
 
 
-	} else if( toks.t == TOK_FUNC ) {		
+	} else if( toks.t == TOK_FUNC ) {	
 		next();
 		if( toks.c == '(') {
 			int l = ind+5;
@@ -421,7 +422,8 @@ unary() {
 			next();
 			next();
 		}
-
+	} else if( toks.c == '}' ) {
+	
 	} else {
 
 
@@ -438,7 +440,7 @@ unary() {
 			do_create_array(']');
 
 		} else if( btoks.t == TOK_FUNC ) {
-			do_create_callback_function();
+			//do_create_callback_function();
 		} else if( btoks.t == 1 | btoks.t == TOK_VAR  ) {
 			if( toks.c == '*' ) {
 				next();
@@ -716,6 +718,11 @@ block() {
 	if( toks.t == 1006 ) {
 		next();
 		block();
+	} else if( toks.t == TOK_VAR ) {
+		next();
+
+		do_create_var(4);
+
 	} else if( toks.t == TOK_FOR ) {
 		next();
 		skip('(');
@@ -779,20 +786,27 @@ block() {
 		next();
 		skip(';');
 		block();
-	} else if( toks.c == '}' ) {
+/*	} else if( toks.c == '}' ) {
+		print_tok();
+*/
 	} else if( toks.c == '{' ) {
+
 		skip('{');
 		while( toks.c != '}' ) {
 			block();
 		}
 		skip('}');
 
+		//block();
+
 	} else  {
+
+		//print_tok();
 
 		expr();
 		if( toks.c == ';' ) {
 			skip(';');
-			block();
+			//block();
 		}	
 	}
 
@@ -837,10 +851,10 @@ decl(cls) {
 		variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
 
 		char *id = toks.id;
-		if( cls ) {
+	/*	if( cls ) {
 			id = mstrcat( cls, "%");
 			id = mstrcat(id, toks.id);
-		}
+		}*/
 
 		array_set1( &var_stk, id, a );
 
@@ -910,9 +924,14 @@ do_run( f ) {
 
 do_get_path(fn) {
 	int ls = strrchr(fn, '/');
-	mainPath = fn;
-	mainPath[ ls - fn ] = '/';
-	mainPath[ ls - fn + 1 ] = '\0';
+	if( ls ) {
+		mainPath = fn;
+		mainPath[ ls - fn ] = '/';
+		mainPath[ ls - fn + 1 ] = '\0';
+	} else {
+		mainPath = "/";
+	}
+
 }
 
 main(int n, char * t[] )

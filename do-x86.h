@@ -710,6 +710,7 @@ do_create_var( n ) {
 			id = mstrcat(id, toks.id);
 		}*/
 
+
 		array_set1( &var_stk, id, ivar );
 
 		*(int *)indvar = -ivar;
@@ -736,11 +737,16 @@ do_create_var( n ) {
 			int l = array_get1( &var_stk, id );
 
 			//call object
-			if( toks.t == TOK_FUNC ) {
+/*			if( toks.t == TOK_FUNC ) {
 
 				next();
 				do_create_callback_function();
 				do_equal(l);
+				//print_tok();
+				//exit(0);
+
+				//block();
+
 				expr();
 
 			} else if( toks.t == TOK_NEW ) {
@@ -751,14 +757,15 @@ do_create_var( n ) {
 
 				do_call_class( cls );
 
-				int l = array_get1( &var_stk, btoks.id );
+				//int l = array_get1( &var_stk, btoks.id );
 				do_equal(l);
 
-			} else {
+			} else {*/
 
-				expr();
-				do_equal( l );
-			}
+			expr();
+			do_equal( l );
+				//print_tok();
+			//}
 		}
 
 
