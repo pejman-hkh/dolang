@@ -57,6 +57,20 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 }
 
 variable * array_get( variable *arr1, variable *key ) {
+	if( arr1->type == 1 ) {
+
+		char *val = safe_alloc_new( &alloc, sizeof( char *) );
+		memcpy( val, arr1->val, strlen( arr1->val ) );
+
+		int index = key->val;
+
+		char *v = val+index;
+		*(v+1) = '\0';
+
+		dovar( ret, v, 1);
+		return ret;
+	}
+
 	array *arr = arr1->val;
 	for( int i = 0; i < arr->length; i++ ) {
 		variable *hkey = arr->key[i];
