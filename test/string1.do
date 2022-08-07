@@ -10,5 +10,10 @@ main() {
 	s3[0] = 'a';
 	s3[1] = 'd';
 
-	print( s3 )
+	print( s3 +"\n")
+
+
+	var s = 'ddddddd'
+	s[3] = '\0'
+	print( s )
 }
