@@ -175,19 +175,26 @@ get_tokv( tokens *tok1, char *cls ) {
 
 array mt;
 
+misspace( ch ) {
+
+}
+
 next() {
 	toks.t = 0;
 	toks.c = 0;
 	toks.l = 0;
 	toks.id = 0;
 
-	if( isspace(ch) ) {
-		while( isspace( ch ) ) {
+	if( isspace(ch) && ch != 0x0a ) {
+		while( isspace( ch ) && ch != 0x0a ) {
 			inp();
 		}
 	}
 
-	if( ch == '#' ) {
+	if( ch == 0x0a ) {
+		toks.t = 2022;
+		inp();
+	} else if( ch == '#' ) {
 		toks.t = 1003;
 		inp();
 		toks.id = buf;
@@ -381,7 +388,6 @@ next() {
 			}
 		}
 	}
-
 }
 
 unary() {
@@ -422,6 +428,8 @@ unary() {
 			next();
 			next();
 		}
+	//} else if( toks.t == 2022 ) {
+		//next();
 	} else if( toks.c == '}' ) {
 	
 	} else {
@@ -543,7 +551,7 @@ unary() {
 			}			
 		} else if( toks.c == ';' ) {
 		} else {
-			//printf("%s\n", btoks.id );
+
 		}
 
 	}
@@ -718,11 +726,12 @@ block() {
 	if( toks.t == 1006 ) {
 		next();
 		block();
+	} else if( toks.t == 2022 ) {
+		next();
+		block();
 	} else if( toks.t == TOK_VAR ) {
 		next();
-
 		do_create_var(4);
-
 	} else if( toks.t == TOK_FOR ) {
 		next();
 		skip('(');
@@ -779,34 +788,32 @@ block() {
 		next();
 		expr();
 		do_return();
-		skip(';');
+		//skip(';');
 		
 	} else if( toks.t == TOK_BREAK ) {
 		//printf("in break\n");
 		next();
-		skip(';');
+		//skip(';');
 		block();
 /*	} else if( toks.c == '}' ) {
 		print_tok();
 */
 	} else if( toks.c == '{' ) {
 
-		skip('{');
+		skip('{');		
 		while( toks.c != '}' ) {
 			block();
 		}
 		skip('}');
-
-		//block();
-
 	} else  {
-
-		//print_tok();
-
 		expr();
+
+		if( toks.t == 2022 ) {
+			next();
+		}
+
 		if( toks.c == ';' ) {
 			skip(';');
-			//block();
 		}	
 	}
 
@@ -817,7 +824,13 @@ decl(cls) {
 
 	thisClass = cls;
 
-	if( toks.t == 1003 ) {
+	if( toks.t == 0 ) {
+		next();
+		decl(cls);
+	} else if( toks.t == 2022 ) {
+		next();
+		decl(cls);
+	} else if( toks.t == 1003 ) {
 
 		next();
 		decl(cls);
@@ -974,12 +987,29 @@ main(int n, char * t[] )
 	mainFile = fopen(t[1], "r");
 	do_get_path(t[1]);
 
+	if( t[2] ) {
+
+		if( strcmp(t[2], "-t") == 0 ) {
+
+			file = mainFile;
+			inp();
+
+			while( ch != EOF  ) {
+				print_tok();
+				next();
+			}
+
+			exit(0);
+		}
+	}
+
 	do_run( mainFile );
 	fclose(mainFile);
 
 	if( t[2] ) {
+
 		if( strcmp(t[2], "-p") == 0 ) {
-			print_ind();
+			print_ind();		
 		} else {
 			FILE *f;
 			f = fopen( t[2], "w");

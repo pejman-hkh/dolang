@@ -701,7 +701,7 @@ do_create_var( n ) {
 
 
 	int i = 0;
-	while( toks.c != ';' && toks.t != TOK_IN ) {
+	while( toks.c != ';' && toks.t != 2022 && toks.t != TOK_IN ) {
 
 		ivar = ivar - n;
 		char *id = toks.id;
@@ -732,13 +732,15 @@ do_create_var( n ) {
 
 		if( toks.c == '=' ) {
 			next();
-
 			char *id = btoks.id;
 			int l = array_get1( &var_stk, id );
 
 			expr();
 			do_equal( l );
 
+			if( toks.t == 2022) {
+				//next();
+			}
 		}
 
 
