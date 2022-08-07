@@ -10,7 +10,7 @@ typedef struct {
 } variable;
 
 #define dovar(a,b,c) \
-variable *a = malloc( sizeof( variable *) );\
+variable *a = safe_alloc_new(&alloc, sizeof( variable *) );\
 a->val = b;\
 a->type = c;
 

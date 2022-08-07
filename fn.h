@@ -35,6 +35,7 @@ do_print_array( variable *ths, variable *arr1 ) {
 void do_print( variable *ths, variable *a ) {
 
 	//printf("%d\n", a->type );
+	
 	if( a->type == 1 ) {
 		printf("%s", a->val );
 	} else if( a->type == 2 ) {
@@ -43,6 +44,11 @@ void do_print( variable *ths, variable *a ) {
 		do_print_array(ths, a);	
 	} else if( a->type == 4 ) {
 		printf("func()");
+	} else if( a->type == 5 ) {
+		char * r = safe_alloc_new( &alloc, sizeof( char *) );
+		memcpy( r, a->val, 2);
+		*(r+1) = '\0';		
+		printf("%s", r );
 	} else {
 		printf("%d", a );
 	}
@@ -66,7 +72,25 @@ do_fn_plus_plus( variable *a ) {
 variable *do_fn_add( variable *a, variable *b ) {
 	variable *var = safe_alloc_new( &alloc, sizeof(variable));
 
-	if( a->type == 1 && b->type == 2 ) {
+	if( a->type == 1 && b->type == 5 ) {
+		char * r = safe_alloc_new( &alloc, sizeof( char *) );
+		memcpy( r, b->val, 2);
+		*(r+1) = '\0';
+
+		var->val = mstrcat( r, a->val );
+		var->type = 1;
+
+	} else if( a->type == 5 && b->type == 1 ) {
+
+		char * r = safe_alloc_new( &alloc, sizeof( char *) );
+		memcpy( r, a->val, 2);
+		*(r+1) = '\0';
+
+		var->val = mstrcat( b->val, r );
+		var->type = 1;
+
+
+	} else if( a->type == 1 && b->type == 2 ) {
 		int x = b->val;
 		int length = snprintf( NULL, 0, "%d", x );
 		char* str = safe_alloc_new( &alloc, length + 1 );

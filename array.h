@@ -59,15 +59,10 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 variable * array_get( variable *arr1, variable *key ) {
 	if( arr1->type == 1 ) {
 
-		char *val = safe_alloc_new( &alloc, sizeof( char *) );
-		memcpy( val, arr1->val, strlen( arr1->val ) );
-
 		int index = key->val;
+		char *d = arr1->val+index;
+		dovar( ret, d, 5);
 
-		char *v = val+index;
-		*(v+1) = '\0';
-
-		dovar( ret, v, 1);
 		return ret;
 	}
 
@@ -152,7 +147,12 @@ int array_len1( array *arr1 ) {
 }*/
 
 void * array_set_val( variable *a, variable *b ) {
-	*a = *b;
+	if( a->type == 5 ) {
+		memcpy( a->val, b->val, 1 );
+	} else {
+		*a = *b;
+	}
+
 }
 
 void *array_reset(array *arr) {

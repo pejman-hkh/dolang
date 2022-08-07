@@ -2,9 +2,13 @@ main() {
 
 
 	var s3 = "test";
-	for( var i = 0; i < 4; i++ ) {
-		print( s3[ i ]+"\n" );
-	}
+	print( s3[1] );
+	print("\n");
 
-	print(s3);
+	print( s3[1]+"\n" )
+
+	s3[0] = 'a';
+	s3[1] = 'd';
+
+	print( s3 )
 }
