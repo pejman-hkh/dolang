@@ -681,7 +681,7 @@ do_call_object( tokens *ctoks ) {
 			function_call( &array_set_val, "array_set_val" );
 			function_end(2);
 		}
-	}								
+	}			
 }
 
 do_call_address( l ) {
@@ -701,7 +701,7 @@ do_create_var( n ) {
 
 
 	int i = 0;
-	while( toks.c != ';' && toks.t != 2022 && toks.t != TOK_IN ) {
+	while( toks.c != ';' && toks.t != 2022 && toks.t != 2023 && toks.t != TOK_IN ) {
 
 		ivar = ivar - n;
 		char *id = toks.id;
@@ -738,12 +738,7 @@ do_create_var( n ) {
 			expr();
 			do_equal( l );
 
-			if( toks.t == 2022) {
-				//next();
-			}
 		}
-
-
 	}
 }
 

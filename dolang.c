@@ -3,6 +3,7 @@
 #include <memory.h>
 #include <sys/mman.h>
 #include <dlfcn.h>
+#include "signal.h"
 
 typedef struct {
 	char type;
@@ -63,6 +64,8 @@ array ext;
 
 char *thisClass;
 
+int line = 1;
+
 //int sym_stk, dstk;
 
 typedef struct
@@ -89,7 +92,6 @@ int inMain = 0;
 
 #include "do-x86.h";
 #include "ext.h";
-
 
 inp() {
 	ch = fgetc( file );
@@ -191,7 +193,13 @@ next() {
 		}
 	}
 
-	if( ch == 0x0a ) {
+	if( ch == EOF ) {
+		toks.t = 2023;
+		inp();
+		//print_tok();
+		//exit(0);
+	} else if( ch == 0x0a ) {
+		line++;
 		toks.t = 2022;
 		inp();
 	} else if( ch == '#' ) {
@@ -233,10 +241,15 @@ next() {
 			toks.t = TOK_STRING;
 			inp();
 			toks.id = buf;
+			int mline = line;
 			while( ch != '\'' ) {
 				getq();
 				*buf++ = ch;
 				inp();
+				if( ch == EOF ) {
+					printf("syntax error! line : %d\n", mline);
+					exit(0);
+				}				
 			}
 			*buf++ = 0;
 			inp();
@@ -244,10 +257,15 @@ next() {
 			toks.t = TOK_STRING;
 			inp();
 			toks.id = buf;
+			int mline = line;
 			while( ch != '"' ) {
 				getq();
 				*buf++ = ch;
 				inp();
+				if( ch == EOF ) {
+					printf("syntax error! line : %d\n", mline);
+					exit(0);
+				}
 			}
 			*buf++ = 0;
 			inp();
@@ -551,7 +569,7 @@ unary() {
 			}			
 		} else if( toks.c == ';' ) {
 		} else {
-
+		
 		}
 
 	}
@@ -726,6 +744,7 @@ block() {
 	if( toks.t == 1006 ) {
 		next();
 		block();
+
 	} else if( toks.t == 2022 ) {
 		next();
 		block();
@@ -800,12 +819,21 @@ block() {
 */
 	} else if( toks.c == '{' ) {
 
-		skip('{');		
+		skip('{');
 		while( toks.c != '}' ) {
+			int mline = line;
 			block();
+
+			if( toks.t == 2023 ) {
+				printf("syntax error ! line : %d\n", mline+1 );
+				exit(0);
+			}
+
 		}
 		skip('}');
+
 	} else  {
+
 		expr();
 
 		if( toks.t == 2022 ) {
@@ -852,10 +880,14 @@ decl(cls) {
 
 		do_run( f1 );
 		fclose(f1);
-		file = mainFile;
-		next();
-		next();
 
+		if( toks.t == 2023 ) {
+			file = mainFile;
+			inp();
+			next();
+		}
+
+		file = mainFile;
 		decl(cls);
 
 	} else if( toks.t == TOK_VAR ) {
@@ -950,6 +982,7 @@ do_get_path(fn) {
 main(int n, char * t[] )
 {
 
+	//init_signal();
 	set_extensions();
 
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);

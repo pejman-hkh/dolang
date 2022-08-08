@@ -58,10 +58,12 @@ void do_print( variable *ths, variable *a ) {
 void do_typeof( variable *ths, variable *a ) {
 	//printf("%d\n", a->type );
 
-	variable *v = safe_alloc_new( &alloc, sizeof(variable) );
+	dovar(v,a->type, 2);
+	
+/*	variable *v = safe_alloc_new( &alloc, sizeof(variable) );
 	v->val = a->type;
 	v->type = 2;
-
+*/
 	return v;
 }
 
