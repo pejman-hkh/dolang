@@ -35,6 +35,12 @@ a->type = c;
 #define TOK_IMPORT 20
 
 
+#define DOTYPE_STRING 1;
+#define DOTYPE_INT 2;
+#define DOTYPE_ARRAY 3;
+#define DOTYPE_FUNC 4;
+#define DOTYPE_CHAR 5;
+
 #define TOK_IDENT 999
 #define TOK_STRING 1000
 

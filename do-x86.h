@@ -257,7 +257,6 @@ int do_main_call_function( l, bid ) {
 	int ind_ret = 0;
 
 	int n = 0;
-	int n1 = 0;
 	for( int i = 0; i <  ext.length; i++ ) {
 		if( strcmp( bid, ext.key[i] ) == 0 ) {
 			n = ext.value[i];
