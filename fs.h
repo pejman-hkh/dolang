@@ -1,6 +1,11 @@
 do_fopen( variable *ths, variable *fn, variable *s ) {
 	FILE *f;
-	f = fopen( fn->val, s->val );
+	char *fpath = mstrcat(mainPath,fn->val);
+	f = fopen( fpath, s->val );
+
+	if( ! f ) {
+		printf("warning: file %s deosn't exists\n", fpath);
+	}
 
 	dovar( ret, f, 2);
 	return ret;
@@ -24,10 +29,15 @@ do_fgetc( variable *ths, variable *fp ) {
 }
 
 do_fsize( variable *ths, variable *fp ) {
+		int size = 0;
+	if( ! fp->val ) {
+		size = 0;
+	} else {	
+		fseek (fp->val , 0 , SEEK_END);
+		size = ftell (fp->val);
+		rewind (fp->val);
+	}
 
-	fseek (fp->val , 0 , SEEK_END);
-	int size = ftell (fp->val);
-	rewind (fp->val);
 
 	dovar( ret, size, 2);
 	return ret;
@@ -35,10 +45,16 @@ do_fsize( variable *ths, variable *fp ) {
 
 
 do_fread( variable *ths, variable *fp, variable * size, variable *count ) {
-	int ss = count->val;
-	char *buf = safe_alloc_new( &alloc, sizeof( char ) * ss );
-	fread( buf, fp->val, 1, fp->val );
+	dovar(ret, "", 1 );
+	if( ! fp->val ) {
+	} else {	
+		int ss = count->val;
+		char *buf = safe_alloc_new( &alloc, sizeof( char ) * ss );
+		fread( buf, fp->val, 1, fp->val );
 
-	dovar( ret, buf, 1);
+		//dovar( ret, buf, 1);
+		ret->val = buf;
+
+	}
 	return ret;
 }
