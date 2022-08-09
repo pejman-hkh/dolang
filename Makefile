@@ -1,2 +1,2 @@
 dolang :
-	gcc -m32 -w  dolang.c -o dolang -ldl
+	gcc -m32 -w  dolang.c -o dolang -ldl -lcurl
