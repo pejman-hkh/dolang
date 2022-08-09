@@ -1,4 +1,4 @@
-#include "fs.h"
+#include "ext/fs.h"
 
 set_extensions() {
 	array_set1( &ext, "print", &do_print);
