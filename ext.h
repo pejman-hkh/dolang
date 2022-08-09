@@ -1,3 +1,4 @@
+#include "fs.h"
 
 set_extensions() {
 	array_set1( &ext, "print", &do_print);
@@ -11,4 +12,7 @@ set_extensions() {
 	array_set1( &ext, "array_set_val", &array_set_val);
 	array_set1( &ext, "strcat", &mstrcat);
 	array_set1( &ext, "microtime", &do_microtime);
+	array_set1( &ext, "fopen", &do_fopen);
+	array_set1( &ext, "feof", &do_feof);
+	array_set1( &ext, "fgetc", &do_fgetc);
 }

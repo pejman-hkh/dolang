@@ -64,7 +64,7 @@ array ext;
 
 char *thisClass;
 
-int line = 1;
+int line = 0;
 
 //int sym_stk, dstk;
 
@@ -115,7 +115,7 @@ getq()
 }
 
 
-skip( char s ) {
+skip( s ) {
 	if( toks.c == s ) {
 		next();
 	} else {
@@ -176,10 +176,6 @@ get_tokv( tokens *tok1, char *cls ) {
 }
 
 array mt;
-
-misspace( ch ) {
-
-}
 
 next() {
 	toks.t = 0;
@@ -825,7 +821,7 @@ block() {
 			block();
 
 			if( toks.t == 2023 ) {
-				printf("syntax error ! line : %d\n", mline+1 );
+				printf("syntax error ! line : %d\n", mline );
 				exit(0);
 			}
 

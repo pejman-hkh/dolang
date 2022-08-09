@@ -1,4 +1,4 @@
-skip(char a);
+skip(a);
 next();
 block();
 o();
@@ -277,13 +277,6 @@ int do_main_call_function( l, bid ) {
 		}
 	}
 
-
-/*	if( ! n ) {
-		n = l - (int)ind - 5;
-	} else {
-		n = n - (int)ind - 5;
-	}*/
-
 	#if Assembly 
 	printf("call %s 0x%x\n", bid, n);
 	#endif
@@ -292,8 +285,6 @@ int do_main_call_function( l, bid ) {
 	if( ! n )
 		ind_ret = ind;
 	ind += 4;
-
-	//printf("ddddddddddddddddddddddddddddd %d %s %d \n", n, bid, ind_ret );
 
 	return ind_ret;
 }

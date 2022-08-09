@@ -57,6 +57,12 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 }
 
 variable * array_get( variable *arr1, variable *key ) {
+
+	if( ! arr1->type ) {
+		printf("object not exists ! \n");
+		exit(0);
+	}
+
 	if( arr1->type == 1 ) {
 
 		int index = key->val;
@@ -69,7 +75,7 @@ variable * array_get( variable *arr1, variable *key ) {
 	array *arr = arr1->val;
 	for( int i = 0; i < arr->length; i++ ) {
 		variable *hkey = arr->key[i];
-
+	
 		if( do_fn_equal_equal( key, hkey ) ) {
 			return arr->value[i];
 		}

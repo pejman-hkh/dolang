@@ -5,7 +5,6 @@ do_debug( int a) {
 	exit(0);
 }
 
-
 do_microtime() {
 
 }
@@ -36,7 +35,8 @@ void do_print( variable *ths, variable *a ) {
 
 	//printf("%d\n", a->type );
 	
-	if( a->type == 1 ) {
+	if( a->type == 0 ) {
+	} else if( a->type == 1 ) {
 		printf("%s", a->val );
 	} else if( a->type == 2 ) {
 		printf("%d", a->val );
@@ -59,7 +59,7 @@ void do_typeof( variable *ths, variable *a ) {
 	//printf("%d\n", a->type );
 
 	dovar(v,a->type, 2);
-	
+
 /*	variable *v = safe_alloc_new( &alloc, sizeof(variable) );
 	v->val = a->type;
 	v->type = 2;
