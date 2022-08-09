@@ -1,8 +1,8 @@
 class curl {
-	init() {
+
+	construct() {
 		this.curl = curl_init();
-		
-		return this;
+
 	}
 
 	setopt( opt, optVal ) {
@@ -11,7 +11,6 @@ class curl {
 	}
 
 	perform() {
-
 
 	}
 
