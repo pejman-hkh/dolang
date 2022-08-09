@@ -15,4 +15,6 @@ set_extensions() {
 	array_set1( &ext, "fopen", &do_fopen);
 	array_set1( &ext, "feof", &do_feof);
 	array_set1( &ext, "fgetc", &do_fgetc);
+	array_set1( &ext, "fsize", &do_fsize);
+	array_set1( &ext, "fread", &do_fread);
 }

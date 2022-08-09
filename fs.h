@@ -22,3 +22,23 @@ do_fgetc( variable *ths, variable *fp ) {
 	dovar( ret, r-2, 1);
 	return ret;
 }
+
+do_fsize( variable *ths, variable *fp ) {
+
+	fseek (fp->val , 0 , SEEK_END);
+	int size = ftell (fp->val);
+	rewind (fp->val);
+
+	dovar( ret, size, 2);
+	return ret;
+}
+
+
+do_fread( variable *ths, variable *fp, variable * size, variable *count ) {
+	int ss = count->val;
+	char *buf = safe_alloc_new( &alloc, sizeof( char ) * ss );
+	fread( buf, fp->val, 1, fp->val );
+
+	dovar( ret, buf, 1);
+	return ret;
+}
