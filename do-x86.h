@@ -746,19 +746,7 @@ do_call_class( cls ) {
 
 	do_equal(l);
 
-	if( toks.c == '(' ) {
-	
-		char *t;
-		t = mstrcat( cls, "%fn%");
-		t = mstrcat( t, "construct");
-
-		int l1 = array_get1( &sym_stk, t );
-		dovar(a,l1,4);
-		do_call_function_callback( a );
-	}
-
-	
-	do_call_var(l);
+	//do_call_var(l);
 	//set class name and all methods address in object
 	char *t;
 	t = mstrcat(cls, "%fn%");
@@ -798,6 +786,19 @@ do_call_class( cls ) {
 			function_end(3);
 
 		}
+	}
+
+	do_call_var(l);
+
+	if( toks.c == '(' ) {
+	
+		char *t;
+		t = mstrcat( cls, "%fn%");
+		t = mstrcat( t, "construct");
+
+		int l1 = array_get1( &sym_stk, t );
+		dovar(a,l1,4);
+		do_call_function_callback( a );
 	}
 
 	do_call_var(l);
