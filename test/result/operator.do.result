@@ -2,3 +2,4 @@ in if
 after || 
 test1 &&
 after && 
+s is zero 

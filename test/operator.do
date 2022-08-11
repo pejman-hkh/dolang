@@ -26,4 +26,11 @@ main() {
 	}
 
 	print("after && \n")
+
+
+	var s = 0
+
+	if( !s ) {
+		print("s is zero ")
+	}
 }

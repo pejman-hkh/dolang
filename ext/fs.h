@@ -12,7 +12,7 @@ do_fopen( variable *ths, variable *fn, variable *s ) {
 }
 
 do_feof( variable *ths, variable *fp ) {
-	int a = !feof( fp->val );
+	int a = feof( fp->val );
 	dovar( ret, a, DOTYPE_INT );
 	return ret;
 }

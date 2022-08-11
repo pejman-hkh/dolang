@@ -1152,7 +1152,42 @@ do_greater_equal() {
 }
 
 do_not() {
-	
+
+	#if Assembly 
+	printf("mov  0x4(%%eax),%%eax\n");
+	#endif
+	*ind++ = 0x8b;
+	*ind++ = 0x40;
+	*ind++ = 0x04;
+
+	#if Assembly
+	printf("mov 0x0,%%ecx\n");
+	#endif
+	*ind++ = 0xb9;
+	ind += 4;
+
+	#if Assembly
+	printf("cmp %%eax,%%ecx\n");
+	#endif
+	*ind++ = 0x39;
+	*ind++ = 0xc1;
+
+
+	#if Assembly
+	printf("mov 0x0,%%eax\n");
+	#endif
+	*ind++ = 0xb8;
+	ind += 4;
+
+	#if Assembly
+	printf("sete al\n");
+	#endif
+	*ind++ = 0x0f;
+	*ind++ = 0x94;
+	*ind++ = 0xc0;
+
+	do_convert_to_var();
+
 }
 
 

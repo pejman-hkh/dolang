@@ -12,12 +12,12 @@ class fs {
 
 		var size = fsize( this.fp );
 
-		var buf = fread( this.fp, 1, size );
+		//var buf = fread( this.fp, 1, size );
 
-		/*while(  feof( this.fp ) ) {
+		while(  ! feof( this.fp ) ) {
 			buf = buf + fgetc( this.fp );
 
-		}*/
+		}
 
 
 		return buf;

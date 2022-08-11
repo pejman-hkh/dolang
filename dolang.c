@@ -460,8 +460,10 @@ unary() {
 		btoks.id = toks.id;
 		btoks.c = toks.c;
 
+
 		next();
 
+	
 		if( btoks.c == '{' ) {
 			do_create_array('}');			
 		} else if( btoks.c == '[' ) {
@@ -476,6 +478,11 @@ unary() {
 
 			do_create_var( 4 );
 	
+		} else if( btoks.c == '!' ) {
+		
+			unary();
+			
+			do_not();
 		} else if( btoks.c == '&' ) {
 	
 			int l = array_get1( &var_stk, toks.id);
@@ -676,7 +683,7 @@ sum(l) {
 				} else if( btoks.t == 2011 ) {
 					do_greater_equal();
 				} else if( btoks.t == 2012 ) {
-					do_not();
+					//do_not();
 				} else if( btoks.t == 2013 ) {
 					do_not_equal();
 				} else if( btoks.t == 2014 ) {
