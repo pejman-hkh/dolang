@@ -1,4 +1,3 @@
-
 test( this ) {
 	this.d = 321;
 }

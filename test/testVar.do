@@ -1,4 +1,3 @@
-
 var i;
 test_a() {
 	for( i = 0; i < 10; i++ ) {
