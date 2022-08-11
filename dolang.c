@@ -125,7 +125,7 @@ skip( s ) {
 	if( toks.c == s ) {
 		next();
 	} else {
-		printf("Expected %c \n", s );
+		printf("Expected %c in line : %d \n", s, line );
 		exit(0);
 	}
 }
@@ -700,26 +700,23 @@ sum(l) {
 		}
 		if (a && l > 8) {
 			if( btoks.c == '|' ) {
-				int b = do_or_or( a );
+
 				printf("mov $0x0,%%eax\n");
 				*ind++ = 0xb8;
 				ind += 4;
 
 				printf("jmp 0x5c\n");
 				*ind++ = 0xe9;
-				*ind = 0x05;
+				*ind = ind+9;
 				ind += 4;
+
+				*(int *)a = ind - a + 4;
 
 				printf("mov $0x1,%%eax\n");
 				*ind++ = 0xb8;
 				*ind = 1;
 				ind += 4;
-/*
-				printf("%d\n", ind - a + 4 );
-				exit(0);
-*/
-				*(int *)a = ind - a + 4;
-				//00 00 00 00;
+
 			}
 		}
 	}
@@ -868,10 +865,22 @@ decl(cls) {
 	} else if( toks.t == TOK_IMPORT ) {
 
 		next();
-		char *fn = mstrcat(mainPath, toks.id);
-		fn = mstrcat( fn ,".do");
+
+		char *fn;
+		fn = toks.id;
 		next();
-		//skip(';');
+
+
+		while( toks.c == '.' ) {
+			next();
+			fn = mstrcat(fn, "/");
+			fn = mstrcat(fn, toks.id );
+
+		}
+		
+		fn = mstrcat(mainPath, fn);
+		fn = mstrcat( fn ,".do");
+
 
 		FILE *f1;
 		f1 = fopen( fn, "r");
@@ -883,13 +892,12 @@ decl(cls) {
 		do_run( f1 );
 		fclose(f1);
 
-		if( toks.t == 2023 ) {
-			file = mainFile;
-			inp();
-			next();
-		}
-
 		file = mainFile;
+		inp();
+		next();
+
+
+		//file = mainFile;
 		decl(cls);
 
 	} else if( toks.t == TOK_VAR ) {

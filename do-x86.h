@@ -946,6 +946,15 @@ do_or() {
 }
 
 do_or_or(a) {
+
+	#if Assembly 
+	printf("mov  0x4(%%eax),%%eax\n");
+	#endif
+	*ind++ = 0x8b;
+	*ind++ = 0x40;
+	*ind++ = 0x04;
+
+
 	#if Assembly 
 	printf("test %%eax,%%eax\n");
 	#endif
@@ -959,7 +968,7 @@ do_or_or(a) {
 	*ind++ = 0x85;
 	int indp = ind;
 	*(int *)ind = 0;
-	*ind += 4;
+	ind += 4;
 	return indp;
 }
 

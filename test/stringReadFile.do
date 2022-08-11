@@ -1,4 +1,4 @@
-import fs
+import lib.fs
 
 main() {
 

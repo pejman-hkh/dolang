@@ -1,7 +1,7 @@
 main() {
 	
-	var a = "test";
-	var b = 123;
+	var a = 0;
+	var b = 1;
 
 	if( a || b ) {
 		print("here")
