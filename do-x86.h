@@ -972,6 +972,37 @@ do_or_or(a) {
 	return indp;
 }
 
+do_patch_or_or(a,d) {
+	#if Assembly
+	printf("mov $0x0,%%eax\n");
+	#endif
+	*ind++ = 0xb8;
+	ind += 4;
+
+	do_convert_to_var(2);
+
+	#if Assembly
+	printf("jmp 0x5c\n");
+	#endif
+	*ind++ = 0xe9;
+	*(int *)ind = 0;
+	int s = ind;
+	ind += 4;
+
+	*(int *)a = ind - a - 4;
+	*(int *)d = ind - d - 4;
+	
+	#if Assembly
+	printf("mov $0x1,%%eax\n");
+	#endif
+	*ind++ = 0xb8;
+	*ind = 1;
+	ind += 4;
+
+	do_convert_to_var(2);
+	*(int *)s = ind - s - 4;	
+}
+
 do_and_and() {
 
 }

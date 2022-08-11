@@ -700,23 +700,9 @@ sum(l) {
 		}
 		if (a && l > 8) {
 			if( btoks.c == '|' ) {
-
-				printf("mov $0x0,%%eax\n");
-				*ind++ = 0xb8;
-				ind += 4;
-
-				printf("jmp 0x5c\n");
-				*ind++ = 0xe9;
-				*ind = ind+9;
-				ind += 4;
-
-				*(int *)a = ind - a + 4;
-
-				printf("mov $0x1,%%eax\n");
-				*ind++ = 0xb8;
-				*ind = 1;
-				ind += 4;
-
+				int d = a;
+				a = do_or_or( a );
+				do_patch_or_or( a, d );
 			}
 		}
 	}
