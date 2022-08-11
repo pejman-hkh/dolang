@@ -638,7 +638,10 @@ sum(l) {
 			if( l > 8 ) {
 				if( btoks.c == '|' ) {
 					a = do_or_or( a );
+				} else if( btoks.c == '&' ) {
+					a = do_and_and( a );
 				}
+
 				sum(l);
 			} else {
 
@@ -703,6 +706,10 @@ sum(l) {
 				int d = a;
 				a = do_or_or( a );
 				do_patch_or_or( a, d );
+			} else if( btoks.c == '&' ) {
+				int d = a;
+				a = do_and_and( a );
+				do_patch_and_and( a, d );				
 			}
 		}
 	}

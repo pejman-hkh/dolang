@@ -1004,8 +1004,64 @@ do_patch_or_or(a,d) {
 }
 
 do_and_and() {
+	#if Assembly 
+	printf("mov  0x4(%%eax),%%eax\n");
+	#endif
+	*ind++ = 0x8b;
+	*ind++ = 0x40;
+	*ind++ = 0x04;
 
+
+	#if Assembly 
+	printf("test %%eax,%%eax\n");
+	#endif
+	*ind++ = 0x85;
+	*ind++ = 0xc0;
+
+	#if Assembly 
+	printf("je $\n");
+	#endif
+	*ind++ = 0x0f;
+	*ind++ = 0x84;
+	int indp = ind;
+	*(int *)ind = 0;
+	ind += 4;
+	return indp;
 }
+
+do_patch_and_and(a,d) {
+	#if Assembly
+	printf("mov 1,%%eax\n");
+	#endif
+	*ind++ = 0xb8;
+	*ind = 1;
+	ind += 4;
+
+	do_convert_to_var(2);
+
+	#if Assembly
+	printf("jmp 0x5c\n");
+	#endif
+	*ind++ = 0xe9;
+	*(int *)ind = 0;
+	int s = ind;
+	ind += 4;
+
+	*(int *)a = ind - a - 4;
+	*(int *)d = ind - d - 4;
+	
+	#if Assembly
+	printf("mov 0,%%eax\n");
+	#endif
+	*ind++ = 0xb8;
+	*ind = 0;
+	ind += 4;
+
+	do_convert_to_var(2);
+	*(int *)s = ind - s - 4;	
+}
+
+
 
 do_for_loop() {
 

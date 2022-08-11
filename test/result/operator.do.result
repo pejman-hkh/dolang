@@ -1,2 +1,4 @@
 in if
-after if
+after || 
+test1 &&
+after && 
