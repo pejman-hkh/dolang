@@ -1,8 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <curl/curl.h>
-#include "safe_alloc.h"
 #include "dolang.h"
+#include "safe_alloc.h"
 #include "array.h"
 #include "fn.h"
 

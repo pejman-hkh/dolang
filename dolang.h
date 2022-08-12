@@ -4,6 +4,7 @@
 #include "safe_alloc.h";
 safe_alloc alloc;
 
+
 typedef struct {
 	char type;
 	void * val;
