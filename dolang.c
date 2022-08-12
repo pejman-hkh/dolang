@@ -481,7 +481,7 @@ unary() {
 		} else if( btoks.c == '!' ) {
 		
 			unary();
-			
+
 			do_not();
 		} else if( btoks.c == '&' ) {
 	
@@ -691,7 +691,7 @@ sum(l) {
 				} else if( btoks.t == 2015 ) {
 					do_and();
 				} else if( btoks.t == 2016 ) {
-					do_and_and();
+					//do_and_and();
 				} else if( btoks.t == 2017 ) {
 				} else if( btoks.t == 2018 ) {
 					do_or();

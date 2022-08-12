@@ -1,9 +1,9 @@
 **Under Development**
 
 
-Do lang is simple jit language and is very similar to js
+Do lang is simple and tiny jit compiler programming language and it is very similar to js
 
-in test directory there are many samples of language
+There are many samples of language in test directory
 
 Do lang now just supports x86 cpu but in the next time it will support another cpu structurs ...
 
