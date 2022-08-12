@@ -3,6 +3,7 @@
 #include <memory.h>
 #include <sys/mman.h>
 #include <dlfcn.h>
+#include <dirent.h>
 #include "signal.h"
 #include "dolang.h"
 
@@ -938,27 +939,56 @@ do_get_path(fn) {
 
 typedef array *(*loadfn)();
 
+scan_ext() {
+	struct dirent **namelist;
+	int n;
+
+	n = scandir("./ext/", &namelist, NULL, alphasort);
+	if (n < 0)
+	   perror("scandir");
+	else {
+		while (n--) {
+			char *dir = namelist[n]->d_name;
+			if( strcmp( dir, "." ) != 0 && strcmp( dir, ".." ) != 0 ) {
+
+				char *ld = mstrcat("./ext/", dir );
+				ld = mstrcat(ld, "/" );
+				ld = mstrcat(ld, dir );
+				ld = mstrcat(ld, ".so" );
+
+
+				void *myso = dlopen( ld, RTLD_NOW );
+				if ( myso ) { 
+					loadfn load = (loadfn)dlsym(myso, "load" );
+					array *arr = load();
+					for( int i = 0; i < arr->length; i++ ) {
+						array_set1( &ext, arr->key[i], arr->value[i]);
+					}
+					array_free( arr );
+					free( arr );
+		
+				}
+
+
+
+			}
+
+			free(namelist[n]);
+		}
+
+		free(namelist);
+	}	
+}
+
+
 main(int n, char * t[] )
 {
 
 	//init_signal();
 	set_extensions();
-
-    void *myso = dlopen( "./ext/curl/curl.so", RTLD_NOW );
-
- 	if (!myso) { fprintf(stderr, "dlopen failure %s\n", dlerror()); 
-            exit(EXIT_FAILURE); };
-
-    loadfn load = (loadfn)dlsym(myso, "load" );
-
-    array *arr = load();
-    for( int i = 0; i < arr->length; i++ ) {
-    	array_set1( &ext, arr->key[i], arr->value[i]);
-    }
-
+	scan_ext();
 
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
-
 	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
 	vtoks = malloc( sizeof( tokens * ) * 20 );
 

@@ -4,6 +4,7 @@
 *.out
 *.o
 *.s
+*.so
 !Makefile
 testc
 conf.h
