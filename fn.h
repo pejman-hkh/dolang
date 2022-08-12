@@ -1,3 +1,5 @@
+#ifndef do_fn
+#define do_fn
 #include <sys/time.h>
 
 do_debug( int a) {
@@ -149,3 +151,5 @@ do_fn_equal_equal( variable *a, variable *b ) {
 	return 0;
 
 }
+
+#endif

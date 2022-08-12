@@ -4,45 +4,7 @@
 #include <sys/mman.h>
 #include <dlfcn.h>
 #include "signal.h"
-
-typedef struct {
-	char type;
-	void * val;
-} variable;
-
-#define dovar(a,b,c) \
-variable *a = safe_alloc_new(&alloc, sizeof( variable *) );\
-a->val = b;\
-a->type = c;
-
-
-#define TOK_IF 2
-#define TOK_ELSE 3
-#define TOK_WHILE 4
-#define TOK_BREAK 5
-#define TOK_RETURN 6
-#define TOK_FOR 7
-#define TOK_DEFINE 8
-#define TOK_MAIN 9
-#define TOK_VAR 10
-#define TOK_NEW 11
-#define TOK_CLASS 12
-#define TOK_IN 15
-#define TOK_THIS 16
-#define TOK_FUNC 17
-#define TOK_LET 18
-#define TOK_EXTENDS 19
-#define TOK_IMPORT 20
-
-
-#define DOTYPE_STRING 1;
-#define DOTYPE_INT 2;
-#define DOTYPE_ARRAY 3;
-#define DOTYPE_FUNC 4;
-#define DOTYPE_CHAR 5;
-
-#define TOK_IDENT 999
-#define TOK_STRING 1000
+#include "dolang.h"
 
 #include "safe_alloc.h"
 safe_alloc alloc;
@@ -138,21 +100,6 @@ o(n)
 	}
 }
 
-char * mstrcat( char *a, char *b) {
-	char *r;
-	r = safe_alloc_new(&alloc, strlen(a)+strlen(b)+1);
-	while( *a ) {
-		*(char *)r++ = *a++;
-	}
-
-	while( *b ) {
-		*(char *)r++ = *b++;
-	}
-
-	*r = '\0';
-
-	return safe_alloc_get(&alloc);
-}
 
 tokv_id( tokens *tok1, char *cls ) {
 	char *id = tok1->id;
@@ -989,11 +936,26 @@ do_get_path(fn) {
 
 }
 
+typedef array *(*loadfn)();
+
 main(int n, char * t[] )
 {
 
 	//init_signal();
 	set_extensions();
+
+    void *myso = dlopen( "./ext/curl/curl.so", RTLD_NOW );
+
+ 	if (!myso) { fprintf(stderr, "dlopen failure %s\n", dlerror()); 
+            exit(EXIT_FAILURE); };
+
+    loadfn load = (loadfn)dlsym(myso, "load" );
+
+    array *arr = load();
+    for( int i = 0; i < arr->length; i++ ) {
+    	array_set1( &ext, arr->key[i], arr->value[i]);
+    }
+
 
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
 

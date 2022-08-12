@@ -1,3 +1,6 @@
+#ifndef do_safealloc
+#define do_safealloc
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -32,3 +35,6 @@ void safe_free( safe_alloc *a) {
 	}
 	free(a->allocate);
 }
+
+
+#endif
