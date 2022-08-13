@@ -267,6 +267,12 @@ next() {
 					toks.c = ch;
 					inp();
 				}
+				if( ch == '=' ) {
+					toks.l = 11;
+					toks.t = 2024;
+					toks.c = ch;
+					inp();					
+				}
 			} else if( toks.c == '-' ) {
 				toks.l = 2;
 				toks.t = 2004;
@@ -408,8 +414,8 @@ unary() {
 		btoks.id = toks.id;
 		btoks.c = toks.c;
 
-
 		next();
+
 
 	
 		if( btoks.c == '{' ) {
@@ -427,9 +433,7 @@ unary() {
 			do_create_var( 4 );
 	
 		} else if( btoks.c == '!' ) {
-		
 			unary();
-
 			do_not();
 		} else if( btoks.c == '&' ) {
 	
@@ -465,7 +469,14 @@ unary() {
 
 			do_call_num( atoi(btoks.id) );
 			do_convert_to_var(2);
+		} else if( toks.t == 2024 ) {
+			char *id = btoks.id;
+			int l = array_get1( &var_stk, id);
+		
+			do_plus_equal(l);
+
 		} else if( toks.c == '=' & toks.l == 0 ) {
+
 			next();
 
 			char *id = btoks.id;
@@ -648,7 +659,7 @@ sum(l) {
 				} else if( btoks.t == 2020 ) {
 				} else if( btoks.t == 2021 ) {
 					do_div();
-				}
+				} 
 
 				if( btoks.c != '+' & btoks.c != '=' ) {
 					do_convert_to_var(2);
@@ -956,7 +967,6 @@ scan_ext() {
 				ld = mstrcat(ld, dir );
 				ld = mstrcat(ld, ".so" );
 
-
 				void *myso = dlopen( ld, RTLD_NOW );
 				if ( myso ) { 
 					loadfn load = (loadfn)dlsym(myso, "load" );
@@ -966,16 +976,10 @@ scan_ext() {
 					}
 					array_free( arr );
 					free( arr );
-		
 				}
-
-
-
 			}
-
 			free(namelist[n]);
 		}
-
 		free(namelist);
 	}	
 }

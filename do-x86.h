@@ -1190,6 +1190,22 @@ do_not() {
 
 }
 
+do_plus_equal(l) {
+	next();
+
+	expr();
+
+	function_init(2);
+	
+	function_set_arg(0);
+
+	do_call_var(l);
+	function_set_arg(1);
+	function_call( &do_fn_add, "do_fn_add" );
+	function_end(2);
+
+	do_equal(l);
+}
 
 do_for_in() {
 

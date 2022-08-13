@@ -33,6 +33,14 @@ a->type = c;
 #define TOK_LET 18
 #define TOK_EXTENDS 19
 #define TOK_IMPORT 20
+#define TOK_SWITCH 21
+#define TOK_TRY 22
+#define TOK_CATCH 23
+#define TOK_THROW 24
+#define TOK_TYPEOF 25
+#define TOK_STATIC 26
+#define TOK_FUNCTION 27
+#define TOK_PACKAGE 28
 
 
 #define DOTYPE_STRING 1;
