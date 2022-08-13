@@ -22,12 +22,13 @@ do_fgetc( variable *ths, variable *fp ) {
 	char *r;
 	char *a;
 	r = a = safe_alloc_new( &alloc, 2 );
-
-	if( c && c != EOF ) {
-		*r++ = c;
-		*r++ = '\0';
+	if( c == EOF ) {
+		c = '\0';
 	}
 
+	*r++ = c;
+	*r++ = '\0';
+	
 	dovar( ret, a, DOTYPE_STRING);
 
 	return ret;
