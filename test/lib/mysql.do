@@ -5,20 +5,25 @@ class mysqlStmt {
 	}
 
 	bind( b ) {
-		mysql_bind( this.stmt, b);
+		mysql_stmt_bind( this.stmt, b);
+		mysql_stmt_exec( this.stmt );
+	}
+
+	next() {
+		return mysql_stmt_fetch( this.stmt );
 	}
 }
 
 class mysql {
-	connect() {
+	connect( host, user, pass, db ) {
 		this.con = mysql_connect("localhost", "root", "123", "test");
 	}
 
-	stmt() {
+	prepare() {
 		this.stmt = new mysqlStmt();
 	}
 
-	bind( b ) {
+	exec( b ) {
 		this.stmt.bind(b);
 	}
 }

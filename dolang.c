@@ -229,6 +229,14 @@ next() {
 			if( toks.c == '*' ) {
 				toks.l = 1;
 				toks.t = 2000;
+
+				if( ch == '=' ) {
+					toks.l = 11;
+					toks.t = 2026;
+					toks.c = ch;
+					inp();					
+				}
+
 			} else if( toks.c == '/' ) {
 				toks.l = 1;
 				toks.t = 2021;
@@ -254,10 +262,26 @@ next() {
 					}
 					inp();
 				}
-				
+
+				if( ch == '=' ) {
+					toks.l = 11;
+					toks.t = 2027;
+					toks.c = ch;
+					inp();					
+				}
+
 			} else if( toks.c == '%' ) {
 				toks.l = 1;
 				toks.t = 2001;
+
+				if( ch == '=' ) {
+					toks.l = 11;
+					toks.t = 2028;
+					toks.c = ch;
+					inp();					
+				}
+
+
 			} else if( toks.c == '+' ) {
 				toks.l = 2;
 				toks.t = 2002;
@@ -284,6 +308,13 @@ next() {
 					inp();		 
 				}
 
+				if( ch == '=' ) {
+					toks.l = 11;
+					toks.t = 2025;
+					toks.c = ch;
+					inp();					
+				}
+
 			} else if( toks.c == '<' ) {
 				toks.l = 4;
 				toks.t = 2006;
@@ -293,6 +324,14 @@ next() {
 					toks.t = 2007;
 					toks.c = ch;
 					inp();
+
+					if( ch == '=' ) {
+						toks.l = 11;
+						toks.t = 2032;
+						toks.c = ch;
+						inp();					
+					}
+
 				} else if( ch == '=' ) {
 					toks.l = 4;
 					toks.t = 2008;
@@ -308,7 +347,15 @@ next() {
 					toks.l = 3;
 					toks.t = 2010;
 					toks.c = ch;
-					inp();		  
+					inp();
+
+					if( ch == '=' ) {
+						toks.l = 11;
+						toks.t = 2033;
+						toks.c = ch;
+						inp();			
+					}
+
 				} else if( ch == '=' ) {
 					toks.l = 4;
 					toks.t = 2011;
@@ -341,10 +388,25 @@ next() {
 					toks.t = 2016;
 					toks.c = ch;
 					inp();
-				}	   
+				}
+
+				if( ch == '=' ) {
+					toks.l = 11;
+					toks.t = 2029;
+					toks.c = ch;
+					inp();					
+				}
+
 			} else if( toks.c == '^' ) {
 				toks.l = 7;
 				toks.t = 2017;
+
+				if( ch == '=' ) {
+					toks.l = 11;
+					toks.t = 2031;
+					toks.c = ch;
+					inp();					
+				}
 
 			} else if( toks.c == '|' ) {
 				toks.l = 8;
@@ -356,6 +418,14 @@ next() {
 					toks.c = ch;
 					inp();
 				}
+
+				if( ch == '=' ) {
+					toks.l = 11;
+					toks.t = 2030;
+					toks.c = ch;
+					inp();					
+				}
+
 			} else if( toks.c == '~' ) {
 				toks.l = 2;
 				toks.t = 2020;
@@ -469,7 +539,7 @@ unary() {
 
 			do_call_num( atoi(btoks.id) );
 			do_convert_to_var(2);
-		} else if( toks.t == 2024 ) {
+		} else if( toks.t >= 2024 && toks.t <= 2032 ) {
 			char *id = btoks.id;
 			int l = array_get1( &var_stk, id);
 		
@@ -968,7 +1038,7 @@ scan_ext() {
 				ld = mstrcat(ld, ".so" );
 
 				void *myso = dlopen( ld, RTLD_NOW );
-				if ( myso ) { 
+				if ( myso ) {
 					loadfn load = (loadfn)dlsym(myso, "load" );
 					array *arr = load();
 					for( int i = 0; i < arr->length; i++ ) {
