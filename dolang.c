@@ -800,8 +800,9 @@ block() {
 
 		
 		int n = ind;
-		test_expr();
 
+		test_expr();
+		
 		skip(')');
 
 		do_while_loop(n);
@@ -1143,6 +1144,7 @@ main(int n, char * t[] )
 	}
 
 	int main = array_get1( &sym_stk, "fn%main");
+
 	if( main ) {
  		int (*func)() = main;
  		func();

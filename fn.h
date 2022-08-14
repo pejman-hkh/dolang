@@ -2,8 +2,8 @@
 #define do_fn
 #include <sys/time.h>
 
-do_debug( int a) {
-	printf("%d\n", a);
+do_debug( int *a) {
+	printf("%d\n", *a);
 	exit(0);
 }
 
@@ -72,6 +72,10 @@ void do_typeof( variable *ths, variable *a ) {
 
 do_fn_plus_plus( variable *a ) {
 	a->val += 1;
+}
+
+do_fn_minus_minus( variable *a ) {
+	a->val -= 1;
 }
 
 variable *do_fn_add( variable *a, variable *b ) {

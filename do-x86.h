@@ -301,16 +301,31 @@ int do_call_function( l, bid ) {
 }
 
 do_minus_minus(l) {
+	//do_call_var(l+4);
+
 	do_call_var(l);
-	
-	#if Assembly 
-	printf("addl $0xffffffff,%d(%%ebp)\n", l-4);
+
+	//should convert to assembly ...
+	function_init(1);
+	function_set_arg(0);
+	function_call( &do_fn_minus_minus, "do_fn_minus_minus" );
+	function_end(1);
+
+
+/*	function_init(1);
+	function_set_arg(0);
+	function_call( &do_debug, "do_debug" );
+	function_end(1);
+*/
+
+/*	#if Assembly 
+	printf("addl $0x%x,%d(%%ebp)\n", -1, l+4);
 	#endif
 	*ind++ = 0x83;
 	*ind++ = 0x85;
-	*(int *)ind = l-4;
+	*(int *)ind = l+4;
 	ind += 4;	
-	*ind++ = -1;
+	*ind++ = -1;*/
 }
 
 do_equal_equal() {
@@ -573,7 +588,6 @@ do_create_array( end ) {
 		}
 
 		function_set_arg(1);
-		int ntype = type;
 
 		if( toks.c == ':' ) {
 			next();
@@ -584,6 +598,15 @@ do_create_array( end ) {
 			function_call( &array_set, "array_set" );
 
 			function_end(3);
+		} else {
+
+			do_call_num(0);
+
+			function_set_arg(2);
+
+			function_call( &array_set2, "array_set2" );
+
+			function_end(3);			
 		}
 
 
@@ -691,7 +714,7 @@ do_create_var( n ) {
 
 
 	int i = 0;
-	while( toks.c != ';' && toks.t != 2022 && toks.t != 2023 && toks.t != TOK_IN ) {
+	while( toks.c != ';' && toks.t != 2022 && toks.t != 2023 && toks.t != TOK_IN && toks.c != ')' ) {
 
 		ivar = ivar - n;
 		char *id = toks.id;
@@ -1196,7 +1219,7 @@ do_plus_equal(l) {
 	expr();
 
 	function_init(2);
-	
+
 	function_set_arg(0);
 
 	do_call_var(l);

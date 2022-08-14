@@ -24,6 +24,7 @@ array_relloc( array *arr ) {
 	arr->value = realloc(arr->value, sizeof(variable) * (arr->length+2) );
 }
 
+
 void *array_set( variable *arr1, variable *key, variable *value ) {
 	array *arr = arr1->val;
 
@@ -54,6 +55,14 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 		arr->length++;
 	}
 	
+}
+
+
+void *array_set2( variable *arr1, variable *key, variable *value ) {
+	array *arr = arr1->val;
+	dovar(index,arr->length, DOTYPE_INT);
+	
+	array_set( arr1, index, key);
 }
 
 variable * array_get( variable *arr1, variable *key ) {
