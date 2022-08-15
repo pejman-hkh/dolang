@@ -628,6 +628,13 @@ do_dot( l ) {
 
 			char *t = ctoks.id;
 
+			vars_init();
+
+			ivar = ivar - 4;
+			*(int *)indvar = -ivar;
+			int l1 = ivar;
+			do_equal(l1);
+
 
 			function_init(2);
 			function_set_arg(0);
@@ -636,16 +643,14 @@ do_dot( l ) {
 			function_set_arg(1);
 			function_call( &array_get, "array_get" );
 			function_end(2);
-			
 
-			vars_init();
 
 			ivar = ivar - 4;
 			*(int *)indvar = -ivar;
 			int ld = ivar;
 			do_equal(ld);
 
-			do_call_var( l );
+			do_call_var( l1 );
 			do_call_function_callback(ld);
 
 		} else {

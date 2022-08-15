@@ -4,14 +4,19 @@ class a {
 	}
 
 	g() {
-		print("in g")
+		print("in g\n")
+		print( this )
+		this.l()
+	}
+
+	l() {
+		print("in l\n")
 	}
 }
 
 class b {
 	a() {
 		this.d = new a()
-		print( this )
 		return this;
 	}
 
