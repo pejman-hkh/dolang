@@ -1,0 +1,2 @@
+select * from test where tid = ? 
+[class:mysqlStmt,construct:func(),bind:func(),next:func(),stmt:1482345600]

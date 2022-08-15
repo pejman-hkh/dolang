@@ -9,7 +9,11 @@ do_debug( int *a) {
 
 
 do_microtime() {
-
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	long r = currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
+	dovar(ret, r, DOTYPE_LONG);
+	return ret;
 }
 
 do_set_val( variable *a, variable *b ) {

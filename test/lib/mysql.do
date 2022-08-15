@@ -1,29 +1,42 @@
 
 class mysqlStmt {
-	stmt() {
-		this.stmt = mysql_stmt( this.con, "select * from test where tid > ? " );
+	construct( sql, con ) {
+
+		this.stmt = mysql_stmt( con, sql );
+		return this;
 	}
 
 	bind( b ) {
+		print( this )
+
 		mysql_stmt_bind( this.stmt, b);
-		mysql_stmt_exec( this.stmt );
+		//mysql_stmt_exec( this.stmt );
+		return this;
 	}
 
 	next() {
 		return mysql_stmt_fetch( this.stmt );
+		//return [ { id : 1, name : 'test'} ];
 	}
 }
 
 class mysql {
+	construct( host, user, pass, db ) {
+		this.connect( host, user, pass, db );
+		return this;
+	}
+
 	connect( host, user, pass, db ) {
-		this.con = mysql_connect("localhost", "root", "123", "test");
+		this.con = mysql_connect(host, user, pass, db);
 	}
 
-	prepare() {
-		this.stmt = new mysqlStmt();
+	prepare( sql ) {
+
+		this.stmt = new mysqlStmt( sql, this.con );
+		return this;
 	}
 
-	exec( b ) {
-		this.stmt.bind(b);
+	execute( b ) {
+		return this.stmt.bind( b );
 	}
 }

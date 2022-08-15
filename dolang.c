@@ -580,12 +580,12 @@ unary() {
 				}
 
 				if( toks.c == '.' ) {
-					vars_init();
+		/*			vars_init();
 					ivar = ivar - 4;
 					*(int *)indvar = -ivar;
 					int ld = ivar;
-					do_equal(ld);
-					do_dot(ld);
+					do_equal(ld);*/
+					do_dot();
 				}
 			}
 
@@ -602,7 +602,7 @@ unary() {
 			if( toks.c == '[' ) {
 				do_call_array(l);
 			} else if( toks.c == '.') {
-				do_dot( l );
+				do_dot();
 			}			
 		} else if( toks.c == ';' ) {
 		} else {
@@ -613,7 +613,7 @@ unary() {
 
 }
 
-do_dot( l ) {
+do_dot() {
 	int i = 0;
 	while( toks.c == '.' ) {					
 		skip('.');
@@ -1150,7 +1150,7 @@ main(int n, char * t[] )
  		int (*func)() = main;
  		func();
 	} else {
-		printf("main function not exists !\n");
+		//printf("main function not exists !\n");
 	}
 
 	safe_free( &alloc );

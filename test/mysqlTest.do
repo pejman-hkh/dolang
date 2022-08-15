@@ -1,14 +1,16 @@
 import lib.mysql
 
 main() {
-	
-	var db = new mysql
 
-	db.connect("localhost", "root", "12c", "test")
 
-	db.prepare("select from test where tid = ? ").execute([ 10 ])
+	var db = new mysql("localhost", "root", "12c", "test")
 
-	while( var fetch = db.next() ) {
-		print( fetch );
+	var stmt = db.prepare("select * from test where tid = ? ").execute( [ 10 ] );
+
+	while( var fetch = stmt.next() ) {
+		print( fetch )
 	}
+
+
+	db.close();
 }

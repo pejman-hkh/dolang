@@ -19,8 +19,24 @@ do_mysql_options( variable *ths, variable *msql, variable *opt, variable *opt_va
 
 do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
 	MYSQL_STMT    *stmt;
-	stmt = mysql_stmt_init(msql);
-	mysql_stmt_prepare(stmt, sql->val, strlen(sql->val) );
+	stmt = mysql_stmt_init(msql->val);
+
+	if (!stmt)
+	{
+		fprintf(stderr, " mysql_stmt_init(), out of memory\n");
+		exit(0);
+	}
+
+	printf("%s\n", sql->val);
+	
+
+	if ( mysql_stmt_prepare(stmt, sql->val, strlen(sql->val) ) )
+	{
+		fprintf(stderr, " mysql_stmt_prepare(), SELECT failed\n");
+		fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+		exit(0);
+	}
+
 
 	dovar( ret, stmt, DOTYPE_INT );
 	return ret;	
@@ -33,36 +49,65 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 	int *error = malloc( bnd->length + 1);
 	unsigned long *length = malloc( bnd->length + 1);
 
+
 	for( int i = 0; i < bnd->length; i++ ) {
 		variable *v = bnd->value[i];
-
 		if( v->type == 2 ) {
-			bind[i]->buffer_type= MYSQL_TYPE_LONG;
-			bind[i]->buffer= (char *)bnd->value[i];
-			bind[i]->is_null= 0;
-			bind[i]->length= 0;
+			bind[i]->buffer_type = MYSQL_TYPE_LONG;
+			bind[i]->buffer = v->val;
+			bind[i]->buffer_length = sizeof(long);
+
 		}
 
 		if( v->type == 1 ) {
-			  bind[i]->buffer_type= MYSQL_TYPE_STRING;
-			  bind[i]->buffer= (char *)v->val;
-			  bind[i]->buffer_length= strlen( v->val );
-			  bind[i]->is_null= 0;
-			  bind[i]->length= 0;
+			  bind[i]->buffer_type = MYSQL_TYPE_STRING;
+			  bind[i]->buffer = (char *)v->val;
+			  bind[i]->buffer_length = strlen( v->val );
 		}
 	}
 
-	mysql_stmt_bind_param( stmt->val, bind);
+	if( mysql_stmt_bind_param( stmt->val, bind) ) {
+		fprintf(stderr, " mysql_stmt_bind_param(), failed\n");
+		fprintf(stderr, " %s\n", mysql_stmt_error(stmt->val));
+		exit(0);		
+	}
+
+	if (mysql_stmt_execute(stmt->val ))
+	{
+		fprintf(stderr, " mysql_stmt_execute(), failed\n");
+		fprintf(stderr, " %s\n", mysql_stmt_error(stmt->val));
+		exit(0);
+	}
+
+
 }
 
-do_mysql_stmt_exec( variable *ths, variable *stmt ) {
-	mysql_stmt_execute( stmt->val );	
-}
+/*do_mysql_stmt_exec( variable *ths, variable *stmt ) {
+		
+}*/
 
 do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
-	int column_count= mysql_num_fields(prepare_meta_result);
-	printf("%d\n", column_count );
+	MYSQL_RES  *prepare_meta_result;
+	printf("jjjjjjjjjj %d\n", stmt->val);
+	prepare_meta_result = mysql_stmt_result_metadata(stmt->val);
+	if (!prepare_meta_result)
+	{
+		printf(" mysql_stmt_result_metadata(), \
+		returned no meta information\n");
+		printf(" %s\n", mysql_stmt_error(stmt->val));
+		exit(0);
+	}
 
+	/* Get total columns in the query */
+	int column_count= mysql_num_fields(prepare_meta_result);
+	printf(" total columns in SELECT statement: %d\n",
+	column_count);
+
+	if (column_count != 4) /* validate column count */
+	{
+		printf(" invalid column count returned by MySQL\n");
+		exit(0);
+	}
 	exit(0);
 }
 
@@ -76,7 +121,7 @@ extern load() {
     array_set1( arr, "mysql_connect", &do_mysql_connect);
     array_set1( arr, "mysql_stmt", &do_mysql_stmt);
     array_set1( arr, "mysql_stmt_bind", &do_mysql_stmt_bind);
-    array_set1( arr, "mysql_stmt_exec", &do_mysql_stmt_exec);
+    //array_set1( arr, "mysql_stmt_exec", &do_mysql_stmt_exec);
     array_set1( arr, "mysql_stmt_fetch", &do_mysql_stmt_fetch);
     array_set1( arr, "mysql_close", &do_mysql_close);
 
