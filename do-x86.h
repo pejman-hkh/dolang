@@ -648,12 +648,26 @@ do_call_array(l) {
 
 		next();
 
-
-		function_init(2);
-		function_set_arg(0);
+		vars_init();
+		ivar = ivar - 4;
+		*(int *)indvar = -ivar;
+		int l1 = ivar;
+		do_equal(l1);
 
 		expr();
 
+		ivar = ivar - 4;
+		*(int *)indvar = -ivar;
+		int l2 = ivar;
+		do_equal(l2);
+
+
+
+		function_init(2);
+		do_call_var(l1);
+		function_set_arg(0);
+
+		do_call_var(l2);
 		function_set_arg(1);
 		function_call( &array_set_val, "array_set_val" );
 
@@ -685,11 +699,24 @@ do_call_object( tokens *ctoks ) {
 		if( toks.c == '=' ) {
 			next();
 
-			function_init(2);
-			function_set_arg(0);
+			vars_init();
+			ivar = ivar - 4;
+			*(int *)indvar = -ivar;
+			int l1 = ivar;
+			do_equal(l1);
 
 			expr();
 
+			ivar = ivar - 4;
+			*(int *)indvar = -ivar;
+			int l2 = ivar;
+			do_equal(l2);
+
+			function_init(2);
+			do_call_var(l1);
+			function_set_arg(0);
+
+			do_call_var(l2);
 			function_set_arg(1);
 			function_call( &array_set_val, "array_set_val" );
 			function_end(2);
@@ -811,9 +838,9 @@ do_call_class( cls ) {
 		}
 	}
 
-	do_call_var(l);
 
 	if( toks.c == '(' ) {
+		do_call_var(l);
 	
 		char *t;
 		t = mstrcat( cls, "%fn%");

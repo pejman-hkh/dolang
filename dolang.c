@@ -602,7 +602,6 @@ unary() {
 			if( toks.c == '[' ) {
 				do_call_array(l);
 			} else if( toks.c == '.') {
-
 				do_dot( l );
 			}			
 		} else if( toks.c == ';' ) {
@@ -802,7 +801,7 @@ block() {
 		int n = ind;
 
 		test_expr();
-		
+
 		skip(')');
 
 		do_while_loop(n);
@@ -1066,10 +1065,7 @@ main(int n, char * t[] )
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
 	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
 	vtoks = malloc( sizeof( tokens * ) * 20 );
-
 	if (!prog) { printf("could not mmap(%d) jit executable memory\n", ALLOC_SIZE); return -1; }
-
-	
 
 	array_set1( &mt, "if", TOK_IF );
 	array_set1( &mt, "else", TOK_ELSE );

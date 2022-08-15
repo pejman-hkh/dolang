@@ -92,9 +92,9 @@ variable * array_get( variable *arr1, variable *key ) {
 	variable *k = safe_alloc_new( &alloc, sizeof(variable) );
 	*k = *key;
 
-	variable *v = safe_alloc_new( &alloc, sizeof(variable) );
-	v->val = safe_alloc_new( &alloc, sizeof(variable) );
-	v->type = 1;
+	variable *val = safe_alloc_new( &alloc, sizeof(variable*) );
+
+	dovar( v, val, DOTYPE_INT );
 
 	array_set( arr1, k, v );
 
@@ -162,9 +162,14 @@ int array_len1( array *arr1 ) {
 }*/
 
 void * array_set_val( variable *a, variable *b ) {
+/*	printf("%d\n", a->type );
+	printf("%d\n", b->type );
+	exit(0);
+*/
 	if( a->type == 5 ) {
 		memcpy( a->val, b->val, 1 );
 	} else {
+		//a->type = b->type;
 		*a = *b;
 	}
 

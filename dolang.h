@@ -48,6 +48,7 @@ a->type = c;
 #define DOTYPE_ARRAY 3;
 #define DOTYPE_FUNC 4;
 #define DOTYPE_CHAR 5;
+#define DOTYPE_LONG 6;
 
 #define TOK_IDENT 999
 #define TOK_STRING 1000
