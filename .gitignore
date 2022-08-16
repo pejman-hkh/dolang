@@ -7,4 +7,5 @@
 *.so
 !Makefile
 testc
+testlangs
 conf.h
