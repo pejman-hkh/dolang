@@ -1,6 +1,7 @@
 skip(a);
 next();
 block();
+skipLine();
 o();
 print_tok();
 char * mstrcat();
@@ -112,6 +113,18 @@ do_div() {
 
 do_sub() {
 
+	#if Assembly
+	printf("sub %%ecx,%%eax\n");
+	#endif
+	*ind++ = 0x29; 
+	*ind++ = 0xc8;
+
+	#if Assembly
+	printf("neg %%eax\n");
+	#endif
+
+	*ind++ = 0xf7;
+	*ind++ = 0xd8;
 }
 
 do_return() {
@@ -556,6 +569,7 @@ variable *do_fn_create_array() {
 }
 
 do_create_array( end ) {
+
 	vars_init();
 
 	ivar = ivar - 4;
@@ -571,6 +585,7 @@ do_create_array( end ) {
 
 	while( toks.c != end ) {
 
+		skipLine();
 		function_init(3);
 
 		do_call_var(l);
@@ -589,6 +604,7 @@ do_create_array( end ) {
 
 		function_set_arg(1);
 
+		skipLine();
 		if( toks.c == ':' ) {
 			next();
 
@@ -609,10 +625,12 @@ do_create_array( end ) {
 			function_end(3);			
 		}
 
-
+		skipLine();
 		if( toks.c == ',' ) {
 			next();
 		}
+
+		skipLine();
 	}
 
 	do_call_var(l);

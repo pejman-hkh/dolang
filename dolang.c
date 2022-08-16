@@ -93,6 +93,12 @@ skip( s ) {
 	}
 }
 
+skipLine() {
+	while( toks.t == 2022 ) {
+		next();
+	}
+}
+
 o(n)
 {
 	while (n && n != -1) {
@@ -1139,7 +1145,6 @@ main(int n, char * t[] )
 		int mind = ind_fns.key[i];
 		int n = l - (mind -1) - 5;
 	
-
 		*(int *)mind = n;
 
 	}

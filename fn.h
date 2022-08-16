@@ -56,6 +56,8 @@ void do_print( variable *ths, variable *a ) {
 		memcpy( r, a->val, 2);
 		*(r+1) = '\0';		
 		printf("%s", r );
+	} else if( a->type == 6 ) {
+		printf("%ld", a->val );
 	} else {
 		printf("%d", a );
 	}
