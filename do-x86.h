@@ -584,31 +584,50 @@ do_create_array( end ) {
 	do_equal(l);
 
 	while( toks.c != end ) {
-
 		skipLine();
-		function_init(3);
 
-		do_call_var(l);
+		ivar = ivar - 4;
+		*(int *)indvar = -ivar;
+		int l1 = ivar;
 
-		function_set_arg(0);
 
 		if( toks.t == TOK_IDENT ) {
-	
 			dovar(a,toks.id,1);
 			do_call_string(a);
 			next();
-
 		} else {
 			expr();
 		}
 
+		do_equal(l1);
+
+		ivar = ivar - 4;
+		*(int *)indvar = -ivar;
+		int l2 = ivar;
+
+		int d = 0;
+		if( toks.c == ':' ) {
+			d = 1;
+			next();
+			expr();
+		}
+		do_equal(l2);
+
+		function_init(3);
+
+		do_call_var(l);
+		function_set_arg(0);
+
+		do_call_var(l1);
 		function_set_arg(1);
 
 		skipLine();
-		if( toks.c == ':' ) {
-			next();
+		if( d ) {
+			//next();
 
-			expr();
+			//expr();
+			do_call_var(l2);
+			
 			function_set_arg(2);
 
 			function_call( &array_set, "array_set" );
@@ -617,11 +636,9 @@ do_create_array( end ) {
 		} else {
 
 			do_call_num(0);
-
 			function_set_arg(2);
 
 			function_call( &array_set2, "array_set2" );
-
 			function_end(3);			
 		}
 
@@ -629,7 +646,6 @@ do_create_array( end ) {
 		if( toks.c == ',' ) {
 			next();
 		}
-
 		skipLine();
 	}
 
