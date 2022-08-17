@@ -1004,11 +1004,11 @@ decl(cls) {
 
 decl1( cls ) {
 	ivar = 0;
-	toks.type = 1;
-	toks.t = TOK_MAIN;
-	toks.id = "main";
-
-	set_tokv( &toks, ind, cls );
+	tokens btoks;
+	btoks.type = 1;
+	btoks.t = TOK_MAIN;
+	btoks.id = "main";
+	set_tokv( &btoks, ind, cls );
 	do_create_main_function(cls);
 }
 
@@ -1028,10 +1028,18 @@ do_run( f ) {
 	decl(0);
 }
 
+do_run_js( f ) {
+	file = f;
+	inp();
+	next();
+	decl1(0);
+}
+
 do_get_path(fn) {
 	int ls = strrchr(fn, '/');
 	if( ls ) {
-		mainPath = fn;
+		mainPath = malloc( strlen(fn) ); 
+		memcpy( mainPath, fn, strlen(fn)+1);
 		mainPath[ ls - fn ] = '/';
 		mainPath[ ls - fn + 1 ] = '\0';
 	} else {
@@ -1076,6 +1084,14 @@ scan_ext() {
 	}	
 }
 
+get_ext(fn) {
+    char *dot = strrchr(fn, '.');
+
+    if(!dot || dot == fn) return "";
+    return dot + 1;
+}
+
+
 
 main(int n, char * t[] )
 {
@@ -1113,8 +1129,8 @@ main(int n, char * t[] )
 
 
 	mainFile = fopen(t[1], "r");
-	do_get_path(t[1]);
 
+	do_get_path(t[1]);
 /*	if( t[2] ) {
 
 		if( strcmp(t[2], "-t") == 0 ) {
@@ -1131,7 +1147,13 @@ main(int n, char * t[] )
 		}
 	}
 */
-	do_run( mainFile );
+
+	if( strcmp( get_ext(t[1]), "js" ) == 0 ) {
+		do_run_js( mainFile );
+	} else if( strcmp( get_ext(t[1]), "do" ) == 0 )  {
+		do_run( mainFile );
+	}
+
 	fclose(mainFile);
 
 /*	if( t[2] ) {
@@ -1181,5 +1203,7 @@ main(int n, char * t[] )
 		//printf("main function not exists !\n");
 	}
 
+
 	safe_free( &alloc );
+
 }

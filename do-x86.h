@@ -997,8 +997,8 @@ do_main_create_function( cls ) {
 }
 
 do_create_main_function( cls ) {
-	next();
-	
+//	next();
+
 	#if Assembly 
 	printf("push %%ebp\n");
 	#endif

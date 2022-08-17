@@ -13,3 +13,12 @@ func test() {
 }
 
 test()
+
+class test {
+	a() {
+		print("in a\n")
+	}
+}
+
+var d = new a
+a.a()
