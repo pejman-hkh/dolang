@@ -1003,6 +1003,7 @@ decl(cls) {
 
 
 decl_js( cls ) {
+
 	if( toks.t == 0 ) {
 		next();
 		decl_js(cls);
@@ -1013,7 +1014,7 @@ decl_js( cls ) {
 
 		next();
 		decl_js(cls);
-	} else if( toks.t == TOK_IDENT ) {
+	} else if( toks.t == TOK_IDENT && thisClass ) {
 
 		ivar = 0;
 		toks.type = 1;
@@ -1150,6 +1151,13 @@ main(int n, char * t[] )
 	array_set1( &mt, "let", TOK_LET );
 	array_set1( &mt, "extends", TOK_EXTENDS );
 	array_set1( &mt, "import", TOK_IMPORT );
+	array_set1( &mt, "switch", TOK_SWITCH );
+	array_set1( &mt, "try", TOK_TRY );
+	array_set1( &mt, "catch", TOK_CATCH );
+	array_set1( &mt, "throw", TOK_THROW );
+	array_set1( &mt, "static", TOK_STATIC );
+	array_set1( &mt, "function", TOK_FUNCTION );
+	array_set1( &mt, "package", TOK_PACKAGE );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );

@@ -984,7 +984,7 @@ do_main_create_function( cls ) {
 	#endif
 	*ind++ = 0x55;
 
-	#if Assembly 
+	#if Assembly
 	printf("mov %%esp,%%ebp\n");
 	#endif					
 	*ind++ = 0x89;
