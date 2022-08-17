@@ -769,14 +769,54 @@ do_call_address( l ) {
 
 }
 
+do_is_not_end() {
+	return toks.c != ';' && toks.t != 2022 && toks.t != 2023 && toks.t != TOK_IN && toks.c != ')';
+}
+
 do_create_var( n ) {
-	vars_init();
-
-
 	int i = 0;
-	while( toks.c != ';' && toks.t != 2022 && toks.t != 2023 && toks.t != TOK_IN && toks.c != ')' ) {
+	while( do_is_not_end() ) {
+
+		variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
+		char *id = toks.id;
+
+		array_set1( &var_stk, id, a );
+
+
+		tokens btoks;
+		btoks.t = toks.t;
+		btoks.id = toks.id;
+		btoks.c = toks.c;
+
+		vtoks[i] = malloc( sizeof( tokens ) );
+		
+		memcpy( vtoks[i], &btoks, sizeof( tokens ) );
+
+		i++;
+
+		next();
+		if( toks.c == ',' )
+			skip(',');
+
+		if( toks.c == '=' ) {
+			next();
+			char *id = btoks.id;
+			int l = array_get1( &var_stk, id );
+
+			expr();
+			do_equal( l );
+
+		}
+	}
+}
+
+do_create_let( n ) {
+	vars_init();
+	int i = 0;
+	while( do_is_not_end() ) {
 
 		ivar = ivar - n;
+		*(int *)indvar = -ivar;
 		char *id = toks.id;
 		/*if( thisClass ) {
 			id = mstrcat( thisClass, "%");
@@ -786,7 +826,6 @@ do_create_var( n ) {
 
 		array_set1( &var_stk, id, ivar );
 
-		*(int *)indvar = -ivar;
 
 		tokens btoks;
 		btoks.t = toks.t;
@@ -1327,6 +1366,8 @@ do_plus_equal(l) {
 
 do_for_in() {
 
+	vars_init();
+	
 	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
 	int l = ivar;
@@ -1374,7 +1415,6 @@ do_for_in() {
 	*(int *)ind = 0;
 	ind += 4;
 	int b = ind - 4;
-
 
 	//vtoks[0]->type = 2;
 	int k = array_get1( &var_stk, vtoks[0]->id );//get_tokv( vtoks[0], 0 );

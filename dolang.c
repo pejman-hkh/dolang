@@ -1156,7 +1156,7 @@ main(int n, char * t[] )
 	array_set1( &mt, "catch", TOK_CATCH );
 	array_set1( &mt, "throw", TOK_THROW );
 	array_set1( &mt, "static", TOK_STATIC );
-	array_set1( &mt, "function", TOK_FUNCTION );
+	array_set1( &mt, "function", TOK_FUNC );
 	array_set1( &mt, "package", TOK_PACKAGE );
 
 	array_init( &sym_stk );
