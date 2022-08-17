@@ -881,7 +881,7 @@ block() {
 
 		if( toks.c == ';' ) {
 			skip(';');
-		}	
+		}				
 	}
 
 
@@ -999,6 +999,17 @@ decl(cls) {
 		if( ch == EOF ) return;
 		block();
 	}
+}
+
+
+decl1( cls ) {
+	ivar = 0;
+	toks.type = 1;
+	toks.t = TOK_MAIN;
+	toks.id = "main";
+
+	set_tokv( &toks, ind, cls );
+	do_create_main_function(cls);
 }
 
 print_tok() {
@@ -1150,7 +1161,7 @@ main(int n, char * t[] )
 	}
 
 	int main = array_get1( &sym_stk, "fn%main");
-	
+
 	array *argv = safe_alloc_new( &alloc, sizeof(array *));
 	array_init( argv );
 	for( int i = 0; i < n; i++) {

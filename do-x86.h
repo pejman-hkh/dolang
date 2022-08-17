@@ -627,7 +627,7 @@ do_create_array( end ) {
 
 			//expr();
 			do_call_var(l2);
-			
+
 			function_set_arg(2);
 
 			function_call( &array_set, "array_set" );
@@ -985,6 +985,34 @@ do_main_create_function( cls ) {
 	*ind++ = 0xe5;
 
 	block();
+
+	#if Assembly 
+	printf("leave\n");
+	#endif
+	*ind++ = 0xc9;
+	#if Assembly 
+	printf("ret\n");
+	#endif
+	*ind++ = 0xc3;
+}
+
+do_create_main_function( cls ) {
+	next();
+	
+	#if Assembly 
+	printf("push %%ebp\n");
+	#endif
+	*ind++ = 0x55;
+
+	#if Assembly 
+	printf("mov %%esp,%%ebp\n");
+	#endif					
+	*ind++ = 0x89;
+	*ind++ = 0xe5;
+
+	while( ch != EOF ) {
+		block();
+	}
 
 	#if Assembly 
 	printf("leave\n");
