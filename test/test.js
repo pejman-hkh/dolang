@@ -20,5 +20,5 @@ class test {
 	}
 }
 
-var d = new a
-a.a()
+var d = new test
+d.a()
