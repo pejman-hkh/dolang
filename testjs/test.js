@@ -14,11 +14,16 @@ func test() {
 
 test()
 
-class test {
-	a() {
-		print("in a\n")
+var o = {
+	g : 'test\n', 
+	a : func() {
+		this.b()
+	},
+	b : func() {
+		print( this.g )
+		print("in b")
 	}
 }
 
-var d = new test
-d.a()
+print(o);
+o.a();
