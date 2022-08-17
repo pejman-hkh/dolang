@@ -1104,7 +1104,7 @@ main(int n, char * t[] )
 	mainFile = fopen(t[1], "r");
 	do_get_path(t[1]);
 
-	if( t[2] ) {
+/*	if( t[2] ) {
 
 		if( strcmp(t[2], "-t") == 0 ) {
 
@@ -1119,11 +1119,11 @@ main(int n, char * t[] )
 			exit(0);
 		}
 	}
-
+*/
 	do_run( mainFile );
 	fclose(mainFile);
 
-	if( t[2] ) {
+/*	if( t[2] ) {
 
 		if( strcmp(t[2], "-p") == 0 ) {
 			print_ind();		
@@ -1134,7 +1134,7 @@ main(int n, char * t[] )
 			fclose(f);
 		}
 
-	}
+	}*/
 
 
 	//call functions after defination
@@ -1150,10 +1150,22 @@ main(int n, char * t[] )
 	}
 
 	int main = array_get1( &sym_stk, "fn%main");
+	
+	array *argv = safe_alloc_new( &alloc, sizeof(array *));
+	array_init( argv );
+	for( int i = 0; i < n; i++) {
+
+		dovar(r, t[i], DOTYPE_STRING);
+		dovar(a, argv, DOTYPE_ARRAY);
+
+		array_set2(a, r, r);
+	}
+
+	dovar(vargv, argv, DOTYPE_ARRAY);
 
 	if( main ) {
- 		int (*func)() = main;
- 		func();
+ 		int (*func)(variable*, variable*) = main;
+ 		func(vargv, vargv);
 	} else {
 		//printf("main function not exists !\n");
 	}

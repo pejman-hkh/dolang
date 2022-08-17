@@ -1,0 +1,3 @@
+main( argv ) {
+	print( argv )
+}
