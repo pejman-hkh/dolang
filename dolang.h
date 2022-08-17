@@ -15,6 +15,7 @@ variable *a = safe_alloc_new(&alloc, sizeof( variable *) );\
 a->val = b;\
 a->type = c;
 
+char *file_ext;
 
 #define TOK_IF 2
 #define TOK_ELSE 3

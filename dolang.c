@@ -1002,14 +1002,43 @@ decl(cls) {
 }
 
 
-decl1( cls ) {
-	ivar = 0;
-	tokens btoks;
-	btoks.type = 1;
-	btoks.t = TOK_MAIN;
-	btoks.id = "main";
-	set_tokv( &btoks, ind, cls );
-	do_create_main_function(cls);
+decl_js( cls ) {
+	if( toks.t == 0 ) {
+		next();
+		decl_js(cls);
+	} else if( toks.t == 2022 ) {
+		next();
+		decl_js(cls);
+	} else if( toks.t == 1003 ) {
+
+		next();
+		decl_js(cls);
+	} else if( toks.t == TOK_IDENT ) {
+
+		ivar = 0;
+		toks.type = 1;
+		set_tokv( &toks, ind + 5, thisClass );
+
+		next();
+		do_create_callback_function();
+		decl_js( cls );
+		
+	} else {
+		if( inMain ){
+			if( ch == EOF ) return;
+			block();		
+		} else {		
+			inMain = 1;
+			ivar = 0;
+			tokens btoks;
+			btoks.type = 1;
+			btoks.t = TOK_MAIN;
+			btoks.id = "main";
+			set_tokv( &btoks, ind, cls );
+			do_create_main_function(cls);
+		}
+	}
+
 }
 
 print_tok() {
@@ -1032,7 +1061,7 @@ do_run_js( f ) {
 	file = f;
 	inp();
 	next();
-	decl1(0);
+	decl_js(0);
 }
 
 do_get_path(fn) {
@@ -1148,7 +1177,9 @@ main(int n, char * t[] )
 	}
 */
 
-	if( strcmp( get_ext(t[1]), "js" ) == 0 ) {
+	file_ext = get_ext(t[1]);
+
+	if( strcmp( file_ext, "js" ) == 0 ) {
 		do_run_js( mainFile );
 	} else if( strcmp( get_ext(t[1]), "do" ) == 0 )  {
 		do_run( mainFile );
@@ -1182,7 +1213,6 @@ main(int n, char * t[] )
 
 	}
 
-	int main = array_get1( &sym_stk, "fn%main");
 
 	array *argv = safe_alloc_new( &alloc, sizeof(array *));
 	array_init( argv );
@@ -1196,6 +1226,7 @@ main(int n, char * t[] )
 
 	dovar(vargv, argv, DOTYPE_ARRAY);
 
+	int main = array_get1( &sym_stk, "fn%main");
 	if( main ) {
  		int (*func)(variable*, variable*) = main;
  		func(vargv, vargv);

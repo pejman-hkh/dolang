@@ -147,7 +147,6 @@ do_call_string( variable *var ) {
 }
 
 do_call_num( int id ) {
-
 	#if Assembly 
 	printf("mov 0x%x,%%eax\n", id );
 	#endif
@@ -891,6 +890,7 @@ do_call_class( cls ) {
 do_create_class() {
 	next();
 	char *cls = toks.id;
+	thisClass = cls;
 	toks.type = 3;
 	set_tokv( &toks, cls, 0 );
 	next();
@@ -929,7 +929,13 @@ do_create_class() {
 	}
 
 	skip('{');
-	decl(cls);
+	if( strcmp(file_ext, "js") == 0 ) {
+		decl_js( cls );
+
+	} else {
+		decl(cls);
+	}
+
 	skip('}');
 }
 
