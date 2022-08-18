@@ -18,6 +18,7 @@ do_microtime() {
 
 do_set_val( variable *a, variable *b ) {
 	*b = *a;
+	return a;
 }
 
 do_print_array( variable *ths, variable *arr1 ) {

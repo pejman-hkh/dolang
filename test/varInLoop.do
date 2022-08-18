@@ -9,4 +9,5 @@ main() {
 	while( var a = test() ) {
 		print( a +"\n" );
 	}
+
 }

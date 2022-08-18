@@ -1211,8 +1211,8 @@ main(int n, char * t[] )
 			fclose(f);
 		}
 
-	}*/
-
+	}
+*/
 
 	//call functions after defination
 	for( int i = 0; i < ind_fns.length; i++ ) {
