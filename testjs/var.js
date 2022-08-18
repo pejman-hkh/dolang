@@ -1,7 +1,9 @@
 var a = "test";
-
-func test() {
+var b = 20;
+function test(g) {
+	print(g);
+	print( b - g )
 	print( a );
 }
 
-test();
+test(10);

@@ -501,11 +501,13 @@ unary() {
 
 		} else if( btoks.t == TOK_FUNC ) {
 			//do_create_callback_function();
+		} else if( btoks.t == 1 | btoks.t == TOK_LET  ) {
+			do_create_var( 4 );
 		} else if( btoks.t == 1 | btoks.t == TOK_VAR  ) {
-			if( toks.c == '*' ) {
+			/*if( toks.c == '*' ) {
 				next();
 			}
-
+*/
 			do_create_var( 4 );
 	
 		} else if( btoks.c == '!' ) {
@@ -786,6 +788,9 @@ block() {
 	} else if( toks.t == 2022 ) {
 		next();
 		block();
+	} else if( toks.t == TOK_LET ) {		
+		next();
+		do_create_let(4);		
 	} else if( toks.t == TOK_VAR ) {
 		next();
 		do_create_var(4);
