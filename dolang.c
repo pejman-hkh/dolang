@@ -957,7 +957,7 @@ decl(cls) {
 		}*/
 
 		array_set1( &var_stk, id, a );
-
+	
 		next();
 
 		//expr();

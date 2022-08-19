@@ -157,7 +157,7 @@ do_call_num( int id ) {
 
 do_call_var(l) {
 
-	if( l > 0 & l > 10000 ) {
+	if( l > 0 & l > 512 ) {
 		do_call_num(l);
 	} else {	
 		#if Assembly 
@@ -477,7 +477,18 @@ do_while_loop(n) {
 
 do_equal(l) {
 
-	if( l > 0 & l > 10000 ) {
+	if( l > 0 & l > 512 ) {
+
+	/*	#if Assembly 
+		printf("mov %%eax,0x%x\n", l);
+		#endif
+		*ind++ = 0x89;
+		*ind++ =  0x05;
+		*(int *)ind = l;
+		ind += 4;
+*/
+		//89 05 90 09 56 58
+
 		function_init(2);
 		function_set_arg(0);
 
@@ -1367,7 +1378,7 @@ do_plus_equal(l) {
 do_for_in() {
 
 	vars_init();
-	
+
 	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
 	int l = ivar;
