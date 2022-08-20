@@ -1,3 +1,3 @@
 main( argv ) {
-	print( argv )	
+	print( argv )
 }

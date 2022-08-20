@@ -7,14 +7,14 @@ class mysqlStmt {
 	}
 
 	bind( b ) {
-		print( this )
+		//print( this )
 
-		mysql_stmt_bind( this.stmt, b);
-		//mysql_stmt_exec( this.stmt );
+		//mysql_stmt_bind( this.stmt, b);
+		mysql_stmt_exec( this.stmt );
 		return this;
 	}
 
-	next() {
+	fetchAll() {
 		return mysql_stmt_fetch( this.stmt );
 		//return [ { id : 1, name : 'test'} ];
 	}
@@ -31,12 +31,18 @@ class mysql {
 	}
 
 	prepare( sql ) {
-
+		
 		this.stmt = new mysqlStmt( sql, this.con );
+
 		return this;
 	}
 
 	execute( b ) {
+
 		return this.stmt.bind( b );
+	}
+
+	close() {
+
 	}
 }
