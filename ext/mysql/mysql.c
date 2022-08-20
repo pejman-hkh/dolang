@@ -45,19 +45,21 @@ do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
 do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 	array *bnd = bd->val;
 
-	MYSQL_BIND  *bind = malloc( sizeof( MYSQL_BIND * ) * (bnd->length + 1) );
+	MYSQL_BIND  *bind = malloc( sizeof( MYSQL_BIND ) * (bnd->length ) );
 	int *is_null = malloc( bnd->length + 1);
 	int *error = malloc( bnd->length + 1);
 	unsigned long *length = malloc( bnd->length + 1);
 
 
+	memset(bind, 0, sizeof (bind));
+
 	for( int i = 0; i < bnd->length; i++ ) {
 		variable *v = bnd->value[i];
 		if( v->type == 2 ) {
-			bind[i].buffer_type = MYSQL_TYPE_LONG;
-			bind[i].buffer = (char *)v->val;
-			//bind[i]->buffer_length = sizeof(long);
 
+			bind[i].buffer_type = MYSQL_TYPE_LONG; 
+			bind[i].buffer = (char *) &(v->val); 
+	
 		} else if( v->type == 1 ) {
 			  bind[i].buffer_type = MYSQL_TYPE_STRING;
 			  bind[i].buffer = (char *)v->val;
@@ -85,8 +87,6 @@ do_mysql_stmt_exec( variable *ths, variable *stmt ) {
 
 do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
 
-	//stmt->val
-
 	MYSQL_RES  *prepare_meta_result;
 
 	prepare_meta_result = mysql_stmt_result_metadata(stmt->val);
@@ -102,27 +102,10 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
 	MYSQL_FIELD *fields;
 	fields = mysql_fetch_fields(prepare_meta_result);
 
-/*	
-
-	for(int i = 0; i < num_fields; i++)
-	{
-	   printf("Field %u is %s\n", i, fields[i].name);
-	   printf("type %d\n", fields[i].type);
-	}*/
-	//exit(0);
-
-	/* Get total columns in the query */
-	//int num_fields = mysql_num_fields(prepare_meta_result);
-	//printf(" total columns in SELECT statement: %d\n",
-	//column_count);
-
-	char str_data[50];
-	int is_null[3];
-
-	//unsigned long length[4];
 
 	MYSQL_BIND * bind = malloc( sizeof( MYSQL_BIND ) * num_fields );
 	int * int_data = malloc( sizeof(int) * num_fields );
+	int * is_null = malloc( sizeof(int) * num_fields );
 	memset(bind, 0, sizeof (MYSQL_BIND) * num_fields);
 
 	for (int i = 0; i < num_fields; ++i)
@@ -145,7 +128,6 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
 
 	}
 
-
 	if (mysql_stmt_bind_result(stmt->val, bind))
 	{
 		fprintf(stderr, " mysql_stmt_bind_result() failed\n");
@@ -161,100 +143,54 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
 		exit(0);
 	}
 
+	array *ret1 = safe_alloc_new( &alloc, sizeof( array ) );
+	array_init( ret1 );
+	dovar( ret, ret1, DOTYPE_ARRAY );
 
-
-	while (1)
-
-	{
+	int row = 0;
+	while (1) {
 
 		int status = mysql_stmt_fetch(stmt->val);
 		if (status == 1 || status == MYSQL_NO_DATA) {
 			break;
 		} 
 
+		array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
+		array_init( arr1 );
+		dovar( arr, arr1, DOTYPE_ARRAY );
 
+		for (int i = 0; i < num_fields; ++i) {
 
-		for (int i = 0; i < num_fields; ++i)
+			switch (bind[i].buffer_type) {
+				case MYSQL_TYPE_LONG:
+					if (*bind[i].is_null) 
+						printf(" val[%d] = NULL;", i);
+					else {
 
-		{
+						dovar( fn, fields[i].name, DOTYPE_STRING );
+						dovar( fv, (long) *((int *) bind[i].buffer), DOTYPE_INT );
+						array_set( arr, fn, fv );
 
-		switch (bind[i].buffer_type)
+					}
 
-		{
-			case MYSQL_TYPE_LONG:
-				if (*bind[i].is_null) 
-					printf(" val[%d] = NULL;", i);
-				else {
-					printf("%s ", fields[i].name );
-					printf(" val[%d] = %ld;", i, (long) *((int *) bind[i].buffer));
-				}
+				break;
 
-			break;
+				default:
 
-			default:
-
-			printf(" unexpected type (%d)\n", bind[i].buffer_type);
+				printf(" unexpected type (%d)\n", bind[i].buffer_type);
 
 			}
 
 		}
 
-		printf("\n");
+		dovar( rw, row, DOTYPE_INT );
+
+		array_set( ret, rw, arr );
+
+		row++;
 
 	}
 
-
-
-
-/*	if (mysql_stmt_fetch(stmt->val))
-	{
-		fprintf(stderr, " mysql_stmt_fetch() failed\n");
-		fprintf(stderr, " %s\n", mysql_stmt_error(stmt->val));
-		exit(0);
-	}*/
-
-/*	for( int i = 0; i < column_count; i++ ) {
-
-
-
-		if (mysql_stmt_fetch(stmt->val ))
-		{
-			fprintf(stderr, " mysql_stmt_fetch(), failed\n");
-			fprintf(stderr, " ssssssss %s\n", mysql_stmt_error(stmt->val));
-			exit(0);
-		}
-	}
-*/
-	while ( ! mysql_stmt_fetch( stmt->val ) )
-	{
-
-		printf("dddd\n");
-		for( int i = 0; i < num_fields; i++ ) {
-			//printf("%d\n", real_length[i]);
-		/*	if (real_length[i] > 0)
-			{
-				char * data = malloc(real_length);
-				bind[i].buffer= data;
-				bind[i].buffer_length= real_length;
-				mysql_stmt_fetch_column(stmt, bind, 0, 0);
-				printf("%s\n", data);
-			}*/
-		}
-
-
-		//printf("%s\n", str_data );
-	}
-
-	//exit(0);
-
-/*	mysql_stmt_fetch( stmt->val );
-	int l = length[0];
-
-	//printf("length is : %d\n", *(l) );
-	printf("length is : %d\n", str_data );
-	exit(0);*/
-
-	dovar( ret, 1, DOTYPE_INT )
 	return ret;
 }
 

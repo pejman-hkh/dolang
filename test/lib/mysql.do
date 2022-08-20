@@ -9,7 +9,7 @@ class mysqlStmt {
 	bind( b ) {
 		//print( this )
 
-		//mysql_stmt_bind( this.stmt, b);
+		mysql_stmt_bind( this.stmt, b);
 		mysql_stmt_exec( this.stmt );
 		return this;
 	}

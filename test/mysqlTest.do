@@ -5,9 +5,7 @@ main() {
 
 	var db = new mysql("localhost", "root", "12c", "test")
 
-	var stmt = db.prepare("select * from test1 where tid = 10 ").execute( /*[ 10 ]*/ )
-	print("Test")
-
+	var stmt = db.prepare("select * from test1 where tid = ? ").execute( [ 10 ] )
 	var all = stmt.fetchAll();
 	print(all);
 
@@ -15,7 +13,6 @@ main() {
 		print( fetch )
 	}
 */
-	print("Test1")
 
 	db.close()
 }
