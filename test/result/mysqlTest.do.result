@@ -1,3 +1,6 @@
-[0:[id:1,tid:10,name:test]
-,1:[id:2,tid:10,name:test1]
-]
+[id:1,tid:10,name:test]
+1
+test
+[id:2,tid:10,name:test1]
+2
+test1

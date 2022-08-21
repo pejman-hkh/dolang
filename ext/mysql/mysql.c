@@ -85,7 +85,7 @@ do_mysql_stmt_exec( variable *ths, variable *stmt ) {
 		
 }
 
-do_mysql_stmt_fetch_all( variable *ths, variable *stmt ) {
+do_mysql_stmt_prepare_result( variable *ths, variable *stmt ) {
 
 	MYSQL_RES  *prepare_meta_result;
 
@@ -97,16 +97,27 @@ do_mysql_stmt_fetch_all( variable *ths, variable *stmt ) {
 		printf(" %s\n", mysql_stmt_error(stmt->val));
 		exit(0);
 	}
+	
+	if (mysql_stmt_store_result(stmt->val))
+	{
+		fprintf(stderr, " mysql_stmt_store_result() failed\n");
+		fprintf(stderr, " %s\n", mysql_stmt_error(stmt->val));
+		exit(0);
+	}
+
+	dovar( ret, prepare_meta_result, DOTYPE_INT );
+	return ret;
+}
+
+do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
+
+	MYSQL_RES  *prepare_meta_result = res->val;
 
 	int num_fields = mysql_num_fields(prepare_meta_result);
 	MYSQL_FIELD *fields;
 	fields = mysql_fetch_fields(prepare_meta_result);
 
-
 	MYSQL_BIND * bind = malloc( sizeof( MYSQL_BIND ) * num_fields );
-	int * int_data = malloc( sizeof(int) * num_fields );
-	char * str_data = malloc( sizeof(char *) * num_fields );
-	int * is_null = malloc( sizeof(int) * num_fields );
 	int * real_length = malloc( sizeof(int) * num_fields );
 	memset(bind, 0, sizeof (MYSQL_BIND) * num_fields);
 
@@ -126,54 +137,45 @@ do_mysql_stmt_fetch_all( variable *ths, variable *stmt ) {
 		exit(0);
 	}
 
-	if (mysql_stmt_store_result(stmt->val))
-	{
-		fprintf(stderr, " mysql_stmt_store_result() failed\n");
-		fprintf(stderr, " %s\n", mysql_stmt_error(stmt->val));
-		exit(0);
-	}
+	int status = mysql_stmt_fetch(stmt->val);
+	if (status == 1 || status == MYSQL_NO_DATA) {
+		dovar(r1, 0, DOTYPE_INT);
+		return r1;
+	} 
 
-	array *ret1 = safe_alloc_new( &alloc, sizeof( array ) );
-	array_init( ret1 );
-	dovar( ret, ret1, DOTYPE_ARRAY );
+	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
+	array_init( arr1 );
+	dovar( arr, arr1, DOTYPE_ARRAY );
 
-	int row = 0;
-	while (1) {
+	for (int i = 0; i < num_fields; ++i) {
+		if (real_length[i] > 0) {
+			int len = real_length[i];
 
-		int status = mysql_stmt_fetch(stmt->val);
-		if (status == 1 || status == MYSQL_NO_DATA) {
-			break;
-		} 
+			void *data = malloc(len);
+			bind[i].buffer = data;
+			bind[i].buffer_length = &real_length[i];
+			mysql_stmt_fetch_column(stmt->val, &bind[i], i, 0);
 
-		array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
-		array_init( arr1 );
-		dovar( arr, arr1, DOTYPE_ARRAY );
+			dovar( fn, fields[i].name, DOTYPE_STRING );
+			dovar( fv, data, DOTYPE_STRING );
+			array_set( arr, fn, fv );
 
-		for (int i = 0; i < num_fields; ++i) {
-			if (real_length[i] > 0) {
-				int len = real_length[i];
-
-				void *data = malloc(len);
-				bind[i].buffer = data;
-				bind[i].buffer_length = &real_length[i];
-				mysql_stmt_fetch_column(stmt->val, &bind[i], i, 0);
-
-				dovar( fn, fields[i].name, DOTYPE_STRING );
-				dovar( fv, data, DOTYPE_STRING );
-				array_set( arr, fn, fv );
-
-			}
 		}
-
-		dovar( rw, row, DOTYPE_INT );
-
-		array_set( ret, rw, arr );
-
-		row++;
-
 	}
 
-	return ret;
+	return arr;
+}
+
+do_mysql_stmt_close( variable *ths, variable *stmt, variable *res ) {
+	MYSQL_RES  *prepare_meta_result = res->val;
+
+	mysql_free_result(prepare_meta_result);
+	if (mysql_stmt_close(stmt->val))
+	{
+	  fprintf(stderr, " failed while closing the statement\n");
+	  //fprintf(stderr, " %s\n", mysql_error(mysql));
+	  exit(0);
+	}	
 }
 
 do_mysql_close( variable *ths, variable *msql ) {
@@ -187,7 +189,9 @@ extern load() {
     array_set1( arr, "mysql_stmt", &do_mysql_stmt);
     array_set1( arr, "mysql_stmt_bind", &do_mysql_stmt_bind);
     array_set1( arr, "mysql_stmt_exec", &do_mysql_stmt_exec);
-    array_set1( arr, "mysql_stmt_fetch_all", &do_mysql_stmt_fetch_all);
+    array_set1( arr, "mysql_stmt_prepare_result", &do_mysql_stmt_prepare_result);
+    array_set1( arr, "mysql_stmt_fetch", &do_mysql_stmt_fetch);
+    array_set1( arr, "mysql_stmt_close", &do_mysql_stmt_close);
     array_set1( arr, "mysql_close", &do_mysql_close);
 
 
