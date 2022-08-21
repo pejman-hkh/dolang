@@ -18,8 +18,13 @@ class mysqlStmt {
 	}
 
 	fetchAll() {
-		return mysql_stmt_fetch_all( this.stmt, this.res );
-		//return [ { id : 1, name : 'test'} ];
+		let ret = [];
+		let i = 0;
+		while( let fetch = this.next() ) {
+			ret[i++] = fetch;
+		}
+
+		return ret;
 	}
 
 	next() {
@@ -43,18 +48,17 @@ class mysql {
 	}
 
 	prepare( sql ) {
-		
-		this.stmt = new mysqlStmt( sql, this.con );
-
+		this.sql = sql;
 		return this;
 	}
 
 	execute( b ) {
-
-		return this.stmt.bind( b );
+		let stmt = new mysqlStmt( this.sql, this.con );
+		stmt.bind( b );
+		return stmt;
 	}
 
 	close() {
-
+		mysql_close( this.con );
 	}
 }

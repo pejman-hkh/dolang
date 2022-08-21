@@ -1,6 +1,8 @@
 [id:1,tid:10,name:test]
-1
-test
+[id:1,test1id:1,tt:6.2.1 C API Prepared Statement Type Codes
+The buffer_type member of MYSQL_BIND structures indicates the data type of the C language variable bound to a statement parameter or result set column. For input, buffer_type indicates the type of the variable containing the value to be sent to the server. For output, it indicates the type of the variable into which a value received from the server should be stored.
+
+The following table shows the permissible values for the buffer_type member of MYSQL_BIND structures for input values sent to the server. The table shows the C variable types that you can use, the corresponding type codes, and the SQL data types for which the supplied value can be used without conversion. Choose the buffer_type value according to the data type of the C language variable that you are binding. For the integer types, you should also set the is_unsigned member to indicate whether the variable is signed or unsigned.
+
+]
 [id:2,tid:10,name:test1]
-2
-test1

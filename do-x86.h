@@ -602,9 +602,27 @@ do_create_array( end ) {
 
 
 		if( toks.t == TOK_IDENT ) {
+			char *id = toks.id;
 			dovar(a,toks.id,1);
 			do_call_string(a);
 			next();
+
+			if( toks.c == ',' || toks.c == '.' || toks.c == '[' || toks.c == ']' || toks.c == '}' ) {
+		 		int l = array_get1( &var_stk, id );
+			 	do_call_var(l);
+				if( toks.c == '[' ) {
+					do_call_array(l);
+				} else if( toks.c == '.') {
+					do_dot();
+				}		 	
+			}
+/*
+			if(  ) {
+			 	int l = array_get1( &var_stk, id );
+			 	do_call_var(l);
+			}
+*/
+
 		} else {
 			expr();
 		}

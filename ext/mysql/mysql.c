@@ -46,15 +46,16 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 	array *bnd = bd->val;
 
 	MYSQL_BIND  *bind = malloc( sizeof( MYSQL_BIND ) * (bnd->length ) );
-	int *is_null = malloc( bnd->length + 1);
-	int *error = malloc( bnd->length + 1);
-	unsigned long *length = malloc( bnd->length + 1);
-
+	memset(bind, 0, sizeof (bind));
+	//int *is_null = malloc( bnd->length + 1);
+	//int *error = malloc( bnd->length + 1);
+	//unsigned long *length = malloc( bnd->length + 1);
 
 	memset(bind, 0, sizeof (bind));
 
 	for( int i = 0; i < bnd->length; i++ ) {
 		variable *v = bnd->value[i];
+
 		if( v->type == 2 ) {
 
 			bind[i].buffer_type = MYSQL_TYPE_LONG; 
@@ -114,8 +115,7 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 	MYSQL_RES  *prepare_meta_result = res->val;
 
 	int num_fields = mysql_num_fields(prepare_meta_result);
-	MYSQL_FIELD *fields;
-	fields = mysql_fetch_fields(prepare_meta_result);
+	MYSQL_FIELD *fields = mysql_fetch_fields(prepare_meta_result);
 
 	MYSQL_BIND * bind = malloc( sizeof( MYSQL_BIND ) * num_fields );
 	int * real_length = malloc( sizeof(int) * num_fields );
@@ -155,9 +155,21 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 			bind[i].buffer = data;
 			bind[i].buffer_length = &real_length[i];
 			mysql_stmt_fetch_column(stmt->val, &bind[i], i, 0);
-
+			
+			//printf("%d\n", fields[i].type );
+			int type = DOTYPE_STRING;
+			switch( fields[i].type ) {
+				case 3 :
+					type = DOTYPE_INT;
+					data = atoi(data);
+				break;
+				case 253 : 
+					type = DOTYPE_STRING;
+				break;
+			}
 			dovar( fn, fields[i].name, DOTYPE_STRING );
-			dovar( fv, data, DOTYPE_STRING );
+			dovar( fv, data, type );
+
 			array_set( arr, fn, fv );
 
 		}
@@ -179,7 +191,7 @@ do_mysql_stmt_close( variable *ths, variable *stmt, variable *res ) {
 }
 
 do_mysql_close( variable *ths, variable *msql ) {
-
+	mysql_close(msql->val);
 }
 
 extern load() {
