@@ -105,26 +105,37 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
 
 	MYSQL_BIND * bind = malloc( sizeof( MYSQL_BIND ) * num_fields );
 	int * int_data = malloc( sizeof(int) * num_fields );
+	char * str_data = malloc( sizeof(char *) * num_fields );
 	int * is_null = malloc( sizeof(int) * num_fields );
+	int * real_length = malloc( sizeof(int) * num_fields );
 	memset(bind, 0, sizeof (MYSQL_BIND) * num_fields);
 
 	for (int i = 0; i < num_fields; ++i)
 
 	{
-		bind[i].buffer_type = fields[i].type; 
+/*		bind[i].buffer_type = fields[i].type; 
 		bind[i].is_null = &is_null[i];
+*/
+		bind[i].buffer = 0; 
+		bind[i].buffer_length = 0; 
+		bind[i].length = &real_length[i]; 
 
-		switch (fields[i].type)
+
+/*		switch (fields[i].type)
 		{
 
 		case MYSQL_TYPE_LONG:
 			bind[i].buffer = (char *) &(int_data[i]); 
 			bind[i].buffer_length = sizeof (int_data); 
-			break;
+		break;
+		case MYSQL_TYPE_STRING:
+			bind[i].buffer = (char *) &(str_data[i]); 
+			bind[i].buffer_length = sizeof (str_data); 
+		break;
 		default:
 			fprintf(stderr, "ERROR: unexpected type: %d.\n", fields[i].type); exit(1);
 
-		}
+		}*/
 
 	}
 
@@ -160,27 +171,19 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
 		dovar( arr, arr1, DOTYPE_ARRAY );
 
 		for (int i = 0; i < num_fields; ++i) {
+			if (real_length[i] > 0) {
+				int len = real_length[i];
 
-			switch (bind[i].buffer_type) {
-				case MYSQL_TYPE_LONG:
-					if (*bind[i].is_null) 
-						printf(" val[%d] = NULL;", i);
-					else {
+				void *data = malloc(len);
+				bind[i].buffer = data;
+				bind[i].buffer_length = &real_length[i];
+				mysql_stmt_fetch_column(stmt->val, &bind[i], i, 0);
 
-						dovar( fn, fields[i].name, DOTYPE_STRING );
-						dovar( fv, (long) *((int *) bind[i].buffer), DOTYPE_INT );
-						array_set( arr, fn, fv );
-
-					}
-
-				break;
-
-				default:
-
-				printf(" unexpected type (%d)\n", bind[i].buffer_type);
+				dovar( fn, fields[i].name, DOTYPE_STRING );
+				dovar( fv, data, DOTYPE_STRING );
+				array_set( arr, fn, fv );
 
 			}
-
 		}
 
 		dovar( rw, row, DOTYPE_INT );
