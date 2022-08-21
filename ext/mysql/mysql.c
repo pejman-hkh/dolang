@@ -85,7 +85,7 @@ do_mysql_stmt_exec( variable *ths, variable *stmt ) {
 		
 }
 
-do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
+do_mysql_stmt_fetch_all( variable *ths, variable *stmt ) {
 
 	MYSQL_RES  *prepare_meta_result;
 
@@ -113,30 +113,9 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt ) {
 	for (int i = 0; i < num_fields; ++i)
 
 	{
-/*		bind[i].buffer_type = fields[i].type; 
-		bind[i].is_null = &is_null[i];
-*/
 		bind[i].buffer = 0; 
 		bind[i].buffer_length = 0; 
 		bind[i].length = &real_length[i]; 
-
-
-/*		switch (fields[i].type)
-		{
-
-		case MYSQL_TYPE_LONG:
-			bind[i].buffer = (char *) &(int_data[i]); 
-			bind[i].buffer_length = sizeof (int_data); 
-		break;
-		case MYSQL_TYPE_STRING:
-			bind[i].buffer = (char *) &(str_data[i]); 
-			bind[i].buffer_length = sizeof (str_data); 
-		break;
-		default:
-			fprintf(stderr, "ERROR: unexpected type: %d.\n", fields[i].type); exit(1);
-
-		}*/
-
 	}
 
 	if (mysql_stmt_bind_result(stmt->val, bind))
@@ -208,7 +187,7 @@ extern load() {
     array_set1( arr, "mysql_stmt", &do_mysql_stmt);
     array_set1( arr, "mysql_stmt_bind", &do_mysql_stmt_bind);
     array_set1( arr, "mysql_stmt_exec", &do_mysql_stmt_exec);
-    array_set1( arr, "mysql_stmt_fetch", &do_mysql_stmt_fetch);
+    array_set1( arr, "mysql_stmt_fetch_all", &do_mysql_stmt_fetch_all);
     array_set1( arr, "mysql_close", &do_mysql_close);
 
 

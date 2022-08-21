@@ -15,7 +15,7 @@ class mysqlStmt {
 	}
 
 	fetchAll() {
-		return mysql_stmt_fetch( this.stmt );
+		return mysql_stmt_fetch_all( this.stmt );
 		//return [ { id : 1, name : 'test'} ];
 	}
 }
