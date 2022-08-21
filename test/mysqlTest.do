@@ -6,6 +6,9 @@ main() {
 	let db = new mysql("localhost", "root", "12c", "test")
 	var a = 10
 
+	let si = db.prepare("insert into test1(tid, name) values(?,?) ").execute([5,"a test name"]);
+	si.close();
+
 	let stmt = db.prepare("select * from test1 where tid = ? ").execute( [ a ] )
 	while( let fetch = stmt.next() ) {
 		print(fetch)
@@ -22,7 +25,10 @@ main() {
 
 
 	}
-
+/*
+	let su = db.prepare("update test1 set name = ? where id = ?").execute([ 'test for update', 1]);
+	su.close();
+*/
 	stmt.close()
 
 	db.close()

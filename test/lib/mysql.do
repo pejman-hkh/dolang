@@ -1,18 +1,14 @@
 
 class mysqlStmt {
 	construct( sql, con ) {
-
+		this.res = 0;
 		this.stmt = mysql_stmt( con, sql );
 		return this;
 	}
 
 	bind( b ) {
-		//print( this )
-
 		mysql_stmt_bind( this.stmt, b);
 		mysql_stmt_exec( this.stmt );
-		
-		this.res = mysql_stmt_prepare_result( this.stmt );
 
 		return this;
 	}
@@ -28,8 +24,10 @@ class mysqlStmt {
 	}
 
 	next() {
+		if( ! this.res )
+			this.res = mysql_stmt_prepare_result( this.stmt );
+
 		return mysql_stmt_fetch( this.stmt, this.res );
-		//return [ { id : 1, name : 'test'} ];
 	}
 
 	close() {

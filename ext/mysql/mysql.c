@@ -50,8 +50,7 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 	//int *is_null = malloc( bnd->length + 1);
 	//int *error = malloc( bnd->length + 1);
 	//unsigned long *length = malloc( bnd->length + 1);
-
-	memset(bind, 0, sizeof (bind));
+	unsigned long * length = malloc( sizeof( unsigned long ) * (bnd->length ) );
 
 	for( int i = 0; i < bnd->length; i++ ) {
 		variable *v = bnd->value[i];
@@ -62,9 +61,14 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 			bind[i].buffer = (char *) &(v->val); 
 	
 		} else if( v->type == 1 ) {
-			  bind[i].buffer_type = MYSQL_TYPE_STRING;
-			  bind[i].buffer = (char *)v->val;
-			  bind[i].buffer_length = strlen( v->val );
+			char *data = v->val;
+			int * len = strlen( data );
+			length[i] = len;
+
+			bind[i].buffer_type = MYSQL_TYPE_STRING;
+			bind[i].buffer = data;
+			bind[i].length = &length[i];
+	
 		}
 	}
 
