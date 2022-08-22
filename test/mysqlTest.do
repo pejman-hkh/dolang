@@ -19,7 +19,7 @@ main() {
 
 	//print(b)
 
-	let stmt = db.prepare("select * from test1 where tid = ? ").execute( [ 10 ] )
+	let stmt = db.prepare("select * from test1 where tid = ? ").execute( [ 5 ] )
 	while( let fetch = stmt.next() ) {
 		print(fetch)
 

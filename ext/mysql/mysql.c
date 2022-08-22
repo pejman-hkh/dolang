@@ -171,7 +171,7 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 		if (real_length[i] > 0) {
 			int len = real_length[i];
 
-			void *data = malloc(len);
+			void *data = malloc(len+1);
 			bind[i].buffer = data;
 			bind[i].buffer_length = &real_length[i];
 			mysql_stmt_fetch_column(stmt->val, &bind[i], i, 0);
