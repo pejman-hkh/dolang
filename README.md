@@ -1,7 +1,7 @@
 **Under Development**
 
 
-Do lang is simple and tiny jit compiler programming language and it is very similar to js
+Do lang is simple and tiny jit compiling programming language and it is very similar to js
 
 There are many samples of language in test directory
 
