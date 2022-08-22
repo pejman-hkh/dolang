@@ -1,8 +1,5 @@
 import lib.mysql
 
-mysql_query( cn, sql, b ) {
-
-}
 
 main() {
 
@@ -22,7 +19,7 @@ main() {
 
 	//print(b)
 
-	let stmt = db.prepare("select * from test1 where tid = ? ").execute( [ a ] )
+	let stmt = db.prepare("select * from test1 where tid = ? ").execute( [ 10 ] )
 	while( let fetch = stmt.next() ) {
 		print(fetch)
 
@@ -40,21 +37,20 @@ main() {
 	}
 	stmt.close()
 
-	let su = db.prepare("update test1 set name = ? where id = ?").execute([ 'test for update', 1]);
-	su.close();
-	
+	let su = db.prepare("update test1 set name = ? where id = ?").execute([ 'test for update', 1])
+	su.close()
 	
 
-
-/*	let cn = mysql_connect("localhost", "root", "12c", "test");
+	db.close()
+	
+	let cn = mysql_connect("localhost", "root", "12c", "test");
 
 	for( var i = 0; i < 10; i++ ) {
 		let a = [ i, "this is test1"];
-
 		mysql_query(cn, "insert into test1(tid, name) values(?,?)", a )
 	}
 
-*/
+	//mysql_close( cn );
 	//print("here2")
-	//db.close()
+	
 }
