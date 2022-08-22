@@ -3,6 +3,7 @@ class mysqlStmt {
 	construct( sql, con ) {
 		this.res = 0;
 		this.stmt = mysql_stmt( con, sql );
+
 		return this;
 	}
 
@@ -24,6 +25,7 @@ class mysqlStmt {
 	}
 
 	next() {
+
 		if( ! this.res )
 			this.res = mysql_stmt_prepare_result( this.stmt );
 
@@ -37,20 +39,28 @@ class mysqlStmt {
 
 class mysql {
 	construct( host, user, pass, db ) {
+
 		this.connect( host, user, pass, db );
 		return this;
 	}
 
 	connect( host, user, pass, db ) {
+
 		this.con = mysql_connect(host, user, pass, db);
 	}
 
+	query( sql, bind ) {
+		mysql_query( this.con, sql, bind );
+	}
+
 	prepare( sql ) {
+
 		this.sql = sql;
 		return this;
 	}
 
 	execute( b ) {
+
 		let stmt = new mysqlStmt( this.sql, this.con );
 		stmt.bind( b );
 		return stmt;

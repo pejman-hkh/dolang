@@ -616,12 +616,7 @@ do_create_array( end ) {
 					do_dot();
 				}		 	
 			}
-/*
-			if(  ) {
-			 	int l = array_get1( &var_stk, id );
-			 	do_call_var(l);
-			}
-*/
+
 
 		} else {
 			expr();
@@ -685,6 +680,7 @@ do_create_array( end ) {
 do_call_array(l) {
 
 	while( toks.c == '[' ) {
+		
 		function_init(2);
 
 		function_set_arg(0);

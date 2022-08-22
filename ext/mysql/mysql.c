@@ -17,18 +17,29 @@ do_mysql_options( variable *ths, variable *msql, variable *opt, variable *opt_va
 	mysql_options( msql->val, (int)opt->val, (int)opt_val->val );
 }
 
-do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
-	MYSQL_STMT    *stmt;
-	stmt = mysql_stmt_init(msql->val);
+do_mysql_query( variable *ths, variable *msql, variable *sql, variable *bind ) {
+	
+	variable *stmt = do_mysql_stmt( ths, msql, sql );
+	do_mysql_stmt_bind( ths, stmt, bind );
+	//printf("here \n");
+	do_mysql_stmt_exec( ths, stmt );
+	//printf("here1 \n");
+	do_mysql_stmt_close( ths, stmt );
 
+}
+
+do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
+/*	int rc;
+	unsigned long type;
+*/
+	MYSQL_STMT *stmt = mysql_stmt_init(msql->val);
+/*	type = (unsigned long) CURSOR_TYPE_READ_ONLY;
+	rc = mysql_stmt_attr_set(stmt, STMT_ATTR_CURSOR_TYPE, (void*) &type);*/
 	if (!stmt)
 	{
 		fprintf(stderr, " mysql_stmt_init(), out of memory\n");
 		exit(0);
 	}
-
-	//printf("%s\n", sql->val);
-	
 
 	if ( mysql_stmt_prepare(stmt, sql->val, strlen(sql->val) ) )
 	{
@@ -43,14 +54,12 @@ do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
 }
 
 do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
-	array *bnd = bd->val;
 
-	MYSQL_BIND  *bind = malloc( sizeof( MYSQL_BIND ) * (bnd->length ) );
+	array *bnd = bd->val;
+	MYSQL_BIND  bind[100]; //= safe_alloc_new(&alloc, sizeof( MYSQL_BIND ) * (bnd->length) );
 	memset(bind, 0, sizeof (bind));
-	//int *is_null = malloc( bnd->length + 1);
-	//int *error = malloc( bnd->length + 1);
-	//unsigned long *length = malloc( bnd->length + 1);
-	unsigned long * length = malloc( sizeof( unsigned long ) * (bnd->length ) );
+
+	unsigned long * length = safe_alloc_new(&alloc, sizeof( unsigned long ) * (bnd->length ) );
 
 	for( int i = 0; i < bnd->length; i++ ) {
 		variable *v = bnd->value[i];
@@ -62,13 +71,17 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 	
 		} else if( v->type == 1 ) {
 			char *data = v->val;
-			int * len = strlen( data );
+			int len = strlen( data ) + 1;
 			length[i] = len;
+
 
 			bind[i].buffer_type = MYSQL_TYPE_STRING;
 			bind[i].buffer = data;
+			bind[i].buffer_length = len;
 			bind[i].length = &length[i];
-	
+
+			//printf("%s\n", data );
+
 		}
 	}
 
@@ -77,17 +90,20 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 		fprintf(stderr, " %s\n", mysql_stmt_error(stmt->val));
 		exit(0);		
 	}
+
 }
 
 do_mysql_stmt_exec( variable *ths, variable *stmt ) {
+	//printf("%d\n", stmt->val);
 
-	if (mysql_stmt_execute(stmt->val ))
+	int errno;
+	if ( errno = mysql_stmt_execute( stmt->val ))
 	{
-		fprintf(stderr, " mysql_stmt_execute(), failed\n");
+		fprintf(stderr, " mysql_stmt_execute(), failed, errno : %d \n", errno);
 		fprintf(stderr, " %s\n", mysql_stmt_error(stmt->val));
 		exit(0);
 	}
-		
+
 }
 
 do_mysql_stmt_prepare_result( variable *ths, variable *stmt ) {
@@ -182,16 +198,21 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 	return arr;
 }
 
-do_mysql_stmt_close( variable *ths, variable *stmt, variable *res ) {
-	MYSQL_RES  *prepare_meta_result = res->val;
+do_mysql_stmt_close( variable *ths, variable *stmt ) {
 
-	mysql_free_result(prepare_meta_result);
 	if (mysql_stmt_close(stmt->val))
 	{
 	  fprintf(stderr, " failed while closing the statement\n");
 	  //fprintf(stderr, " %s\n", mysql_error(mysql));
 	  exit(0);
 	}	
+}
+
+do_mysql_free_result( variable *ths, variable *res ) {
+	MYSQL_RES  *prepare_meta_result = res->val;
+	mysql_free_result(prepare_meta_result);
+
+	
 }
 
 do_mysql_close( variable *ths, variable *msql ) {
@@ -208,9 +229,43 @@ extern load() {
     array_set1( arr, "mysql_stmt_prepare_result", &do_mysql_stmt_prepare_result);
     array_set1( arr, "mysql_stmt_fetch", &do_mysql_stmt_fetch);
     array_set1( arr, "mysql_stmt_close", &do_mysql_stmt_close);
+    array_set1( arr, "mysql_free_result", &do_mysql_free_result);
+    array_set1( arr, "mysql_query", &do_mysql_query);
     array_set1( arr, "mysql_close", &do_mysql_close);
 
 
     return arr;
 
 }
+
+
+/*main() {
+	
+	dovar( a, "", DOTYPE_STRING );
+	dovar( host, "localhost", DOTYPE_STRING );
+	dovar( user, "root", DOTYPE_STRING );
+	dovar( pass, "12c", DOTYPE_STRING );
+	dovar( dbn , "test", DOTYPE_STRING );
+	dovar( port , 3306, DOTYPE_INT );
+	
+	variable *db =  do_mysql_connect( a, host, user, pass, dbn, port );
+
+	for( int i = 0; i < 10; i++ ) {
+		dovar( sql, "insert into test1(`tid`, `name`) values(?,?)", DOTYPE_STRING);
+
+		array *arr = malloc( sizeof(array) );
+
+		array_init( arr );
+
+		dovar( bind, arr, DOTYPE_ARRAY );
+		dovar(i1, 0, DOTYPE_INT);
+		dovar(tid, i, DOTYPE_INT);
+		array_set( bind, i1, tid );
+		dovar(i2, 1, DOTYPE_INT);
+		dovar(name, "test", DOTYPE_STRING );
+		array_set( bind, i2, name );
+
+		do_mysql_query( a, db, sql, bind );
+	}
+
+}*/

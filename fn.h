@@ -1,6 +1,29 @@
 #ifndef do_fn
 #define do_fn
 #include <sys/time.h>
+#include <unistd.h>
+
+do_sleep( variable *ths, variable *t ) {
+	fflush(stdout);
+
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	long r = currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;	
+
+	while( 1 ) {
+
+		struct timeval c1;
+		gettimeofday(&c1, NULL);
+		long r1 = c1.tv_sec * (int)1e6 + currentTime.tv_usec;
+
+		//printf("%d\n", r1 - r );
+
+		if( r1 - r >= (int)t->val * 1000 ) {
+			break;
+		}
+
+	}
+}
 
 do_debug( int *a) {
 	printf("%d\n", *a);
