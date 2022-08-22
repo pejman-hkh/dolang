@@ -56,8 +56,8 @@ do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
 do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 
 	array *bnd = bd->val;
-	MYSQL_BIND  bind[100]; //= safe_alloc_new(&alloc, sizeof( MYSQL_BIND ) * (bnd->length) );
-	memset(bind, 0, sizeof (bind));
+	MYSQL_BIND * bind = safe_alloc_new(&alloc, sizeof( MYSQL_BIND ) * (bnd->length) );
+	memset(bind, 0, sizeof (MYSQL_BIND) * (bnd->length) );
 
 	unsigned long * length = safe_alloc_new(&alloc, sizeof( unsigned long ) * (bnd->length ) );
 
@@ -137,8 +137,8 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 	int num_fields = mysql_num_fields(prepare_meta_result);
 	MYSQL_FIELD *fields = mysql_fetch_fields(prepare_meta_result);
 
-	MYSQL_BIND * bind = malloc( sizeof( MYSQL_BIND ) * num_fields );
-	int * real_length = malloc( sizeof(int) * num_fields );
+	MYSQL_BIND * bind = safe_alloc_new( &alloc, sizeof( MYSQL_BIND ) * num_fields );
+	int * real_length = safe_alloc_new(&alloc, sizeof(int) * num_fields );
 	memset(bind, 0, sizeof (MYSQL_BIND) * num_fields);
 
 	for (int i = 0; i < num_fields; ++i)
@@ -171,7 +171,7 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 		if (real_length[i] > 0) {
 			int len = real_length[i];
 
-			void *data = malloc(len+1);
+			void *data = safe_alloc_new( &alloc, len+1);
 			bind[i].buffer = data;
 			bind[i].buffer_length = &real_length[i];
 			mysql_stmt_fetch_column(stmt->val, &bind[i], i, 0);

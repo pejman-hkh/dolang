@@ -5,17 +5,13 @@ main() {
 
 
 	let db = new mysql("localhost", "root", "12c", "test")
-	let a = [5,"a test name"]
-	print( a )
-	db.prepare("insert into test1(tid, name) values(?,?) ").execute(a)
 
-	let b = ["a1 test name", 2]
-	print( b )
-	db.prepare("insert into test2(tt, test1id) values(?,?) ").execute(b)
+	for( let i = 0; i < 10; i++ ) {
+		let a = [i,"a test name"]
+		let s = db.prepare("insert into test1(tid, name) values(?,?) ").execute(a)
+		s.close()
+	}
 
-	let a1 = [5,"a test name"]
-	print( a1 )
-	db.prepare("insert into test1(tid, name) values(?,?) ").execute(a1)
 
 	//print(b)
 
@@ -50,7 +46,5 @@ main() {
 		mysql_query(cn, "insert into test1(tid, name) values(?,?)", a )
 	}
 
-	//mysql_close( cn );
-	//print("here2")
-	
+
 }
