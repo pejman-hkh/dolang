@@ -80,6 +80,8 @@ void do_print( variable *ths, variable *a ) {
 		printf("%s", r );
 	} else if( a->type == 6 ) {
 		printf("%ld", a->val );
+	} else if( a->type == 7 ) {
+		printf("#res");
 	} else {
 		printf("%d", a );
 	}
@@ -181,6 +183,25 @@ do_fn_equal_equal( variable *a, variable *b ) {
 	}
 
 	return 0;
+
+}
+
+
+do_fn_equal_equal1( variable *a, variable *b ) {
+	int a1 = do_fn_equal_equal( a, b);
+	dovar(ret, a1, DOTYPE_INT);
+	return ret;
+
+}
+
+do_fn_not_equal( variable *a, variable *b ) {
+	int a1 = do_fn_equal_equal( a, b);
+/*	printf("%d\n", a->val);
+	printf("%d\n", b->val);
+	printf("%d\n", !a1);
+	printf("tttttttttttttt\n");*/
+	dovar(ret, !a1, DOTYPE_INT);
+	return ret;
 
 }
 

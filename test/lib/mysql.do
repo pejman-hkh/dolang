@@ -1,7 +1,7 @@
-
 class mysqlStmt {
 	construct( sql, con ) {
 		this.res = 0;
+		this.con = con;
 		this.stmt = mysql_stmt( con, sql );
 
 		return this;
@@ -26,27 +26,32 @@ class mysqlStmt {
 
 	next() {
 
-		if( ! this.res )
+		if( ! this.res ) {
 			this.res = mysql_stmt_prepare_result( this.stmt );
+		}
 
 		return mysql_stmt_fetch( this.stmt, this.res );
 	}
 
 	close() {
-		mysql_stmt_close( this.stmt, this.res );
+
+		if( this.res ) {
+			mysql_free_result( this.res );
+		}
+
+		mysql_stmt_close( this.stmt );
 	}
 }
 
 class mysql {
 	construct( host, user, pass, db ) {
-
 		this.connect( host, user, pass, db );
 		return this;
 	}
 
 	connect( host, user, pass, db ) {
 
-		this.con = mysql_connect(host, user, pass, db);
+		this.con = mysql_connect(host, user, pass, db, 3306);
 	}
 
 	query( sql, bind ) {

@@ -383,7 +383,7 @@ next() {
 				if( ch == '=' ) {
 					toks.l = 5;
 					toks.t = 2014;
-					toks.t = ch;
+					toks.c = ch;
 					inp();
 				}
 			} else if( toks.c == '&' ) {
@@ -697,7 +697,7 @@ sum(l) {
 				sum(l);
 				do_pop();
 				
-				if( btoks.c != '+' & btoks.c != '=' ) {
+				if( btoks.c != '+' & btoks.c != '=' & btoks.c != '!' ) {
 					do_get_var_value();
 				}
 
@@ -743,7 +743,7 @@ sum(l) {
 					do_div();
 				} 
 
-				if( btoks.c != '+' & btoks.c != '=' ) {
+				if( btoks.c != '+' & btoks.c != '='  & btoks.c != '!' ) {
 					do_convert_to_var(2);
 				}
 
@@ -751,13 +751,11 @@ sum(l) {
 		}
 		if (a && l > 8) {
 			if( btoks.c == '|' ) {
-				int d = a;
 				a = do_or_or( a );
-				do_patch_or_or( a, d );
+				do_patch_or_or( a );
 			} else if( btoks.c == '&' ) {
-				int d = a;
 				a = do_and_and( a );
-				do_patch_and_and( a, d );				
+				do_patch_and_and( a );				
 			}
 		}
 	}
@@ -1200,7 +1198,7 @@ main(int n, char * t[] )
 
 	fclose(mainFile);
 
-/*	if( t[2] ) {
+	if( t[2] ) {
 
 		if( strcmp(t[2], "-p") == 0 ) {
 			print_ind();		
@@ -1212,7 +1210,7 @@ main(int n, char * t[] )
 		}
 
 	}
-*/
+
 
 	//call functions after defination
 	for( int i = 0; i < ind_fns.length; i++ ) {

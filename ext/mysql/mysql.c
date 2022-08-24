@@ -9,7 +9,7 @@ do_mysql_connect( variable *ths, variable *host, variable *user, variable *pass,
 	msql = mysql_init(msql);
 
 	int con = mysql_real_connect( msql, host->val, user->val, pass->val, db->val, port->val, NULL, CLIENT_FOUND_ROWS );
-	dovar( ret, msql, DOTYPE_INT );
+	dovar( ret, msql, DOTYPE_RES );
 	return ret;
 }
 
@@ -29,12 +29,9 @@ do_mysql_query( variable *ths, variable *msql, variable *sql, variable *bind ) {
 }
 
 do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
-/*	int rc;
-	unsigned long type;
-*/
+
 	MYSQL_STMT *stmt = mysql_stmt_init(msql->val);
-/*	type = (unsigned long) CURSOR_TYPE_READ_ONLY;
-	rc = mysql_stmt_attr_set(stmt, STMT_ATTR_CURSOR_TYPE, (void*) &type);*/
+
 	if (!stmt)
 	{
 		fprintf(stderr, " mysql_stmt_init(), out of memory\n");
@@ -49,7 +46,7 @@ do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
 	}
 
 
-	dovar( ret, stmt, DOTYPE_INT );
+	dovar( ret, stmt, DOTYPE_RES );
 	return ret;	
 }
 
@@ -80,8 +77,6 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 			bind[i].buffer_length = len;
 			bind[i].length = &length[i];
 
-			//printf("%s\n", data );
-
 		}
 	}
 
@@ -94,7 +89,6 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 }
 
 do_mysql_stmt_exec( variable *ths, variable *stmt ) {
-	//printf("%d\n", stmt->val);
 
 	int errno;
 	if ( errno = mysql_stmt_execute( stmt->val ))
@@ -126,7 +120,7 @@ do_mysql_stmt_prepare_result( variable *ths, variable *stmt ) {
 		exit(0);
 	}
 
-	dovar( ret, prepare_meta_result, DOTYPE_INT );
+	dovar( ret, prepare_meta_result, DOTYPE_RES );
 	return ret;
 }
 
@@ -175,8 +169,7 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 			bind[i].buffer = data;
 			bind[i].buffer_length = &real_length[i];
 			mysql_stmt_fetch_column(stmt->val, &bind[i], i, 0);
-			
-			//printf("%d\n", fields[i].type );
+	
 			int type = DOTYPE_STRING;
 			switch( fields[i].type ) {
 				case 3 :
@@ -209,10 +202,7 @@ do_mysql_stmt_close( variable *ths, variable *stmt ) {
 }
 
 do_mysql_free_result( variable *ths, variable *res ) {
-	MYSQL_RES  *prepare_meta_result = res->val;
-	mysql_free_result(prepare_meta_result);
-
-	
+	mysql_free_result(res->val);
 }
 
 do_mysql_close( variable *ths, variable *msql ) {

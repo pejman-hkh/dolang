@@ -342,7 +342,6 @@ do_minus_minus(l) {
 
 do_equal_equal() {
 
-
 	function_init(2);
 	function_set_arg(0);
 
@@ -353,13 +352,27 @@ do_equal_equal() {
 	*ind++ = 0xc8;
 	function_set_arg(1);
 
-	function_call( &do_fn_equal_equal, "do_fn_equal_equal" );
+	function_call( &do_fn_equal_equal1, "do_fn_equal_equal1" );
 	function_end(2);
 
 }
 
 do_not_equal() {
+	function_init(2);
+	function_set_arg(0);
+
 	#if Assembly 
+	printf("mov %%ecx, %%eax\n");
+	#endif
+	*ind++ = 0x89;
+	*ind++ = 0xc8;
+	function_set_arg(1);
+
+	function_call( &do_fn_not_equal, "do_fn_not_equal" );
+	function_end(2);
+
+
+/*	#if Assembly 
 	printf("cmp  %%eax,%%ecx\n");
 	#endif
 	*ind++ = 0x39;
@@ -376,7 +389,7 @@ do_not_equal() {
 	#endif
 	*ind++ = 0x0f;
 	*ind++ = 0x95;
-	*ind++ = 0xc0;
+	*ind++ = 0xc0;*/
 
 }
 
@@ -1154,7 +1167,7 @@ do_or_or(a) {
 	return indp;
 }
 
-do_patch_or_or(a,d) {
+do_patch_or_or(a) {
 	#if Assembly
 	printf("mov $0x0,%%eax\n");
 	#endif
@@ -1171,8 +1184,12 @@ do_patch_or_or(a,d) {
 	int s = ind;
 	ind += 4;
 
-	*(int *)a = ind - a - 4;
-	*(int *)d = ind - d - 4;
+    int n;
+    while (a) {
+        n = *(int *)a;
+        *(int *)a = ind - a - 4;
+        a = n;
+    }
 	
 	#if Assembly
 	printf("mov $0x1,%%eax\n");
@@ -1185,7 +1202,7 @@ do_patch_or_or(a,d) {
 	*(int *)s = ind - s - 4;	
 }
 
-do_and_and() {
+do_and_and(a) {
 	#if Assembly 
 	printf("mov  0x4(%%eax),%%eax\n");
 	#endif
@@ -1206,12 +1223,13 @@ do_and_and() {
 	*ind++ = 0x0f;
 	*ind++ = 0x84;
 	int indp = ind;
-	*(int *)ind = 0;
+	*(int *)ind = a;
+	a = ind;
 	ind += 4;
 	return indp;
 }
 
-do_patch_and_and(a,d) {
+do_patch_and_and(a) {
 	#if Assembly
 	printf("mov 1,%%eax\n");
 	#endif
@@ -1229,9 +1247,16 @@ do_patch_and_and(a,d) {
 	int s = ind;
 	ind += 4;
 
-	*(int *)a = ind - a - 4;
+    int n;
+    while (a) {
+        n = *(int *)a;
+        *(int *)a = ind - a - 4;
+        a = n;
+    }
+
+	/**(int *)a = ind - a - 4;
 	*(int *)d = ind - d - 4;
-	
+	*/
 	#if Assembly
 	printf("mov 0,%%eax\n");
 	#endif
