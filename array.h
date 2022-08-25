@@ -67,29 +67,6 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 
 variable * array_get( variable *arr1, variable *key ) {
 
-/*	if( arr1->type == DOTYPE_CLS ) {
-		if( strcmp( key->val, "prototype") == 0 ) {
-
-			variable *k = safe_alloc_new( &alloc, sizeof(variable) );
-			*k = *key;
-
-			variable *val = safe_alloc_new( &alloc, sizeof(variable*) );
-
-			dovar( v, val, DOTYPE_INT );
-
-			array_set( arr1, k, v );
-
-			return v;
-
-			printf("%d\n", arr1->type );
-			printf("%s\n", key->val );
-			printf("dddd\n");
-			exit(0);
-
-		}
-
-	}*/
-
 	if( ! arr1->type ) {
 		printf("object not exists ! \n");
 		exit(0);
