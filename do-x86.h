@@ -892,7 +892,72 @@ do_create_let( n ) {
 	}
 }
 
-do_call_class( cls ) {	
+do_new_class( cls ) {
+	vars_init();
+	
+	int l = array_get1( &var_stk, cls );
+	function_init(1);
+	if( ! l ) {
+
+		array_set_int( &ind_cls, ind+1, cls );
+	}
+	do_call_num(l);
+
+
+	function_set_arg(0);
+	function_call( &do_fn_new_class, "do_fn_new_class" );
+	function_end(1);
+
+
+	ivar = ivar - 4;
+	*(int *)indvar = -ivar;
+	int l1 = ivar;
+	do_equal(l1);
+
+	if( toks.c == '(' ) {
+
+		function_init(2);
+		function_set_arg(0);
+		dovar(a,"construct",1);
+		do_call_num(a);
+		function_set_arg(1);
+		function_call( &array_get, "array_get" );
+		function_end(2);
+
+
+		ivar = ivar - 4;
+		*(int *)indvar = -ivar;
+		int ld = ivar;
+		do_equal(ld);
+
+		do_call_var( l1 );
+		do_call_function_callback(ld);
+
+
+		//do_call_var(l);
+	
+		//char *t;
+		//t = mstrcat( cls, "%fn%");
+		//t = mstrcat( t, "construct");
+
+		//int l1 = array_get1( &sym_stk, t );
+		//dovar(a,l1,4);
+		//do_call_function_callback( a );
+	}
+
+	do_call_var(l1);
+
+/*	vars_init();
+	ivar = ivar - 4;
+	*(int *)indvar = -ivar;
+	int l = ivar;
+
+	do_equal(l);
+*/
+}
+
+//do_call_class( cls ) {	
+do_create_main_class( cls ) {	
 
 	//create object for class
 	function_init(0);
@@ -948,19 +1013,6 @@ do_call_class( cls ) {
 		}
 	}
 
-
-	if( toks.c == '(' ) {
-		do_call_var(l);
-	
-		char *t;
-		t = mstrcat( cls, "%fn%");
-		t = mstrcat( t, "construct");
-
-		int l1 = array_get1( &sym_stk, t );
-		dovar(a,l1,4);
-		do_call_function_callback( a );
-	}
-
 	do_call_var(l);
 }
 
@@ -969,6 +1021,8 @@ do_create_class() {
 	char *cls = toks.id;
 	thisClass = cls;
 	toks.type = 3;
+	array_set1(&cls_stk, cls, 1 );
+
 	set_tokv( &toks, cls, 0 );
 	next();
 
@@ -1013,7 +1067,9 @@ do_create_class() {
 		decl(cls);
 	}
 
+
 	skip('}');
+
 }
 
 
@@ -1026,7 +1082,7 @@ do_create_callback_function() {
 	int b = ind;
 	ind += 4;
 
-	do_main_create_function();
+	do_main_create_function("","");
 
 	*(int *)b = ind - b - 4;
 
@@ -1034,7 +1090,7 @@ do_create_callback_function() {
 	do_call_num(a);
 }
 
-do_main_create_function( cls ) {
+do_main_create_function( cls, fn_name ) {
 	skip('(');
 	int a = 8;
 
@@ -1066,6 +1122,22 @@ do_main_create_function( cls ) {
 	#endif					
 	*ind++ = 0x89;
 	*ind++ = 0xe5;
+
+	if( strcmp(fn_name, "main") == 0 ) {
+		//create class object
+		//printf("dddddddd\n");
+		for( int i = 0; i < cls_stk.length; i++ ) {
+			//printf("%s\n", cls_stk.key[i] );
+			char *cls1 = cls_stk.key[i];
+
+			variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
+			a->type = DOTYPE_ARRAY;
+			array_set1(&var_stk, cls1, a );
+			do_create_main_class( cls1 );
+			do_equal(a);
+		}
+
+	}
 
 	block();
 
@@ -1111,7 +1183,7 @@ do_create_function( cls ) {
 	char *fn_name = toks.id;
 	next();
 
-	do_main_create_function( cls );
+	do_main_create_function( cls, fn_name );
 }
 
 do_plus_plus(l) {

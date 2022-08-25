@@ -13,8 +13,8 @@ class b extends a {
 
 
 main() {
-	var b = new b;
-	b.a();
+	var d = new b;
+	d.a();
 
-	print( b );
+	print( d );
 }

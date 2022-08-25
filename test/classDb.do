@@ -22,14 +22,14 @@ class db {
 
 
 main() {
-	var db = new db;
+	var a = new db;
 
-	db.connect("localhost", "test", "root", "12c");
+	a.connect("localhost", "test", "root", "12c");
 
 
-	db.prepare("select * from test ").execute();
+	a.prepare("select * from test ").execute();
 
-	while( db.next() ) {
+	while( a.next() ) {
 
 	}
 

@@ -26,6 +26,6 @@ class b {
 }
 
 main() {
-	var a = new b
-	a.a().b()
+	var o = new b
+	o.a().b()
 }

@@ -1,7 +1,7 @@
 import testClass;
 import test1Class;
 
-test() {
+test2() {
 	print("in test function\n");
 }
 
@@ -12,9 +12,9 @@ main() {
 	var a = new test1;
 	a.a();
 
-	test();
+	test2();
 
 
-	var n = new n();
-	n.a();
+	var d = new n();
+	d.a();
 }

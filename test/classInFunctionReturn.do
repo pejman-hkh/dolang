@@ -11,11 +11,11 @@ class test {
 	}
 }
 
-test() {
+test1() {
 	var a = new test;
 	return a;	
 }
 
 main() {
-	test().a().b();
+	test1().a().b();
 }

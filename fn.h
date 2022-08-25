@@ -3,6 +3,26 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+do_fn_new_class( variable *cls ) {
+
+	array *arr = safe_alloc_new(&alloc, sizeof(array));
+	array_init( arr );
+
+	dovar( ret, arr, 3 );
+
+
+	array *arr1 = cls->val;
+	for( int i = 0; i < arr1->length; i++ ) {
+		variable *key = arr1->key[i];
+		variable *value = arr1->value[i];
+		dovar(k,key->val, key->type);
+		dovar(v,value->val, value->type);
+		array_set( ret, k, v );
+	}
+
+	return ret;
+}
+
 do_sleep( variable *ths, variable *t ) {
 	fflush(stdout);
 
@@ -15,8 +35,6 @@ do_sleep( variable *ths, variable *t ) {
 		struct timeval c1;
 		gettimeofday(&c1, NULL);
 		long r1 = c1.tv_sec * (int)1e6 + currentTime.tv_usec;
-
-		//printf("%d\n", r1 - r );
 
 		if( r1 - r >= (int)t->val * 1000 ) {
 			break;

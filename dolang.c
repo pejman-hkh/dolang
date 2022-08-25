@@ -52,6 +52,8 @@ array sym_stk;
 array var_stk;
 array let_stk;
 array ind_fns;
+array cls_stk;
+array ind_cls;
 //array var_type;
 //array var_ref;
 tokens ** vtoks;
@@ -61,6 +63,8 @@ int inMain = 0;
 
 #include "do-x86.h";
 #include "ext.h";
+#include "string.h"
+
 
 inp() {
 	ch = fgetc( file );
@@ -448,7 +452,7 @@ unary() {
 		char *cls = toks.id;
 		next();
 
-		do_call_class( cls );
+		do_new_class( cls );
 
 
 	} else if( toks.t == TOK_FUNC ) {
@@ -474,9 +478,10 @@ unary() {
 		next();
 		if( toks.c == '.' ) {
 			//call string functions or variables
-			do_get_val();
+			do_dot();
+		/*	do_get_val();
 			next();
-			next();
+			next();*/
 		}
 	//} else if( toks.t == 2022 ) {
 		//next();
@@ -584,7 +589,7 @@ unary() {
 				int ind_fn = do_call_function( l, btoks.id );
 
 				if( ind_fn ) {
-					array_set1( &ind_fns, ind_fn, btoks.id );
+					array_set_int( &ind_fns, ind_fn, btoks.id );
 				}
 
 				if( toks.c == '.' ) {
@@ -605,7 +610,32 @@ unary() {
 			exit(0);
 			*/
 			int l = array_get1( &var_stk, id);
-			do_call_var( l );
+			//printf("%s\n", id );
+	/*		if( ! l ) {
+				//check for class and set prototype
+
+				char *t;
+				t = mstrcat( id, "%fn%");
+				int chcls = 0;
+				for( int i = 0; i < sym_stk.length ; i++ ) {
+					int p = strstr(sym_stk.key[i], t );
+					if( p ) {
+						chcls = 1;
+					}
+				}
+
+				if( chcls ) {
+					int l = array_get1(&var_stk, id );
+					//dovar( var, id, DOTYPE_CLS );
+					//do_call_string( var );
+					do_call_var(l);
+					printf("dddddddddddddd\n");
+				}
+
+			} else {*/
+				do_call_var( l );
+			//}
+
 
 			if( toks.c == '[' ) {
 				do_call_array(l);
@@ -983,7 +1013,6 @@ decl(cls) {
 			toks.type = 1;
 			set_tokv( &toks, ind + 5, cls );
 
-
 			next();
 			do_create_callback_function();
 			decl(cls);
@@ -1132,6 +1161,7 @@ main(int n, char * t[] )
 	//init_signal();
 	set_extensions();
 	scan_ext();
+	
 
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
 	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
@@ -1165,8 +1195,11 @@ main(int n, char * t[] )
 	array_init( &sym_stk );
 	array_init( &var_stk );
 	array_init( &ind_fns );
+	array_init( &ind_cls );
+	array_init( &cls_stk );
 	safe_alloc_init( &alloc );
 
+	load_string_class();
 
 	mainFile = fopen(t[1], "r");
 
@@ -1220,6 +1253,23 @@ main(int n, char * t[] )
 		int mind = ind_fns.key[i];
 		int n = l - (mind -1) - 5;
 	
+		*(int *)mind = n;
+
+	}
+
+	//call class after defination
+	//printf("%d\n", ind_cls.length);
+	for( int i = 0; i < ind_cls.length; i++ ) {
+		char *t;
+		t = ind_cls.value[i];
+		int l = array_get1( &var_stk, t );
+		int mind = ind_cls.key[i];
+		int n = l;
+/*		printf("%d\n", mind);
+		printf("%s\n", t);
+		printf("%d\n", l);*/
+		//exit(0);
+
 		*(int *)mind = n;
 
 	}

@@ -67,18 +67,48 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 
 variable * array_get( variable *arr1, variable *key ) {
 
+/*	if( arr1->type == DOTYPE_CLS ) {
+		if( strcmp( key->val, "prototype") == 0 ) {
+
+			variable *k = safe_alloc_new( &alloc, sizeof(variable) );
+			*k = *key;
+
+			variable *val = safe_alloc_new( &alloc, sizeof(variable*) );
+
+			dovar( v, val, DOTYPE_INT );
+
+			array_set( arr1, k, v );
+
+			return v;
+
+			printf("%d\n", arr1->type );
+			printf("%s\n", key->val );
+			printf("dddd\n");
+			exit(0);
+
+		}
+
+	}*/
+
 	if( ! arr1->type ) {
 		printf("object not exists ! \n");
 		exit(0);
 	}
 
 	if( arr1->type == 1 ) {
+		if( key->type == 2 ) {
+			int index = key->val;
+			char *d = arr1->val+index;
+			dovar( ret, d, 5);
 
-		int index = key->val;
-		char *d = arr1->val+index;
-		dovar( ret, d, 5);
+			return ret;
+		} else if( key->type == 1 ) {
+			if( strcmp(key->val, "length") == 0 ) {
+				dovar( ret, strlen( arr1->val ), DOTYPE_INT );
+				return ret;
+			}
+		}
 
-		return ret;
 	}
 
 	array *arr = arr1->val;
@@ -114,6 +144,16 @@ void *array_set1( array *arr, void *key, void *value ) {
 		}
 	}
 
+	array_relloc( arr );
+
+	arr->key[ index ] = key;
+	arr->value[ index ] = value;
+	arr->length++;
+}
+
+void *array_set_int( array *arr, void *key, void *value ) {
+
+	int index = arr->length;
 	array_relloc( arr );
 
 	arr->key[ index ] = key;

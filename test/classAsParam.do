@@ -12,7 +12,7 @@ class test {
 }
 
 
-test(d) {
+test1(d) {
 	d.a();
 }
 
@@ -22,7 +22,7 @@ main() {
 	print( a );
 	a.a();
 
-	test( a );
+	test1( a );
 
 	a.b();
 }
