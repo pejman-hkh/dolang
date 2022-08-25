@@ -52,7 +52,7 @@ main() {
 
 	let db = new mysql("localhost", "root", "12c", "test")
 
-/*	for( let i = 0; i < 10; i++ ) {
+	for( let i = 0; i < 10; i++ ) {
 		let a = [i,"a test name"]
 		let s = db.prepare("insert into test1(tid, name) values(?,?) ").execute(a)
 		s.close()
@@ -79,7 +79,7 @@ main() {
 
 	let su = db.prepare("update test1 set name = ? where id = ?").execute([ 'test for update', 1])
 	su.close()
-	*/
+	
 
 	//db.close()
 	
