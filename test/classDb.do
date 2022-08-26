@@ -1,4 +1,4 @@
-class db {
+class Mysql {
 
 	connect( host, db, user, pass ) {
 		print("connect to db\n");
@@ -22,7 +22,8 @@ class db {
 
 
 main() {
-	var a = new db;
+	var a = new Mysql;
+	print("here")
 
 	a.connect("localhost", "test", "root", "12c");
 

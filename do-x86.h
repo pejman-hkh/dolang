@@ -896,13 +896,15 @@ do_new_class( cls ) {
 	vars_init();
 	
 	int l = array_get1( &var_stk, cls );
+/*	printf("%d\n", l);
+	exit(0);*/
+
 	function_init(1);
 	if( ! l ) {
-
 		array_set_int( &ind_cls, ind+1, cls );
 	}
-	do_call_num(l);
 
+	do_call_num(l);
 
 	function_set_arg(0);
 	function_call( &do_fn_new_class, "do_fn_new_class" );
@@ -933,27 +935,10 @@ do_new_class( cls ) {
 		do_call_var( l1 );
 		do_call_function_callback(ld);
 
-
-		//do_call_var(l);
-	
-		//char *t;
-		//t = mstrcat( cls, "%fn%");
-		//t = mstrcat( t, "construct");
-
-		//int l1 = array_get1( &sym_stk, t );
-		//dovar(a,l1,4);
-		//do_call_function_callback( a );
 	}
 
 	do_call_var(l1);
 
-/*	vars_init();
-	ivar = ivar - 4;
-	*(int *)indvar = -ivar;
-	int l = ivar;
-
-	do_equal(l);
-*/
 }
 
 //do_call_class( cls ) {	
@@ -1023,6 +1008,11 @@ do_create_class() {
 	toks.type = 3;
 	array_set1(&cls_stk, cls, 1 );
 
+	variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
+	a->type = DOTYPE_ARRAY;
+	array_set1(&var_stk, cls, a );
+
+
 	set_tokv( &toks, cls, 0 );
 	next();
 
@@ -1070,6 +1060,7 @@ do_create_class() {
 
 	skip('}');
 
+	return cls;
 }
 
 
@@ -1125,14 +1116,12 @@ do_main_create_function( cls, fn_name ) {
 
 	if( strcmp(fn_name, "main") == 0 ) {
 		//create class object
-		//printf("dddddddd\n");
 		for( int i = 0; i < cls_stk.length; i++ ) {
-			//printf("%s\n", cls_stk.key[i] );
 			char *cls1 = cls_stk.key[i];
+			int a = array_get1( &var_stk, cls1);
+/*			printf("dddd %d\n", a);
+			exit(0);*/
 
-			variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
-			a->type = DOTYPE_ARRAY;
-			array_set1(&var_stk, cls1, a );
 			do_create_main_class( cls1 );
 			do_equal(a);
 		}

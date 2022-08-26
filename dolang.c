@@ -469,7 +469,13 @@ unary() {
 		}
 
 	} else if( toks.t == TOK_CLASS ) {
-		do_create_class();
+		char *cls1 = do_create_class();
+		int a = array_get1( &var_stk, cls1);
+
+		do_create_main_class( cls1 );
+		do_equal(a);
+
+
 	} else if( toks.t == TOK_STRING ) {
 
 		dovar( var, toks.id, 1 );
@@ -1258,20 +1264,14 @@ main(int n, char * t[] )
 	}
 
 	//call class after defination
-	//printf("%d\n", ind_cls.length);
 	for( int i = 0; i < ind_cls.length; i++ ) {
 		char *t;
 		t = ind_cls.value[i];
 		int l = array_get1( &var_stk, t );
 		int mind = ind_cls.key[i];
 		int n = l;
-/*		printf("%d\n", mind);
-		printf("%s\n", t);
-		printf("%d\n", l);*/
-		//exit(0);
 
 		*(int *)mind = n;
-
 	}
 
 
