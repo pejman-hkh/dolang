@@ -5,13 +5,14 @@ do_string_length( variable *ths ) {
 }
 
 do_string_substr( variable *ths, variable *offset, variable *len ) {
+	char *a = ths->val;
+	char *r = safe_alloc_new( &alloc, strlen( ths->val ) + 1 );
+	memcpy( r, a, strlen( ths->val ) + 1 );
 
+	r = (int)r + offset->val;
+	*(char *)((int)r + len->val) = '\0';
 
-	int a = ths->val;
-	a = a + offset->val;
-	*(char *)(a + len->val) = '\0';
-
-	dovar( ret, a, DOTYPE_STRING);
+	dovar( ret, r, DOTYPE_STRING);
 
 	return ret;
 }
