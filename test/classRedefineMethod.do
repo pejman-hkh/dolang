@@ -15,7 +15,7 @@ main() {
 	var a = new test;
 	a.c = "Test";
 
-	a.a = func() {
+	a.prototype.a = func() {
 		this.b();
 		print("here\n");
 	};
