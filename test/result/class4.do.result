@@ -1,1 +1,2 @@
-test ...[class:test,c:func(),b:func(),a:func(),d:123,s:ddd]
+test ...[class:test,prototype:[c:func(),b:func(),a:func()]
+,d:123,s:ddd]

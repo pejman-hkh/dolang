@@ -4,6 +4,8 @@ class test {
 		l.f = func( d ) {
 			print(d);
 		}
+		
+		print(l)
 
 		cb(l);
 		print("here1\n");

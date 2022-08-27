@@ -9,6 +9,10 @@
 
 #include "safe_alloc.h"
 safe_alloc alloc;
+variable *StringClass;
+variable *ArrayClass;
+variable *ObjectClass;
+
 #include "array.h"
 #define ALLOC_SIZE 99999999
 
@@ -682,6 +686,15 @@ do_dot() {
 
 			function_init(2);
 			function_set_arg(0);
+			dovar(a1,"prototype",1);
+			do_call_num(a1);
+			function_set_arg(1);
+			function_call( &array_get, "array_get" );
+			function_end(2);
+
+
+			function_init(2);
+			function_set_arg(0);
 			dovar(a,t,1);
 			do_call_num(a);
 			function_set_arg(1);
@@ -1205,7 +1218,39 @@ main(int n, char * t[] )
 	array_init( &cls_stk );
 	safe_alloc_init( &alloc );
 
+
+	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
+	StringClass->type = DOTYPE_ARRAY;
+	ArrayClass = safe_alloc_new( &alloc, sizeof(variable *) );
+	ArrayClass->type = DOTYPE_ARRAY;
+	ObjectClass = safe_alloc_new( &alloc, sizeof(variable *) );
+	ObjectClass->type = DOTYPE_ARRAY;
+
+
+	array default_class;
+	array_init( &default_class );
+	array_set1( &default_class, "String", StringClass );
+	array_set1( &default_class, "Array", ArrayClass );
+	array_set1( &default_class, "Object", ObjectClass );
+
+	for( int i = 0; i < default_class.length; i++ ) {
+		char *cls = default_class.key[i];
+		array_set1(&cls_stk, cls, 1 );
+		
+		int * a = default_class.value[i];
+
+		array_set1(&var_stk, cls, a );
+
+	}
+
+/*	printf("%d\n", StringClass);
+	exit(0);
+	*/
+	
 	load_string_class();
+
+/*array_print( &sym_stk );
+exit(0);*/
 
 	mainFile = fopen(t[1], "r");
 

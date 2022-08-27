@@ -1,2 +1,3 @@
 in b ... 
-[class:test,b:func(),a:func(),c:Test]
+[class:test,prototype:[b:func(),a:func()]
+,c:Test]

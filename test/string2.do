@@ -1,20 +1,51 @@
-class ACLASS {
+class Test {
 	a() {
-
+		print("in a\n")
 	}
 }
 
 main() {
 
-	print( ACLASS )
+	let y = {}
+	y.o = func() {
+		print("y o \n")
+	}
 
-	let a = new ACLASS
-	a.d = "test"
-	print( a )
-	print( ACLASS )
+	y.o();
 
-/*	String.prototype.test = func() {
-		print("here")
-	}*/
+	print( String )
+	print( Array )
+	print( Object )
 
+	String.prototype.test = func() {
+		return 2;
+	}
+
+	String.prototype.test1 = func() {
+		return "test1";
+	}
+
+	let a = "Hello World"
+
+	print( a.substr(1,4)+"\n" )
+
+	print( a.length() )
+
+	print("\n")
+
+	print( a.test() )
+	print("\n")
+	print( a.test1() )
+	print("\n")
+
+
+	let g = new Test
+	Test.prototype.b = func() {
+		print("in b\n");
+	}
+
+	print( g );
+
+	g.a();
+	g.b();
 }

@@ -1,4 +1,5 @@
 test1
 this is test
-[class:test,b:func(),c:func(),a:test1
+[class:test,prototype:[b:func(),c:func()]
+,a:test1
 ]

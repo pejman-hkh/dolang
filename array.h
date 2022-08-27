@@ -66,7 +66,6 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 }
 
 variable * array_get( variable *arr1, variable *key ) {
-
 	if( ! arr1->type ) {
 		printf("object not exists ! \n");
 		exit(0);
@@ -80,10 +79,13 @@ variable * array_get( variable *arr1, variable *key ) {
 
 			return ret;
 		} else if( key->type == 1 ) {
-			if( strcmp(key->val, "length") == 0 ) {
-				dovar( ret, strlen( arr1->val ), DOTYPE_INT );
-				return ret;
-			}
+
+
+			variable *cls = do_fn_new_class( StringClass );
+
+			variable *ret = array_get( cls, key );
+
+			return ret;
 		}
 
 	}
@@ -96,6 +98,11 @@ variable * array_get( variable *arr1, variable *key ) {
 			return arr->value[i];
 		}
 	}
+	
+	if( strcmp(key->val,"prototype") == 0 ) {
+		return arr1;
+	}
+
 	variable *k = safe_alloc_new( &alloc, sizeof(variable) );
 	*k = *key;
 

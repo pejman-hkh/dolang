@@ -1,4 +1,5 @@
-[class:test,a:func(),b:func()]
+[class:test,prototype:[a:func(),b:func()]
+]
 in a
 in a
 in b

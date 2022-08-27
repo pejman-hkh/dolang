@@ -1,3 +1,15 @@
-[class:ACLASS,a:func()]
-[class:ACLASS,a:func(),d:test]
-[class:ACLASS,a:func()]
+y o 
+[class:String,prototype:[length:func(),substr:func()]
+]
+[class:Array,prototype:[]
+]
+[class:Object,prototype:[]
+]
+ello
+5
+2
+test1
+[class:Test,prototype:[a:func(),b:func()]
+]
+in a
+in b

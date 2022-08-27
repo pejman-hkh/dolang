@@ -920,6 +920,14 @@ do_new_class( cls ) {
 
 		function_init(2);
 		function_set_arg(0);
+		dovar(a1,"prototype",1);
+		do_call_num(a1);
+		function_set_arg(1);
+		function_call( &array_get, "array_get" );
+		function_end(2);
+
+		function_init(2);
+		function_set_arg(0);
 		dovar(a,"construct",1);
 		do_call_num(a);
 		function_set_arg(1);
@@ -972,6 +980,22 @@ do_create_main_class( cls ) {
 	function_call( &array_set, "array_set" );
 	function_end(3);
 
+	do_call_var(l);
+	function_init(3);
+	function_set_arg(0);
+	dovar(a1,"prototype",1);
+	do_call_num(a1);
+	function_set_arg(1);
+
+	array *arr1 = safe_alloc_new( &alloc, sizeof( array *) );
+	array_init( arr1 );
+	dovar(arr, arr1, DOTYPE_ARRAY);
+	//dovar(b,cls,1);
+	do_call_num(arr);
+	function_set_arg(2);
+	function_call( &array_set, "array_set" );
+	function_end(3);
+
 	for( int i = 0; i < sym_stk.length ; i++ ) {
 		int p = strstr(sym_stk.key[i], t );
 		if( p ) {
@@ -982,7 +1006,7 @@ do_create_main_class( cls ) {
 			v = sym_stk.key[i];
 			v += len+4;
 
-			do_call_var(l);
+			do_call_num(arr);
 
 			function_init(3);
 			function_set_arg(0);
@@ -1119,8 +1143,6 @@ do_main_create_function( cls, fn_name ) {
 		for( int i = 0; i < cls_stk.length; i++ ) {
 			char *cls1 = cls_stk.key[i];
 			int a = array_get1( &var_stk, cls1);
-/*			printf("dddd %d\n", a);
-			exit(0);*/
 
 			do_create_main_class( cls1 );
 			do_equal(a);
@@ -1141,7 +1163,6 @@ do_main_create_function( cls, fn_name ) {
 }
 
 do_create_main_function( cls ) {
-//	next();
 
 	#if Assembly 
 	printf("push %%ebp\n");
