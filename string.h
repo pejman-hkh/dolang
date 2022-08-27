@@ -17,6 +17,11 @@ do_string_substr( variable *ths, variable *offset, variable *len ) {
 	return ret;
 }
 
+/*do_charCodeAt(variable *ths, variable *index) {
+
+	dovar();
+}
+*/
 
 load_string_class() {
 

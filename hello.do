@@ -3,8 +3,8 @@ test( var callback ) {
 	return "aaaa";
 }
 
-class db {
-	db() {
+class DB {
+	construct() {
 
 	}
 
@@ -66,37 +66,36 @@ main() {
 	print(name);
 
 	var arr = [];
-	arr.test = "test ast";
+	arr.test = "this is test";
 	print( arr.test );
 
 
-	var db = new db;
+	var db = new DB;
 	db.connect();
 
 	var aa = new test1;
 	print( aa.a() );
 
-	var arr = {};
 
+	var arr2 = {};
 	for( var i = 0; i < 10; i++ ) {
+
 		var a = {};
-
 		var b =  test()+" "+i;
-
 		a.id = i;
 		a.name = b;
 
-		arr[i] = a;
+		arr2[i] = a;
 	
 	}
 
 
-	var arr = [0 : ['name' : 'first'] ];
+	var arr1 = [0 : ['name' : 'first'] ];
 
-	var json = new json;
-	json.encode( arr );
+	var j = new json;
+	j.encode( arr1 );
 
-	print( json.name );
+	print( j.name );
 
 
 	var arr1 = [0 : ['name' : 'second'] ];

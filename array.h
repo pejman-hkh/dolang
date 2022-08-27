@@ -98,8 +98,8 @@ variable * array_get( variable *arr1, variable *key ) {
 			return arr->value[i];
 		}
 	}
-	
-	if( strcmp(key->val,"prototype") == 0 ) {
+
+	if( key->type == 1 && strcmp(key->val,"prototype") == 0 ) {
 		return arr1;
 	}
 
