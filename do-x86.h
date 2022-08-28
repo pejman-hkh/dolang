@@ -312,10 +312,10 @@ int do_call_function( l, bid ) {
 
 }
 
-do_minus_minus(l) {
+do_minus_minus() {
 	//do_call_var(l+4);
 
-	do_call_var(l);
+	//do_call_var(l);
 
 	//should convert to assembly ...
 	function_init(1);
@@ -626,7 +626,7 @@ do_create_array( end ) {
 		 		int l = array_get1( &var_stk, id );
 			 	do_call_var(l);
 				if( toks.c == '[' ) {
-					do_call_array(l);
+					do_call_array();
 				} else if( toks.c == '.') {
 					do_dot();
 				}		 	
@@ -692,7 +692,7 @@ do_create_array( end ) {
 	skip(end);
 }
 
-do_call_array(l) {
+do_call_array() {
 
 	while( toks.c == '[' ) {
 
@@ -1217,8 +1217,8 @@ do_create_function( cls ) {
 	do_main_create_function( cls, fn_name );
 }
 
-do_plus_plus(l) {
-	do_call_var(l);
+do_plus_plus() {
+	//do_call_var(l);
 
 	//should convert to assembly ...
 	function_init(1);
@@ -1597,7 +1597,9 @@ do_for_in() {
 
 
 	block();
-	do_plus_plus(l);
+	
+	do_call_var(l);
+	do_plus_plus();
 
 	*(int *)b = (int)ind - b + 1;
 
