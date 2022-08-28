@@ -17,15 +17,19 @@ do_string_substr( variable *ths, variable *offset, variable *len ) {
 	return ret;
 }
 
-/*do_charCodeAt(variable *ths, variable *index) {
-
-	dovar();
+do_charCodeAt(variable *ths, variable *index) {
+	char *str = ths->val;
+	printf("%s\n", str );
+	char a = ( (int)str + (int)index->val );
+	dovar( ret, a, DOTYPE_INT );
+	return ret;
 }
-*/
+
 
 load_string_class() {
 
     array_set1( &sym_stk, "String%fn%length", &do_string_length);
     array_set1( &sym_stk, "String%fn%substr", &do_string_substr);
+    array_set1( &sym_stk, "String%fn%charCodeAt", &do_charCodeAt);
 
 }

@@ -218,6 +218,7 @@ next() {
 			*buf++ = 0;
 			inp();
 		} else if( ch == '"' ) {
+
 			toks.t = TOK_STRING;
 			inp();
 			toks.id = buf;
@@ -663,56 +664,65 @@ unary() {
 
 do_dot() {
 	int i = 0;
-	while( toks.c == '.' ) {					
-		skip('.');
-		tokens ctoks;
-		ctoks.t = toks.t;
-		ctoks.id = toks.id;
-		ctoks.c = toks.c;
+	vars_init();
+	while( toks.c == '.' || toks.c == '[' ) {
+		if( toks.c == '.' ) {
+			skip('.');
+			tokens ctoks;
+			ctoks.t = toks.t;
+			ctoks.id = toks.id;
+			ctoks.c = toks.c;
 
-		next();
+			next();
 
-		if( toks.c == '(' ) {
+			if( toks.c == '(' ) {
 
-			char *t = ctoks.id;
+				char *t = ctoks.id;
 
-			vars_init();
+				ivar = ivar - 4;
+				*(int *)indvar = -ivar;
+				int l1 = ivar;
+				do_equal(l1);
+
+
+				function_init(2);
+				function_set_arg(0);
+				dovar(a1,"prototype",1);
+				do_call_num(a1);
+				function_set_arg(1);
+				function_call( &array_get, "array_get" );
+				function_end(2);
+
+
+				function_init(2);
+				function_set_arg(0);
+				dovar(a,t,1);
+				do_call_num(a);
+				function_set_arg(1);
+				function_call( &array_get, "array_get" );
+				function_end(2);
+
+
+				ivar = ivar - 4;
+				*(int *)indvar = -ivar;
+				int ld = ivar;
+				do_equal(ld);
+
+				do_call_var( l1 );
+				do_call_function_callback(ld);
+
+			} else {
+				do_call_object(&ctoks);
+			}
+		} else if( toks.c == '[') {
 
 			ivar = ivar - 4;
 			*(int *)indvar = -ivar;
-			int l1 = ivar;
-			do_equal(l1);
+			int l = ivar;
+			do_equal(l);
 
-
-			function_init(2);
-			function_set_arg(0);
-			dovar(a1,"prototype",1);
-			do_call_num(a1);
-			function_set_arg(1);
-			function_call( &array_get, "array_get" );
-			function_end(2);
-
-
-			function_init(2);
-			function_set_arg(0);
-			dovar(a,t,1);
-			do_call_num(a);
-			function_set_arg(1);
-			function_call( &array_get, "array_get" );
-			function_end(2);
-
-
-			ivar = ivar - 4;
-			*(int *)indvar = -ivar;
-			int ld = ivar;
-			do_equal(ld);
-
-			do_call_var( l1 );
-			do_call_function_callback(ld);
-
-		} else {
-			do_call_object(&ctoks);
-		}
+			do_call_array(l);
+		}			
 	}	
 }
 
@@ -921,6 +931,8 @@ block() {
 			}
 
 		}
+
+
 		skip('}');
 
 	} else  {
@@ -1213,13 +1225,14 @@ main(int n, char * t[] )
 
 	array_init( &sym_stk );
 	array_init( &var_stk );
+	array_init( &let_stk );
 	array_init( &ind_fns );
 	array_init( &ind_cls );
 	array_init( &cls_stk );
 	safe_alloc_init( &alloc );
 
 
-	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
+/*	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
 	StringClass->type = DOTYPE_ARRAY;
 	ArrayClass = safe_alloc_new( &alloc, sizeof(variable *) );
 	ArrayClass->type = DOTYPE_ARRAY;
@@ -1242,7 +1255,7 @@ main(int n, char * t[] )
 		array_set1(&var_stk, cls, a );
 
 	}
-
+*/
 /*	printf("%d\n", StringClass);
 	exit(0);
 	*/

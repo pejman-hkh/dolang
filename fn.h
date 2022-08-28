@@ -120,6 +120,8 @@ void do_typeof( variable *ths, variable *a ) {
 
 do_fn_plus_plus( variable *a ) {
 	a->val += 1;
+	dovar(ret, a->val - 1, DOTYPE_INT);
+	return ret;
 }
 
 do_fn_minus_minus( variable *a ) {
@@ -189,6 +191,28 @@ do_to_var( int a ) {
 
 do_fn_equal_equal( variable *a, variable *b ) {
 
+	if( b->type == 5 ) {
+		char *g = safe_alloc_new( &alloc, 2 );
+		memcpy( g, b->val, 1 );
+		g[1] = '\0';
+		if( strcmp( a->val, g ) == 0 ) {
+			return 1;
+		}
+		return 0;
+	}
+
+	if( a->type == 5 ) {
+		char *g = safe_alloc_new( &alloc, 2 );
+		memcpy( g, a->val, 1 );
+		g[1] = '\0';
+
+		if( strcmp( g, b->val ) == 0 ) {
+			return 1;
+		}
+
+		return 0;
+	}
+
 	if( b->type == 2 ) {
 		if( (int)a->val == (int)b->val) {
 			return 1;
@@ -213,6 +237,7 @@ do_fn_equal_equal1( variable *a, variable *b ) {
 }
 
 do_fn_not_equal( variable *a, variable *b ) {
+
 	int a1 = do_fn_equal_equal( a, b);
 /*	printf("%d\n", a->val);
 	printf("%d\n", b->val);

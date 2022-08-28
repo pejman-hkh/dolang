@@ -606,7 +606,9 @@ do_create_array( end ) {
 	function_end(0);
 	do_equal(l);
 
+
 	while( toks.c != end ) {
+
 		skipLine();
 
 		ivar = ivar - 4;
@@ -693,13 +695,31 @@ do_create_array( end ) {
 do_call_array(l) {
 
 	while( toks.c == '[' ) {
-		
+
+		vars_init();
+		ivar = ivar - 4;
+		*(int *)indvar = -ivar;
+		int l1 = ivar;
+		do_equal(l1);
+
+		next();
+		expr();
+
+		ivar = ivar - 4;
+		*(int *)indvar = -ivar;
+		int l2 = ivar;
+		do_equal(l2);
+
+
 		function_init(2);
+
+		do_call_var(l1);
 
 		function_set_arg(0);
 
-		next();
-		expr();	
+		
+		do_call_var(l2);
+
 		function_set_arg(1);
 
 		function_call( &array_get, "array_get" );
@@ -708,12 +728,12 @@ do_call_array(l) {
 		skip(']');
 	}
 
-	if( toks.c == '.' ) {
+/*	if( toks.c == '.' ) {
 		while( toks.c == '.' ) {
 			skip('.');
 			do_call_object(&toks);
 		}
-	}
+	}*/
 
 	if( toks.c == '=' ) {
 
@@ -863,6 +883,7 @@ do_create_let( n ) {
 
 
 		array_set1( &var_stk, id, ivar );
+		array_set1( &let_stk, id, ivar );
 
 
 		tokens btoks;
