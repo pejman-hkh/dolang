@@ -1,5 +1,7 @@
+test
+54
 y o 
-[class:String,prototype:[length:func(),substr:func()]
+[class:String,prototype:[length:func(),substr:func(),charCodeAt:func()]
 ]
 [class:Array,prototype:[]
 ]

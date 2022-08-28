@@ -6,6 +6,11 @@ class Test {
 
 main() {
 
+	let t = "test";
+	print( t.charCodeAt(2) );
+
+	print("\n")
+
 	let y = {}
 	y.o = func() {
 		print("y o \n")

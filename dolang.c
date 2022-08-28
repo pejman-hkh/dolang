@@ -1232,7 +1232,7 @@ main(int n, char * t[] )
 	safe_alloc_init( &alloc );
 
 
-/*	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
+	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
 	StringClass->type = DOTYPE_ARRAY;
 	ArrayClass = safe_alloc_new( &alloc, sizeof(variable *) );
 	ArrayClass->type = DOTYPE_ARRAY;
@@ -1255,7 +1255,7 @@ main(int n, char * t[] )
 		array_set1(&var_stk, cls, a );
 
 	}
-*/
+
 /*	printf("%d\n", StringClass);
 	exit(0);
 	*/
