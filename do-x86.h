@@ -735,7 +735,7 @@ do_call_array() {
 		}
 	}*/
 
-	if( toks.c == '=' ) {
+	if( toks.t == 2048 ) {
 
 		next();
 
@@ -787,7 +787,7 @@ do_call_object( tokens *ctoks ) {
 		function_call( &array_get, "array_get" );
 		function_end(2);
 
-		if( toks.c == '=' ) {
+		if( toks.t == 2048 ) {
 			next();
 
 			vars_init();
@@ -856,7 +856,7 @@ do_create_var( n ) {
 		if( toks.c == ',' )
 			skip(',');
 
-		if( toks.c == '=' ) {
+		if( toks.t == 2048 ) {
 			next();
 			char *id = btoks.id;
 			int l = array_get1( &var_stk, id );
@@ -901,7 +901,7 @@ do_create_let( n ) {
 		if( toks.c == ',' )
 			skip(',');
 
-		if( toks.c == '=' ) {
+		if( toks.t == 2048 ) {
 			next();
 			char *id = btoks.id;
 			int l = array_get1( &var_stk, id );
@@ -1500,21 +1500,33 @@ do_not() {
 
 }
 
-do_plus_equal(l) {
+do_plus_equal() {
+
+	vars_init();
+
+	ivar = ivar - 4;
+	*(int *)indvar = -ivar;
+	int l1 = ivar;
+
+	do_equal(l1);
 	next();
 
+	ivar = ivar - 4;
+	*(int *)indvar = -ivar;
+	int l2 = ivar;
 	expr();
+	do_equal(l2);
 
 	function_init(2);
-
+	do_call_var(l2);
 	function_set_arg(0);
 
-	do_call_var(l);
+	do_call_var(l1);
 	function_set_arg(1);
 	function_call( &do_fn_add, "do_fn_add" );
 	function_end(2);
 
-	do_equal(l);
+	//do_equal(l);
 }
 
 do_for_in() {

@@ -301,7 +301,7 @@ next() {
 				toks.l = 2;
 				toks.t = 2002;
 				if( ch == '+' ) {
-					toks.l = 1;
+					toks.l = 11;
 					toks.t = 2003;
 					toks.c = ch;
 					inp();
@@ -389,6 +389,10 @@ next() {
 
 				}
 			} else if( toks.c == '=' ) {
+				toks.l = 0;
+				toks.t = 2048;
+				toks.c = '=';
+	
 				if( ch == '=' ) {
 					toks.l = 5;
 					toks.t = 2014;
@@ -487,13 +491,15 @@ unary() {
 		do_call_string( var );
 
 		next();
-		if( toks.c == '.' ) {
+		do_after_ident();
+
+		//if( toks.c == '.' ) {
 			//call string functions or variables
-			do_dot();
+			//do_dot();
 		/*	do_get_val();
 			next();
 			next();*/
-		}
+		//}
 	//} else if( toks.t == 2022 ) {
 		//next();
 	} else if( toks.c == '}' ) {
@@ -565,11 +571,6 @@ unary() {
 
 			do_call_num( atoi(btoks.id) );
 			do_convert_to_var(2);
-		} else if( toks.t >= 2024 && toks.t <= 2032 ) {
-			char *id = btoks.id;
-			int l = array_get1( &var_stk, id);
-		
-			do_plus_equal(l);
 
 		} else if( toks.c == '=' & toks.l == 0 ) {
 
@@ -605,14 +606,16 @@ unary() {
 					array_set_int( &ind_fns, ind_fn, btoks.id );
 				}
 
-				if( toks.c == '.' ) {
+				do_after_ident();
+
+				//if( toks.c == '.' ) {
 		/*			vars_init();
 					ivar = ivar - 4;
 					*(int *)indvar = -ivar;
 					int ld = ivar;
 					do_equal(ld);*/
-					do_dot();
-				}
+					//do_dot();
+				//}
 			}
 
 			//do_concat_string();
@@ -625,17 +628,7 @@ unary() {
 
 			do_call_var( l );
 
-			do_after_var();
-
-	/*		if( toks.t == 2003 ) {
-				do_plus_plus();
-			} else if( toks.t == 2003 ) {
-				do_minus_minus();
-			} else if( toks.c == '[' ) {
-				do_call_array(l);
-			} else if( toks.c == '.') {
-				do_dot();
-			}*/
+			do_after_ident();
 
 		} else if( toks.c == ';' ) {
 		} else {
@@ -647,10 +640,12 @@ unary() {
 }
 
 
-do_after_var() {
-	vars_init();
+do_after_ident() {
+	//print_tok();
+
 	while( 1 ) {
 		if( toks.c == '.' ) {
+			vars_init();
 			skip('.');
 			tokens ctoks;
 			ctoks.t = toks.t;
@@ -699,14 +694,9 @@ do_after_var() {
 				do_call_object(&ctoks);
 			}
 		} else if( toks.c == '[') {
-
-		/*	ivar = ivar - 4;
-			*(int *)indvar = -ivar;
-			int l = ivar;
-			do_equal(l);*/
-
 			do_call_array();
 		} else if( toks.t == 2003 ) {
+
 			do_plus_plus();
 			next();
 			break;
@@ -714,6 +704,46 @@ do_after_var() {
 			do_minus_minus();
 			next();
 			break;
+		} else if( toks.t >= 2024 && toks.t <= 2032 ) {
+			//char *id = btoks.id;
+			//int l = array_get1( &var_stk, id);
+			//printf("dddd\n");
+			//exit(0);
+			vars_init();
+			ivar = ivar - 4;
+			*(int *)indvar = -ivar;
+			int l1 = ivar;
+			do_equal(l1);
+
+			do_plus_equal();
+
+			ivar = ivar - 4;
+			*(int *)indvar = -ivar;
+			int l2 = ivar;
+			do_equal(l2);
+
+
+			function_init(2);
+			do_call_var(l2);
+			function_set_arg(0);
+
+			do_call_var(l1);
+			function_set_arg(1);
+			function_call( &do_set_val, "do_set_val" );
+			function_end(2);
+
+
+
+/*			function_init(1);
+
+			do_call_var(l1);
+			function_set_arg(0);
+			function_call( &do_debug, "do_debug" );
+			function_end(1);
+*/
+			//do_call_var(l1);			
+			//do_equal(l1);
+			//do_equal(l1);
 		} else {
 			break;
 		}
@@ -801,6 +831,7 @@ sum(l) {
 			next();
 
 			if( l > 8 ) {
+
 				if( btoks.c == '|' ) {
 					a = do_or_or( a );
 				} else if( btoks.c == '&' ) {
@@ -813,8 +844,8 @@ sum(l) {
 				do_push();
 				sum(l);
 				do_pop();
-				
-				if( btoks.c != '+' & btoks.c != '=' & btoks.c != '!' ) {
+
+				if( btoks.c != '+' & btoks.c != '=' & btoks.c != '!'  ) {
 					do_get_var_value();
 				}
 
@@ -864,6 +895,7 @@ sum(l) {
 					do_div();
 				} 
 
+			
 				if( btoks.c != '+' & btoks.c != '='  & btoks.c != '!' ) {
 					do_convert_to_var(2);
 				}

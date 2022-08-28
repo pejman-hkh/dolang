@@ -43,8 +43,8 @@ do_sleep( variable *ths, variable *t ) {
 	}
 }
 
-do_debug( int *a) {
-	printf("%d\n", *a);
+do_debug( variable *a) {
+	printf("%s\n", a->val );
 	exit(0);
 }
 
@@ -175,6 +175,7 @@ variable *do_fn_add( variable *a, variable *b ) {
 		var->val = mstrcat( b->val, a->val );
 		var->type = 1;
 	}
+
 
 	return var;
 }
