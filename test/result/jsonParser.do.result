@@ -1,8 +1,2 @@
-in ret1 :  
-in ret : test 
-test
-in ret1 : test 
-in ret : test123 
-test123
-[test123:test123]
-[test123:test123]
+[test:123,test1:321]
+123

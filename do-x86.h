@@ -722,15 +722,15 @@ do_call_array() {
 		do_equal(l2);
 
 
+		//do_call( &array_get, "array_get", l1, l2 );
+
 		function_init(2);
 
 		do_call_var(l1);
-
 		function_set_arg(0);
 
 		
 		do_call_var(l2);
-
 		function_set_arg(1);
 
 		function_call( &array_get, "array_get" );
@@ -1548,6 +1548,7 @@ do_plus_equal() {
 	function_end(2);
 
 	//do_equal(l);
+	//do_call_var(l2);
 }
 
 do_for_in() {
