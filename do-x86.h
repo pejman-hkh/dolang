@@ -1548,7 +1548,6 @@ do_plus_equal() {
 	function_end(2);
 
 	//do_equal(l);
-	//do_call_var(l2);
 }
 
 do_for_in() {

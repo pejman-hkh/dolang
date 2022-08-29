@@ -3,6 +3,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+
 do_fn_new_class( variable *cls ) {
 
 	array *arr = safe_alloc_new(&alloc, sizeof(array));
