@@ -108,7 +108,7 @@ variable * array_get( variable *arr1, variable *key ) {
 
 	variable *val = safe_alloc_new( &alloc, sizeof(variable*) );
 
-	dovar( v, val, DOTYPE_INT );
+	dovar( v, val, DOTYPE_UNDEF );
 
 	array_set( arr1, k, v );
 

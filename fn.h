@@ -100,6 +100,8 @@ void do_print( variable *ths, variable *a ) {
 		printf("%ld", a->val );
 	} else if( a->type == 7 ) {
 		printf("#res");
+	} else if( a->type == 9 ) {
+		printf("undefined");
 	} else {
 		printf("%d", a );
 	}

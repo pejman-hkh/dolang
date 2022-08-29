@@ -1,11 +1,14 @@
 main() {
 	let o = []
-	let i = 0
+	let i = []
+	i.i = 0
 	o.l = []
 
-	o.l[i++] = i
-	o.l[i++] = i
-	o.l[i++] = i
+	o.l[i.i++] = i
+	o.l[i.i++] = i
+	o.l[i.i++] = i
 
-	print( o ) 
+	print( o.l[i.i] )
+
+
 }

@@ -16,4 +16,9 @@ main() {
 	var s = 'ddddddd'
 	s[3] = '\0'
 	print( s )
+
+
+	let a = 'test3-';
+	let b = "test-"+"test1-"+"test2-"+a+"test4";
+	print(b);
 }

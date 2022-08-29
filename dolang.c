@@ -645,7 +645,6 @@ do_after_ident() {
 
 	while( 1 ) {
 		if( toks.c == '.' ) {
-			vars_init();
 			skip('.');
 			tokens ctoks;
 			ctoks.t = toks.t;
@@ -658,9 +657,12 @@ do_after_ident() {
 
 				char *t = ctoks.id;
 
-				ivar = ivar - 4;
-				*(int *)indvar = -ivar;
-				int l1 = ivar;
+				//vars_init();
+				//ivar = ivar - 4;
+				//*(int *)indvar = -ivar;
+				//int l1 = ivar;
+				int l1 = do_new_let();
+
 				do_equal(l1);
 
 
@@ -682,9 +684,10 @@ do_after_ident() {
 				function_end(2);
 
 
-				ivar = ivar - 4;
-				*(int *)indvar = -ivar;
-				int ld = ivar;
+				//ivar = ivar - 4;
+				//*(int *)indvar = -ivar;
+				//int ld = ivar;
+				int ld = do_new_let();
 				do_equal(ld);
 
 				do_call_var( l1 );
@@ -709,17 +712,19 @@ do_after_ident() {
 			//int l = array_get1( &var_stk, id);
 			//printf("dddd\n");
 			//exit(0);
-			vars_init();
+			/*vars_init();
 			ivar = ivar - 4;
 			*(int *)indvar = -ivar;
-			int l1 = ivar;
+			int l1 = ivar;*/
+			int l1 = do_new_let();
 			do_equal(l1);
 
 			do_plus_equal();
 
-			ivar = ivar - 4;
+			/*ivar = ivar - 4;
 			*(int *)indvar = -ivar;
-			int l2 = ivar;
+			int l2 = ivar;*/
+			int l2 = do_new_let();
 			do_equal(l2);
 
 
@@ -767,9 +772,10 @@ do_dot() {
 
 				char *t = ctoks.id;
 
-				ivar = ivar - 4;
+				/*ivar = ivar - 4;
 				*(int *)indvar = -ivar;
-				int l1 = ivar;
+				int l1 = ivar;*/
+				int l1 = do_new_let();
 				do_equal(l1);
 
 
@@ -791,9 +797,10 @@ do_dot() {
 				function_end(2);
 
 
-				ivar = ivar - 4;
+				/*ivar = ivar - 4;
 				*(int *)indvar = -ivar;
-				int ld = ivar;
+				int ld = ivar;*/
+				int ld = do_new_let();
 				do_equal(ld);
 
 				do_call_var( l1 );
@@ -804,9 +811,10 @@ do_dot() {
 			}
 		} else if( toks.c == '[') {
 
-			ivar = ivar - 4;
+			/*ivar = ivar - 4;
 			*(int *)indvar = -ivar;
-			int l = ivar;
+			int l = ivar;*/
+			int l = do_new_let();
 			do_equal(l);
 
 			do_call_array(l);

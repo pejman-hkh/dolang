@@ -1,6 +1,13 @@
 main() {
 	let s = microtime();
 
+	if( s ) {
+		let p = "test p\n"
+		print(p)
+	}
+
+	print(p)
+/*
 	let a = "test\n"
 	print( a )
 
@@ -12,5 +19,5 @@ main() {
 		print(v)
 	}
 
-	print( microtime() - s )
+	print( microtime() - s )*/
 }

@@ -10,6 +10,13 @@ void mprint( variable *a );
 #include "fn.h"
 #include "conf.h"
 
+do_new_let() {
+	vars_init();
+	ivar = ivar - 4;
+	*(int *)indvar = -ivar;
+	return ivar;
+}
+
 do_get_val() {
 	#if Assembly 
 	printf("mov  0x4(%%eax),%%eax\n");
@@ -593,12 +600,13 @@ variable *do_fn_create_array() {
 
 do_create_array( end ) {
 
-	vars_init();
+/*	vars_init();
 
 	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
-	int l = ivar;
+	int l = ivar;*/
 
+	int l = do_new_let();
 
 	//init array
 	function_init(0);
@@ -611,10 +619,10 @@ do_create_array( end ) {
 
 		skipLine();
 
-		ivar = ivar - 4;
+		/*ivar = ivar - 4;
 		*(int *)indvar = -ivar;
-		int l1 = ivar;
-
+		int l1 = ivar;*/
+		int l1 = do_new_let();
 
 		if( toks.t == TOK_IDENT ) {
 			char *id = toks.id;
@@ -639,9 +647,10 @@ do_create_array( end ) {
 
 		do_equal(l1);
 
-		ivar = ivar - 4;
+		/*ivar = ivar - 4;
 		*(int *)indvar = -ivar;
-		int l2 = ivar;
+		int l2 = ivar;*/
+		int l2 = do_new_let();
 
 		int d = 0;
 		if( toks.c == ':' ) {
@@ -696,18 +705,20 @@ do_call_array() {
 
 	while( toks.c == '[' ) {
 
-		vars_init();
+		/*vars_init();
 		ivar = ivar - 4;
 		*(int *)indvar = -ivar;
-		int l1 = ivar;
+		int l1 = ivar;*/
+		int l1 = do_new_let();
 		do_equal(l1);
 
 		next();
 		expr();
 
-		ivar = ivar - 4;
+		/*ivar = ivar - 4;
 		*(int *)indvar = -ivar;
-		int l2 = ivar;
+		int l2 = ivar;*/
+		int l2 = do_new_let();
 		do_equal(l2);
 
 
@@ -739,17 +750,21 @@ do_call_array() {
 
 		next();
 
-		vars_init();
+		/*vars_init();
 		ivar = ivar - 4;
 		*(int *)indvar = -ivar;
-		int l1 = ivar;
+		int l1 = ivar;*/
+		int l1 = do_new_let();
+
 		do_equal(l1);
 
 		expr();
 
-		ivar = ivar - 4;
+		/*ivar = ivar - 4;
 		*(int *)indvar = -ivar;
-		int l2 = ivar;
+		int l2 = ivar;*/
+		int l2 = do_new_let();
+
 		do_equal(l2);
 
 
@@ -790,17 +805,19 @@ do_call_object( tokens *ctoks ) {
 		if( toks.t == 2048 ) {
 			next();
 
-			vars_init();
+			/*vars_init();
 			ivar = ivar - 4;
 			*(int *)indvar = -ivar;
-			int l1 = ivar;
+			int l1 = ivar;*/
+			int l1 = do_new_let();
 			do_equal(l1);
 
 			expr();
 
-			ivar = ivar - 4;
+			/*ivar = ivar - 4;
 			*(int *)indvar = -ivar;
-			int l2 = ivar;
+			int l2 = ivar;*/
+			int l2 = do_new_let();
 			do_equal(l2);
 
 			function_init(2);
@@ -932,9 +949,10 @@ do_new_class( cls ) {
 	function_end(1);
 
 
-	ivar = ivar - 4;
+	/*ivar = ivar - 4;
 	*(int *)indvar = -ivar;
-	int l1 = ivar;
+	int l1 = ivar;*/
+	int l1 = do_new_let();
 	do_equal(l1);
 
 	if( toks.c == '(' ) {
@@ -956,9 +974,10 @@ do_new_class( cls ) {
 		function_end(2);
 
 
-		ivar = ivar - 4;
+		/*ivar = ivar - 4;
 		*(int *)indvar = -ivar;
-		int ld = ivar;
+		int ld = ivar;*/
+		int ld = do_new_let();
 		do_equal(ld);
 
 		do_call_var( l1 );
@@ -978,11 +997,11 @@ do_create_main_class( cls ) {
 	function_call( &do_fn_create_array, "do_fn_create_array" );
 	function_end(0);
 
-	vars_init();
+	/*vars_init();
 	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
-	int l = ivar;
-
+	int l = ivar;*/
+	int l = do_new_let();
 	do_equal(l);
 
 	//do_call_var(l);
@@ -1502,18 +1521,20 @@ do_not() {
 
 do_plus_equal() {
 
-	vars_init();
+/*	vars_init();
 
 	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
-	int l1 = ivar;
+	int l1 = ivar;*/
+	int l1 = do_new_let();
 
 	do_equal(l1);
 	next();
 
-	ivar = ivar - 4;
+	/*ivar = ivar - 4;
 	*(int *)indvar = -ivar;
-	int l2 = ivar;
+	int l2 = ivar;*/
+	int l2 = do_new_let();
 	expr();
 	do_equal(l2);
 
@@ -1531,11 +1552,12 @@ do_plus_equal() {
 
 do_for_in() {
 
-	vars_init();
+/*	vars_init();
 
 	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
-	int l = ivar;
+	int l = ivar;*/
+	int l = do_new_let();
 
 	do_call_var(l);
 
@@ -1549,9 +1571,10 @@ do_for_in() {
 
 	function_init(1);
 	expr();
-	ivar = ivar - 4;
+/*	ivar = ivar - 4;
 	*(int *)indvar = -ivar;
-	int l1 = ivar;
+	int l1 = ivar;*/
+	int l1 = do_new_let();
 
 	//do_call_var(l1);
 	do_equal(l1);
