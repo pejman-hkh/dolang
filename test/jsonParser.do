@@ -7,6 +7,9 @@ class jsonParser {
 
 	next() {
 		this.i++;
+		while( this.tok() == ' ' ) {
+			this.i++;
+		}	
 	}
 
 	tok() {
@@ -61,7 +64,6 @@ class jsonParser {
 	}
 
 	parse() {
-		let i = 0;
 		let a = this.tok();
 		if( a == "{" ) {
 			return this.parseObject();
@@ -76,7 +78,7 @@ class jsonParser {
 
 main() {
 
-	let a = new jsonParser('{"test":"123","test1":"321"}');
+	let a = new jsonParser('{ "test" : "123" , "test1" : "321" }');
 	print( a.res );
 	print( a.res.test );
 
