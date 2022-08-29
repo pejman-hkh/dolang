@@ -3,6 +3,7 @@ class jsonParser {
 		this.str = a;
 		this.i = 0;
 		this.res = this.parse();
+
 	}
 
 	next() {
@@ -21,8 +22,6 @@ class jsonParser {
 		this.next();
 		let ret = [];
 		while( this.tok() != '}' ) {
-
-
 			let k = this.parse();
 
 			this.next();
@@ -36,7 +35,7 @@ class jsonParser {
 			}
 
 		}
-
+		this.next();
 
 		return ret;
 	}
@@ -56,7 +55,23 @@ class jsonParser {
 	}
 
 	parseArray() {
+		this.next();
+		let ret = [];
+		let i = 0;
+		while( this.tok() != ']' ) {
+			let k = i++;
+			
+			let v = this.parse();
 
+			ret[k] = v;
+
+			if( this.tok() == ',' ) {
+				this.next();
+			}
+		}
+		this.next();
+
+		return ret;
 	}
 
 	init() {
@@ -78,7 +93,7 @@ class jsonParser {
 
 main() {
 
-	let a = new jsonParser('{ "test" : "123" , "test1" : "321" }');
+	let a = new jsonParser('{ "test" : "123" , "test1" : "321", "array" : [ "a", "b", "c", "d" ], "inner" : {"aa" : "11", "bb" : "22", "cc" : "33"} }');
 	print( a.res );
 	print( a.res.test );
 
