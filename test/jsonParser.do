@@ -6,12 +6,21 @@ class jsonParser {
 
 	}
 
-	next() {
-		this.i++
+	skipSpace() {
 
-		while( this.tok() == ' ' || this.tok() == '\n' ) {
+		while( this.tok() == ' ' || this.tok() == "\n" || this.tok() == "\t" ) {
 			this.i++
 		}	
+
+	}
+
+	next() {
+
+		this.skipSpace()
+
+		this.i++
+
+		this.skipSpace()	
 	}
 
 	tok() {
@@ -90,7 +99,9 @@ class jsonParser {
 
 main() {
 
-	let a = new jsonParser('{ "test" : "123" , "test1" : "321", "array" : [ "a", "b", "c", "d" ], "inner" : {"aa" : "11", "bb" : "22", "cc" : "33"} }')
+	let a = new jsonParser('{ "test"
+	: "123" , "test1" : "321", 
+	"array" : [ "a", "b", "c", "d" ], "inner" : {"aa" : "11", "bb" : "22", "cc" : "33"} }')
 	print( a.res )
 	print( a.res.test )
 

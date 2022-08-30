@@ -88,6 +88,8 @@ getq()
 		inp();
 		if (ch == 'n')
 			ch = '\n';
+		else if( ch == 't')
+			ch = '\t';
 	}
 }
 
