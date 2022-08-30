@@ -146,6 +146,7 @@ do_return() {
 
 do_call_string( variable *var ) {
 	#if Assembly 
+	printf("------------------ string : %s \n", var->val );
 	printf("mov 0x%x,%%eax\n", var->val );
 	#endif
 	*ind++ = 0xb8;
@@ -633,11 +634,7 @@ do_create_array( end ) {
 			if( toks.c == ',' || toks.c == '.' || toks.c == '[' || toks.c == ']' || toks.c == '}' ) {
 		 		int l = array_get1( &var_stk, id );
 			 	do_call_var(l);
-				if( toks.c == '[' ) {
-					do_call_array();
-				} else if( toks.c == '.') {
-					do_dot();
-				}		 	
+				do_after_ident();		 	
 			}
 
 
@@ -1166,6 +1163,9 @@ do_main_create_function( cls, fn_name ) {
 			next();
 	}
 	skip(')');		
+	#if Assembly 
+	printf("------------------ function %s : \n", fn_name);
+	#endif
 
 	#if Assembly 
 	printf("push %%ebp\n");
@@ -1284,7 +1284,8 @@ do_or_or(a) {
 	*ind++ = 0x0f;
 	*ind++ = 0x85;
 	int indp = ind;
-	*(int *)ind = 0;
+	*(int *)ind = a;
+	a = ind;
 	ind += 4;
 	return indp;
 }

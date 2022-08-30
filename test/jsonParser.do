@@ -1,91 +1,88 @@
 class jsonParser {
 	construct( a ) {
-		this.str = a;
-		this.i = 0;
-		this.res = this.parse();
+		this.str = a
+		this.i = 0
+		this.res = this.parse()
 
 	}
 
 	next() {
-		this.i++;
-		while( this.tok() == ' ' ) {
-			this.i++;
+		this.i++
+
+		while( this.tok() == ' ' || this.tok() == '\n' ) {
+			this.i++
 		}	
 	}
 
 	tok() {
-		return this.str[ this.i ];
+		return this.str[ this.i ]
 	}
 
 	parseObject() {
 
-		this.next();
-		let ret = [];
+		this.next()
+		let ret = []
 		while( this.tok() != '}' ) {
-			let k = this.parse();
+			let k = this.parse()
 
-			this.next();
+			this.next()
 
-			let v = this.parse();
+			let v = this.parse()
 
-			ret[k] = v;
+			ret[k] = v
 
 			if( this.tok() == ',' ) {
-				this.next();
+				this.next()
 			}
 
 		}
-		this.next();
+		this.next()
 
-		return ret;
+		return ret
 	}
 
 	parseStr() {
 
-		let a = "";
+		let a = ""
 
-		this.next();	
+		this.next()	
 		while( this.tok() != '"' ) {
-			a = a + this.tok();
-			this.next();
+			a = a + this.tok()
+			this.next()
 		}
-		this.next();
+		this.next()
 
-		return a;
+		return a
 	}
 
 	parseArray() {
-		this.next();
-		let ret = [];
-		let i = 0;
+		this.next()
+		let ret = []
+		let i = 0
 		while( this.tok() != ']' ) {
-			let k = i++;
+			let k = i++
 			
-			let v = this.parse();
+			let v = this.parse()
 
-			ret[k] = v;
+			ret[k] = v
 
 			if( this.tok() == ',' ) {
-				this.next();
+				this.next()
 			}
 		}
-		this.next();
+		this.next()
 
-		return ret;
-	}
-
-	init() {
-
+		return ret
 	}
 
 	parse() {
-		let a = this.tok();
+		let a = this.tok()
 		if( a == "{" ) {
-			return this.parseObject();
+			return this.parseObject()
 		} else if( a == '"' ) {
-			return this.parseStr();
+			return this.parseStr()
 		} else if( a == '[' ) {
-			return this.parseArray();
+			return this.parseArray()
 		}
 	
 	}
@@ -93,8 +90,8 @@ class jsonParser {
 
 main() {
 
-	let a = new jsonParser('{ "test" : "123" , "test1" : "321", "array" : [ "a", "b", "c", "d" ], "inner" : {"aa" : "11", "bb" : "22", "cc" : "33"} }');
-	print( a.res );
-	print( a.res.test );
+	let a = new jsonParser('{ "test" : "123" , "test1" : "321", "array" : [ "a", "b", "c", "d" ], "inner" : {"aa" : "11", "bb" : "22", "cc" : "33"} }')
+	print( a.res )
+	print( a.res.test )
 
 }

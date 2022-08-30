@@ -42,6 +42,8 @@ char *file_ext;
 #define TOK_STATIC 26
 #define TOK_FUNCTION 27
 #define TOK_PACKAGE 28
+#define TOK_TRUE 29
+#define TOK_FALSE 30
 
 
 #define DOTYPE_STRING 1

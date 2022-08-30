@@ -67,17 +67,23 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 
 variable * array_get( variable *arr1, variable *key ) {
 	if( ! arr1->type ) {
-		printf("object not exists ! \n");
-		exit(0);
+		dovar( ret, "", DOTYPE_UNDEF);
+		return ret;
 	}
 
 	if( arr1->type == 1 ) {
 		if( key->type == 2 ) {
 			int index = key->val;
-			char *d = arr1->val+index;
-			dovar( ret, d, 5);
+			if( index > strlen(arr1->val) ) {
+				dovar( ret, 0, 2);
+				return ret;
+			} else {
+				char *d = arr1->val+index;
+				dovar( ret, d, 5);
+				return ret;
+			}
+			
 
-			return ret;
 		} else if( key->type == 1 ) {
 
 

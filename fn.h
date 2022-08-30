@@ -199,6 +199,7 @@ do_fn_equal_equal( variable *a, variable *b ) {
 		char *g = safe_alloc_new( &alloc, 2 );
 		memcpy( g, b->val, 1 );
 		g[1] = '\0';
+
 		if( strcmp( a->val, g ) == 0 ) {
 			return 1;
 		}
@@ -221,7 +222,9 @@ do_fn_equal_equal( variable *a, variable *b ) {
 		if( (int)a->val == (int)b->val) {
 			return 1;
 		}
-	} if( b->type == 1 ) {
+	} 
+
+	if( b->type == 1 ) {
 		int cmp = strcmp( a->val, b->val );
 		if( cmp == 0 ) {
 			return 1;
