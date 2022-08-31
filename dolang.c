@@ -278,13 +278,24 @@ next() {
 						}
 					}
 					inp();
-				}
-
-				if( ch == '=' ) {
+				} else if( ch == '=' ) {
 					toks.l = 11;
 					toks.t = 2027;
 					toks.c = ch;
 					inp();					
+				} else if( ! isdigit(ch) ) {
+
+					toks.t = TOK_REGEX;
+					toks.id = buf;
+					while( ch != '/' ) {
+						//printf("%c\n", ch );
+						*buf++ = ch;
+						inp();						
+					}
+					*buf++ = 0;
+					//printf("ddd %s\n", toks.id);
+					inp();
+					//exit(0);		
 				}
 
 			} else if( toks.c == '%' ) {
@@ -486,6 +497,10 @@ unary() {
 		do_create_main_class( cls1 );
 		do_equal(a);
 
+
+	} else if( toks.t == TOK_REGEX ) {
+
+		do_call_regex();
 
 	} else if( toks.t == TOK_STRING ) {
 
@@ -904,6 +919,18 @@ block() {
 			do_for_loop();								
 		}
 
+	} else if( toks.t == TOK_DO ) {
+		next();
+		int n = ind;
+		block();
+		if( toks.t == TOK_WHILE ) {	
+			next();
+			skip('(');
+			test_expr();
+			skip(')');
+			do_do_while_loop(n);
+		}
+
 	} else if( toks.t == TOK_WHILE ) {
 		next();
 		skip('(');
@@ -1262,6 +1289,7 @@ main(int n, char * t[] )
 	array_set1( &mt, "package", TOK_PACKAGE );
 	array_set1( &mt, "true", TOK_TRUE );
 	array_set1( &mt, "false", TOK_FALSE );
+	array_set1( &mt, "do", TOK_DO );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );
@@ -1272,7 +1300,7 @@ main(int n, char * t[] )
 	safe_alloc_init( &alloc );
 
 
-	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
+/*	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
 	StringClass->type = DOTYPE_ARRAY;
 	ArrayClass = safe_alloc_new( &alloc, sizeof(variable *) );
 	ArrayClass->type = DOTYPE_ARRAY;
@@ -1294,7 +1322,7 @@ main(int n, char * t[] )
 
 		array_set1(&var_stk, cls, a );
 
-	}
+	}*/
 
 /*	printf("%d\n", StringClass);
 	exit(0);

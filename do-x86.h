@@ -34,6 +34,27 @@ do_convert_to_var( type ) {
 
 }
 
+
+do_call_regex() {
+	function_init(2);
+	dovar( v1, toks.id, DOTYPE_STRING );
+	do_call_string(v1);
+	function_set_arg(0);
+
+	next();
+	if( toks.t == TOK_IDENT ) {
+
+		dovar(v2,toks.id,DOTYPE_STRING);
+		do_call_string(v2);
+		function_set_arg(1);
+
+		next();
+	}
+
+	function_call( &do_fn_new_regex, "do_fn_new_regex" );
+	function_end(2);
+}
+
 do_push() {
 	#if Assembly 
 	printf("push %%eax\n");
@@ -455,6 +476,39 @@ do_less_than() {
 	*ind++ = 0x0f;
 	*ind++ = 0x9c;
 	*ind++ = 0xc0;			 	
+}
+
+do_do_while_loop(n) {
+
+	#if Assembly 
+	printf("mov  0x4(%%eax),%%eax\n");
+	#endif
+	*ind++ = 0x8b;
+	*ind++ = 0x40;
+	*ind++ = 0x04;
+
+	#if Assembly 
+	printf("test %%eax,%%eax\n");
+	#endif
+	*ind++ = 0x85;
+	*ind++ = 0xc0;
+
+	#if Assembly 
+	printf("je $\n");
+	#endif
+	*ind++ = 0x0f; 
+	*ind++ = 0x84; 
+	*(int *)ind = 5;
+	ind += 4;
+
+	n = n - (int)ind - 5;
+
+	#if Assembly 
+	printf("jmp  $\n");
+	#endif
+	*ind++ = 0xe9;
+	*(int *)ind = n;
+	ind += 4;	
 }
 
 do_while_loop(n) {

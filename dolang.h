@@ -44,6 +44,8 @@ char *file_ext;
 #define TOK_PACKAGE 28
 #define TOK_TRUE 29
 #define TOK_FALSE 30
+#define TOK_DO 31
+#define TOK_REGEX 32
 
 
 #define DOTYPE_STRING 1
@@ -55,6 +57,7 @@ char *file_ext;
 #define DOTYPE_RES 7
 #define DOTYPE_CLS 8
 #define DOTYPE_UNDEF 9
+#define DOTYPE_REGEX 10
 
 #define TOK_IDENT 999
 #define TOK_STRING 1000

@@ -3,6 +3,23 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+do_fn_new_regex( variable *a, variable *b ) {
+
+	int l = array_get1(&var_stk, "RegExp" );
+
+	variable *cls = do_fn_new_class( l );
+	dovar(pk, "prototype", DOTYPE_STRING);
+	variable *proto = array_get( cls, pk );
+	dovar(fnc, "construct", DOTYPE_STRING);
+	variable *ret = array_get( proto, fnc );
+
+	typedef variable *( *fn )( variable *ths, variable *a, variable *b );
+
+	fn construct = ret->val;
+
+	return construct( cls, a, b );
+
+}
 
 do_fn_new_class( variable *cls ) {
 
