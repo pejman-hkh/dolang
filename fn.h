@@ -148,6 +148,16 @@ do_fn_minus_minus( variable *a ) {
 	a->val -= 1;
 }
 
+int do_fn_shift_left( int a, int b ) {
+	int r = (int)b << (int)a;
+	return r;
+}
+
+int do_fn_shift_right( int a, int b ) {
+	int r = (int)b >> (int)a;
+	return r;
+}
+
 variable *do_fn_add( variable *a, variable *b ) {
 	variable *var = safe_alloc_new( &alloc, sizeof(variable));
 

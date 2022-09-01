@@ -35,6 +35,57 @@ do_convert_to_var( type ) {
 }
 
 
+do_else_ternary(a) {
+
+	#if Assembly 
+	printf("jmpq $\n");
+	#endif
+	*ind++ = 0xe9; 
+	*(int *)ind = 0;
+	int b = ind;
+	ind += 4;
+
+
+    int n;
+    while (a) {
+        n = *(int *)a;
+        *(int *)a = ind - a - 4;
+        a = n;
+    }
+
+
+	return b;
+}
+
+do_ternary(a) {
+
+	#if Assembly 
+	printf("mov  0x4(%%eax),%%eax\n");
+	#endif
+	*ind++ = 0x8b;
+	*ind++ = 0x40;
+	*ind++ = 0x04;
+
+	#if Assembly 
+	printf("test %%eax,%%eax\n");
+	#endif
+	*ind++ = 0x85;
+	*ind++ = 0xc0;
+
+	#if Assembly 
+	printf("je  0x$\n");
+	#endif
+	*ind++ = 0x0f;
+	*ind++ =  0x84;
+	*(int *)ind = 0;
+	a = ind;
+	ind += 4;
+
+	return a;
+
+
+}
+
 do_call_regex() {
 	function_init(2);
 	dovar( v1, toks.id, DOTYPE_STRING );
@@ -896,7 +947,7 @@ do_call_address( l ) {
 }
 
 do_is_not_end() {
-	return toks.c != ';' && toks.t != 2022 && toks.t != 2023 && toks.t != TOK_IN && toks.c != ')';
+	return toks.c != ';' && toks.t != 2022 && toks.t != 2023 && toks.t != TOK_IN && toks.c != ')' && toks.c != '?';
 }
 
 do_create_var( n ) {
@@ -925,12 +976,7 @@ do_create_var( n ) {
 			skip(',');
 
 		if( toks.t == 2048 ) {
-			next();
-			char *id = btoks.id;
-			int l = array_get1( &var_stk, id );
-
-			expr();
-			do_equal( l );
+			do_main_equal(&btoks);
 
 		}
 	}
@@ -970,15 +1016,30 @@ do_create_let( n ) {
 			skip(',');
 
 		if( toks.t == 2048 ) {
-			next();
+			do_main_equal(&btoks);
+/*			next();
 			char *id = btoks.id;
 			int l = array_get1( &var_stk, id );
 
 			expr();
-			do_equal( l );
+
+print_tok();
+exit(0);
+
+			do_equal( l );*/
 
 		}
 	}
+}
+
+do_main_equal( tokens *btoks ) {
+	next();
+
+	char *id = btoks->id;
+	int l = array_get1( &var_stk, id);
+	expr();
+
+	do_equal( l );	
 }
 
 do_new_class( cls ) {
@@ -1337,11 +1398,11 @@ do_or_or(a) {
 	#endif
 	*ind++ = 0x0f;
 	*ind++ = 0x85;
-	int indp = ind;
+
 	*(int *)ind = a;
 	a = ind;
 	ind += 4;
-	return indp;
+	return a;
 }
 
 do_patch_or_or(a) {
@@ -1399,11 +1460,10 @@ do_and_and(a) {
 	#endif
 	*ind++ = 0x0f;
 	*ind++ = 0x84;
-	int indp = ind;
 	*(int *)ind = a;
 	a = ind;
 	ind += 4;
-	return indp;
+	return a;
 }
 
 do_patch_and_and(a) {
@@ -1516,10 +1576,34 @@ do_for_loop() {
 
 do_shift_left() {
 
+	function_init(2);
+	function_set_arg(0);
+
+	#if Assembly 
+	printf("mov %%ecx, %%eax\n");
+	#endif
+	*ind++ = 0x89;
+	*ind++ = 0xc8;
+
+	function_set_arg(1);
+	function_call( &do_fn_shift_left, "do_fn_shift_left" );
+	function_end(2);
+
 }
 
 do_shift_right() {
+	function_init(2);
+	function_set_arg(0);
 
+	#if Assembly 
+	printf("mov %%ecx, %%eax\n");
+	#endif
+	*ind++ = 0x89;
+	*ind++ = 0xc8;
+
+	function_set_arg(1);
+	function_call( &do_fn_shift_right, "do_fn_shift_right" );
+	function_end(2);
 }
 
 do_less_equal() {

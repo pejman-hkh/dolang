@@ -254,6 +254,16 @@ next() {
 					inp();					
 				}
 
+/*			} else if( toks.c == '?' ) {
+				toks.l = 10;
+				toks.t = 3001;
+				//toks.c = ch;
+				//inp();			
+			} else if( toks.c == ':' ) {
+				toks.l = 10;
+				toks.t = 3002;
+				//toks.c = ch;
+				//inp();*/			
 			} else if( toks.c == '/' ) {
 				toks.l = 1;
 				toks.t = 2021;
@@ -467,7 +477,7 @@ next() {
 }
 
 unary() {
-
+		
 	if( toks.t == TOK_NEW ) {
 		
 		next();
@@ -531,10 +541,10 @@ unary() {
 
 		next();
 
-
 	
 		if( btoks.c == '{' ) {
 			do_create_array('}');			
+
 		} else if( btoks.c == '[' ) {
 			do_create_array(']');
 
@@ -549,6 +559,12 @@ unary() {
 */
 			do_create_var( 4 );
 	
+		} else if( toks.t == 3001 ) {
+
+			//a = do_ternary( a );
+
+		
+
 		} else if( btoks.c == '!' ) {
 			unary();
 			do_not();
@@ -591,18 +607,8 @@ unary() {
 
 		} else if( toks.c == '=' & toks.l == 0 ) {
 
-			next();
+			do_main_equal( &btoks );
 
-			char *id = btoks.id;
-			/*if( thisClass ) {
-				id = mstrcat( thisClass, "%");
-				id = mstrcat(id, btoks.id);
-			}*/
-
-			int l = array_get1( &var_stk, id);
-
-			expr(l);
-			do_equal( l );
 		} else if( btoks.c == '(' ) {
 			expr();
 			skip(')');
@@ -646,6 +652,7 @@ unary() {
 			do_call_var( l );
 
 			do_after_ident();
+
 
 		} else if( toks.c == ';' ) {
 		} else {
@@ -774,14 +781,16 @@ do_after_ident() {
 
 
 sum(l) {
+	
 	tokens btoks;
 	if( l-- == 1 ) {
 		unary();
 	} else {
 
 		sum(l);
+
 		int a = 0;
-	
+
 		while( l == toks.l ) {
 			btoks.t = toks.t;
 			btoks.id = toks.id;
@@ -790,8 +799,12 @@ sum(l) {
 			next();
 
 			if( l > 8 ) {
+				/*if( btoks.c == ':') {
+					a = do_else_ternary( a );
+				} else if( btoks.c == '?') {
+					a = do_ternary( a );
 
-				if( btoks.c == '|' ) {
+				} else */if( btoks.c == '|' ) {
 					a = do_or_or( a );
 				} else if( btoks.c == '&' ) {
 					a = do_and_and( a );
@@ -861,8 +874,18 @@ sum(l) {
 
 			}
 		}
+
 		if (a && l > 8) {
-			if( btoks.c == '|' ) {
+
+			/*if( btoks.c == ':') {
+			    int n;
+			    while (a) {
+			        n = *(int *)a;
+			        *(int *)a = ind - a - 4;
+			        a = n;
+			    }
+    	
+			} else */if( btoks.c == '|' ) {
 				a = do_or_or( a );
 				do_patch_or_or( a );
 			} else if( btoks.c == '&' ) {
@@ -876,10 +899,28 @@ sum(l) {
 
 expr() {
 	sum(11);
+
+	if( toks.c == '?' ) {
+		next();
+
+		int a = do_ternary(a);
+		expr();
+		skip(':');
+		a = do_else_ternary( a );
+
+		expr();
+
+		int n;
+		while (a) {
+			n = *(int *)a;
+			*(int *)a = ind - a - 4;
+			a = n;
+		}
+	}
 }
 
 test_expr() {
-	sum(11);
+	expr();
 	return ind - 4;	
 }
 
@@ -1300,7 +1341,7 @@ main(int n, char * t[] )
 	safe_alloc_init( &alloc );
 
 
-/*	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
+	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
 	StringClass->type = DOTYPE_ARRAY;
 	ArrayClass = safe_alloc_new( &alloc, sizeof(variable *) );
 	ArrayClass->type = DOTYPE_ARRAY;
@@ -1322,7 +1363,7 @@ main(int n, char * t[] )
 
 		array_set1(&var_stk, cls, a );
 
-	}*/
+	}
 
 /*	printf("%d\n", StringClass);
 	exit(0);
@@ -1336,7 +1377,7 @@ exit(0);*/
 	mainFile = fopen(t[1], "r");
 
 	do_get_path(t[1]);
-/*	if( t[2] ) {
+	if( t[2] ) {
 
 		if( strcmp(t[2], "-t") == 0 ) {
 
@@ -1351,7 +1392,7 @@ exit(0);*/
 			exit(0);
 		}
 	}
-*/
+
 
 	file_ext = get_ext(t[1]);
 
