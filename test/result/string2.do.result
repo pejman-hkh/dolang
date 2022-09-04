@@ -1,11 +1,6 @@
-test
 54
 y o 
-[class:String,prototype:[length:func(),substr:func(),charCodeAt:func()]
-]
-[class:Array,prototype:[]
-]
-[class:Object,prototype:[]
+[class:String,prototype:[length:func(),substr:func(),charCodeAt:func(),indexOf:func()]
 ]
 ello
 11

@@ -1,12 +1,8 @@
 main() {
-
-
 	let a;
-
 	a = 20;
-
 	let b;
-	b = a < 30 ? 5 : 3;
-
+	let str = "test";
+	b = (a ? 5 : 3);
 	print(b);
 }

@@ -5,7 +5,7 @@
 
 do_fn_new_regex( variable *a, variable *b ) {
 
-	int l = array_get1(&var_stk, "RegExp" );
+	int l = RegExpClass;
 
 	variable *cls = do_fn_new_class( l );
 	dovar(pk, "prototype", DOTYPE_STRING);

@@ -1,3 +1,7 @@
+#include "dolang.h"
+#include "safe_alloc.h"
+#include "array.h"
+#include "fn.h"
 
 do_string_length( variable *ths ) {
 	dovar(ret, strlen( ths->val ), DOTYPE_INT );
@@ -17,16 +21,15 @@ do_string_substr( variable *ths, variable *offset, variable *len ) {
 	return ret;
 }
 
-do_charCodeAt(variable *ths, variable *index) {
+do_string_charCodeAt(variable *ths, variable *index) {
 	char *str = ths->val;
-	//printf("%s\n", str );
 	char a = ( (int)str + (int)index->val );
 	dovar( ret, a, DOTYPE_INT );
 	return ret;
 }
 
 
-do_indexOf(variable *ths, variable *s) {
+do_string_indexOf(variable *ths, variable *s) {
 	char *str = ths->val;
 	char * res = strstr( str, s->val );
 	int index = res - str;
@@ -36,11 +39,14 @@ do_indexOf(variable *ths, variable *s) {
 }
 
 
-load_string_class() {
+extern load() {
+	array *arr = malloc( sizeof( array *) );
+	array_init( arr );
+	array_set1( arr, "String%fn%length", &do_string_length);
 
-    array_set1( &sym_stk, "String%fn%length", &do_string_length);
-    array_set1( &sym_stk, "String%fn%substr", &do_string_substr);
-    array_set1( &sym_stk, "String%fn%charCodeAt", &do_charCodeAt);
-    array_set1( &sym_stk, "String%fn%indexOf", &do_indexOf);
-
+	array_set1( arr, "String%fn%substr", &do_string_substr);
+	array_set1( arr, "String%fn%charCodeAt", &do_string_charCodeAt);
+	array_set1( arr, "String%fn%indexOf", &do_string_indexOf);
+	
+	return arr;
 }

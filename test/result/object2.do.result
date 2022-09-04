@@ -1,4 +1,3 @@
 [g:test
 ,a:func(),b:func()]
-test
-in b
+undefinedin b

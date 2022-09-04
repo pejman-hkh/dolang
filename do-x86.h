@@ -1297,6 +1297,9 @@ do_main_create_function( cls, fn_name ) {
 		//create class object
 		for( int i = 0; i < cls_stk.length; i++ ) {
 			char *cls1 = cls_stk.key[i];
+			//printf("%s\n", cls1);
+			//exit(0);
+
 			int a = array_get1( &var_stk, cls1);
 
 			do_create_main_class( cls1 );

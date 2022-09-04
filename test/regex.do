@@ -1,7 +1,10 @@
-import lib.regexp
+//import lib.regexp
 
 main() {
 
-	print( /\w+\s/g );
-	
+	let r = /^(\w+)\s*(\w+)\s*$/g.exec("this is test");
+
+	print( r );
+
+
 }

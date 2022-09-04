@@ -8,10 +8,6 @@
 #include "dolang.h"
 
 #include "safe_alloc.h"
-safe_alloc alloc;
-variable *StringClass;
-variable *ArrayClass;
-variable *ObjectClass;
 
 #include "array.h"
 #define ALLOC_SIZE 99999999
@@ -39,7 +35,6 @@ char *thisClass;
 
 int line = 0;
 
-//int sym_stk, dstk;
 
 typedef struct
 {
@@ -511,7 +506,7 @@ unary() {
 	} else if( toks.t == TOK_REGEX ) {
 
 		do_call_regex();
-
+		do_after_ident();
 	} else if( toks.t == TOK_STRING ) {
 
 		dovar( var, toks.id, 1 );
@@ -1266,12 +1261,49 @@ scan_ext() {
 				ld = mstrcat(ld, dir );
 				ld = mstrcat(ld, ".so" );
 
+
 				void *myso = dlopen( ld, RTLD_NOW );
+
 				if ( myso ) {
 					loadfn load = (loadfn)dlsym(myso, "load" );
 					array *arr = load();
 					for( int i = 0; i < arr->length; i++ ) {
-						array_set1( &ext, arr->key[i], arr->value[i]);
+						char *t = "%fn%";
+						int p = strstr(arr->key[i], t );
+						if( p ) {
+							int k = arr->key[i];
+
+							char *cls = safe_alloc_new( &alloc, (p-k) );
+							memcpy( cls, k, (p-k) );
+							cls[ (p-k) ] = '\0';
+							//printf("%s\n", cls);
+
+							int chcls = array_get1( &cls_stk, cls );
+							//printf("%d\n", chcls);
+							if( ! (int)chcls ) {
+								array_set1( &cls_stk, cls, 1 );
+
+								variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
+								a->type = DOTYPE_ARRAY;
+								array_set1(&var_stk, cls, a );
+								if( strcmp(cls, "String") == 0 ) {
+									StringClass = a;
+								} else if( strcmp(cls, "RegExp") == 0 ) {
+									RegExpClass = a;
+
+								} else if( strcmp(cls, "Array") == 0 ) {
+									ArrayClass = a;
+								} else if( strcmp(cls, "object") == 0 ) {
+									ObjectClass = a;
+								}
+							}
+
+
+							array_set1( &sym_stk, arr->key[i], arr->value[i]);
+				
+						} else {
+							array_set1( &ext, arr->key[i], arr->value[i]);
+						}
 					}
 					array_free( arr );
 					free( arr );
@@ -1281,6 +1313,7 @@ scan_ext() {
 		}
 		free(namelist);
 	}	
+
 }
 
 get_ext(fn) {
@@ -1296,9 +1329,7 @@ main(int n, char * t[] )
 {
 
 	//init_signal();
-	set_extensions();
-	scan_ext();
-	
+
 
 	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
 	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
@@ -1340,39 +1371,9 @@ main(int n, char * t[] )
 	array_init( &cls_stk );
 	safe_alloc_init( &alloc );
 
-
-	StringClass = safe_alloc_new( &alloc, sizeof(variable *) );
-	StringClass->type = DOTYPE_ARRAY;
-	ArrayClass = safe_alloc_new( &alloc, sizeof(variable *) );
-	ArrayClass->type = DOTYPE_ARRAY;
-	ObjectClass = safe_alloc_new( &alloc, sizeof(variable *) );
-	ObjectClass->type = DOTYPE_ARRAY;
-
-
-	array default_class;
-	array_init( &default_class );
-	array_set1( &default_class, "String", StringClass );
-	array_set1( &default_class, "Array", ArrayClass );
-	array_set1( &default_class, "Object", ObjectClass );
-
-	for( int i = 0; i < default_class.length; i++ ) {
-		char *cls = default_class.key[i];
-		array_set1(&cls_stk, cls, 1 );
-		
-		int * a = default_class.value[i];
-
-		array_set1(&var_stk, cls, a );
-
-	}
-
-/*	printf("%d\n", StringClass);
-	exit(0);
-	*/
+	set_extensions();
+	scan_ext();
 	
-	load_string_class();
-
-/*array_print( &sym_stk );
-exit(0);*/
 
 	mainFile = fopen(t[1], "r");
 

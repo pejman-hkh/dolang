@@ -225,37 +225,4 @@ extern load() {
 
 
     return arr;
-
 }
-
-
-/*main() {
-	
-	dovar( a, "", DOTYPE_STRING );
-	dovar( host, "localhost", DOTYPE_STRING );
-	dovar( user, "root", DOTYPE_STRING );
-	dovar( pass, "12c", DOTYPE_STRING );
-	dovar( dbn , "test", DOTYPE_STRING );
-	dovar( port , 3306, DOTYPE_INT );
-	
-	variable *db =  do_mysql_connect( a, host, user, pass, dbn, port );
-
-	for( int i = 0; i < 10; i++ ) {
-		dovar( sql, "insert into test1(`tid`, `name`) values(?,?)", DOTYPE_STRING);
-
-		array *arr = malloc( sizeof(array) );
-
-		array_init( arr );
-
-		dovar( bind, arr, DOTYPE_ARRAY );
-		dovar(i1, 0, DOTYPE_INT);
-		dovar(tid, i, DOTYPE_INT);
-		array_set( bind, i1, tid );
-		dovar(i2, 1, DOTYPE_INT);
-		dovar(name, "test", DOTYPE_STRING );
-		array_set( bind, i2, name );
-
-		do_mysql_query( a, db, sql, bind );
-	}
-
-}*/

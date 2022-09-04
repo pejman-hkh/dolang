@@ -10,6 +10,12 @@ typedef struct {
 	void * val;
 } variable;
 
+variable *StringClass;
+variable *ArrayClass;
+variable *ObjectClass;
+variable *RegExpClass;
+
+
 #define dovar(a,b,c) \
 variable *a = safe_alloc_new(&alloc, sizeof( variable *) );\
 a->val = b;\

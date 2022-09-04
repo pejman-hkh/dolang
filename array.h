@@ -86,7 +86,6 @@ variable * array_get( variable *arr1, variable *key ) {
 
 		} else if( key->type == 1 ) {
 
-
 			variable *cls = do_fn_new_class( StringClass );
 
 			variable *ret = array_get( cls, key );
