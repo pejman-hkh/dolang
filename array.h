@@ -94,13 +94,16 @@ variable * array_get( variable *arr1, variable *key ) {
 			return ret;
 		}
 
-	} /*else if( arr1->type == 3 ) {
+	} else if( arr1->type == 3 && key->type == DOTYPE_STRING ) {
 
 		variable *cls = do_fn_new_class( ArrayClass );
-		do_print(cls);
+		//dovar(a, "prototype", DOTYPE_STRING );
+
+		//variable *r = array_get( cls, a );
 		variable *ret = array_get( cls, key );
+
 		return ret;
-	}*/
+	}
 
 	array *arr = arr1->val;
 	for( int i = 0; i < arr->length; i++ ) {

@@ -1143,7 +1143,7 @@ do_create_main_class( cls ) {
 
 	array *arr1 = safe_alloc_new( &alloc, sizeof( array *) );
 	array_init( arr1 );
-	dovar(arr, arr1, DOTYPE_ARRAY);
+	dovar(arr, arr1, DOTYPE_OBJECT);
 	//dovar(b,cls,1);
 	do_call_num(arr);
 	function_set_arg(2);
