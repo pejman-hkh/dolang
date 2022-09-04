@@ -66,6 +66,7 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 }
 
 variable * array_get( variable *arr1, variable *key ) {
+
 	if( ! arr1->type ) {
 		dovar( ret, "", DOTYPE_UNDEF);
 		return ret;
@@ -93,7 +94,13 @@ variable * array_get( variable *arr1, variable *key ) {
 			return ret;
 		}
 
-	}
+	} /*else if( arr1->type == 3 ) {
+
+		variable *cls = do_fn_new_class( ArrayClass );
+		do_print(cls);
+		variable *ret = array_get( cls, key );
+		return ret;
+	}*/
 
 	array *arr = arr1->val;
 	for( int i = 0; i < arr->length; i++ ) {

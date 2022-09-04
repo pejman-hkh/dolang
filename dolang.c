@@ -1290,7 +1290,6 @@ scan_ext() {
 									StringClass = a;
 								} else if( strcmp(cls, "RegExp") == 0 ) {
 									RegExpClass = a;
-
 								} else if( strcmp(cls, "Array") == 0 ) {
 									ArrayClass = a;
 								} else if( strcmp(cls, "object") == 0 ) {

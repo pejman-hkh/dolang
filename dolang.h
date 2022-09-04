@@ -64,6 +64,7 @@ char *file_ext;
 #define DOTYPE_CLS 8
 #define DOTYPE_UNDEF 9
 #define DOTYPE_REGEX 10
+#define DOTYPE_OBJECT 11
 
 #define TOK_IDENT 999
 #define TOK_STRING 1000

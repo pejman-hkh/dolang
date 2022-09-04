@@ -694,13 +694,15 @@ vars_init() {
 variable *do_fn_create_array() {
 	array *arr = safe_alloc_new(&alloc, sizeof(array));
 	array_init( arr );
+	dovar( var, arr, DOTYPE_ARRAY );
+	return var;
+}
 
-	/*variable *var = safe_alloc_new(&alloc, sizeof(variable));
-	var->val = arr;
-	var->type = 3;
-*/
-	dovar( var, arr, 3 );
 
+variable *do_fn_create_object() {
+	array *arr = safe_alloc_new(&alloc, sizeof(array));
+	array_init( arr );
+	dovar( var, arr, DOTYPE_OBJECT );
 	return var;
 }
 
@@ -1106,7 +1108,7 @@ do_create_main_class( cls ) {
 
 	//create object for class
 	function_init(0);
-	function_call( &do_fn_create_array, "do_fn_create_array" );
+	function_call( &do_fn_create_object, "do_fn_create_object" );
 	function_end(0);
 
 	/*vars_init();
@@ -1185,7 +1187,7 @@ do_create_class() {
 	array_set1(&cls_stk, cls, 1 );
 
 	variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
-	a->type = DOTYPE_ARRAY;
+	a->type = DOTYPE_OBJECT;
 	array_set1(&var_stk, cls, a );
 
 

@@ -26,7 +26,7 @@ do_fn_new_class( variable *cls ) {
 	array *arr = safe_alloc_new(&alloc, sizeof(array));
 	array_init( arr );
 
-	dovar( ret, arr, 3 );
+	dovar( ret, arr, DOTYPE_OBJECT );
 
 
 	array *arr1 = cls->val;
@@ -106,6 +106,8 @@ void do_print( variable *ths, variable *a ) {
 	} else if( a->type == 2 ) {
 		printf("%d", a->val );
 	} else if( a->type == 3 ) {
+		do_print_array(ths, a);	
+	} else if( a->type == 11 ) {
 		do_print_array(ths, a);	
 	} else if( a->type == 4 ) {
 		printf("func()");
