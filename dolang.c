@@ -694,18 +694,6 @@ do_after_ident() {
 
 				char *t = ctoks.id;
 
-				//vars_init();
-				//ivar = ivar - 4;
-				//*(int *)indvar = -ivar;
-				//int l1 = ivar;
-
-
-				//do_call_var(l1);
-
-			/*	#ifdef Assembly
-				printf("------------------ call method : prototype\n");
-				#endif
-*/
 
 				function_init(1);
 				function_set_arg(0);
@@ -724,11 +712,6 @@ do_after_ident() {
 				function_end(2);
 
 
-
-			/*	#ifdef Assembly
-				printf("------------------ call method : %s\n", t);
-				#endif*/
-
 				function_init(2);
 				function_set_arg(0);
 				dovar(a,t,1);
@@ -745,15 +728,7 @@ do_after_ident() {
 				do_equal(ld);
 
 				do_call_var( l1 );
-/*
-				function_init(2);
-				do_call_var(l1);
-				function_set_arg(0);
-				function_set_arg(1);
-				function_call( &do_call_dot, "do_call_dot" );
-				function_end(2);
 
-*/
 				do_call_function_callback(ld);
 
 			} else {

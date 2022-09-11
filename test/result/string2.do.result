@@ -2,7 +2,7 @@
 y o 
 [class:String,prototype:[construct:func(),length:func(),substr:func(),charCodeAt:func(),indexOf:func()]
 ]
-[class:Array,prototype:[test:func(),length:func()]
+[class:Array,prototype:[construct:func(),test:func(),length:func()]
 ]
 ello
 11
