@@ -485,14 +485,32 @@ unary() {
 	} else if( toks.t == TOK_FUNC ) {
 		next();
 		if( toks.c == '(') {
+
+			int bivar = ivar;
+			int bindvar = indvar;
+
+			ivar = 0;
 			int l = ind+5;
 			do_create_callback_function();
 
-		} else {		
+			ivar = 0;
+			indvar = bindvar;
+
+		} else {
+
+
+			int bivar = ivar;
+			int bindvar = indvar;
+
+			ivar = 0;
 			toks.type = 1;
 			set_tokv( &toks, ind + 5, 0 );
 			next();
 			do_create_callback_function();
+
+			ivar = 0;
+			indvar = bindvar;
+
 		}
 
 	} else if( toks.t == TOK_CLASS ) {
@@ -681,10 +699,14 @@ do_after_ident() {
 				//*(int *)indvar = -ivar;
 				//int l1 = ivar;
 				int l1 = do_new_let();
-
 				do_equal(l1);
 
+				//do_call_var(l1);
 
+			/*	#ifdef Assembly
+				printf("------------------ call method : prototype\n");
+				#endif
+*/
 				function_init(2);
 				function_set_arg(0);
 				dovar(a1,"prototype",1);
@@ -694,6 +716,11 @@ do_after_ident() {
 				function_end(2);
 
 
+
+			/*	#ifdef Assembly
+				printf("------------------ call method : %s\n", t);
+				#endif*/
+
 				function_init(2);
 				function_set_arg(0);
 				dovar(a,t,1);
@@ -702,14 +729,15 @@ do_after_ident() {
 				function_call( &array_get, "array_get" );
 				function_end(2);
 
-
 				//ivar = ivar - 4;
 				//*(int *)indvar = -ivar;
 				//int ld = ivar;
+
 				int ld = do_new_let();
 				do_equal(ld);
 
 				do_call_var( l1 );
+
 				do_call_function_callback(ld);
 
 			} else {
@@ -1141,6 +1169,7 @@ decl(cls) {
 
 
 		if( thisClass && inMain ) {
+			//create class methods
 			ivar = 0;
 			toks.type = 1;
 			set_tokv( &toks, ind + 5, cls );
@@ -1276,15 +1305,15 @@ scan_ext() {
 							char *cls = safe_alloc_new( &alloc, (p-k) );
 							memcpy( cls, k, (p-k) );
 							cls[ (p-k) ] = '\0';
-							//printf("%s\n", cls);
-
+				
 							int chcls = array_get1( &cls_stk, cls );
-							//printf("%d\n", chcls);
+				
 							if( ! (int)chcls ) {
+								//if( strcmp(cls, "Array") == 0 )
 								array_set1( &cls_stk, cls, 1 );
 
 								variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
-								a->type = DOTYPE_ARRAY;
+								a->type = DOTYPE_OBJECT;
 								array_set1(&var_stk, cls, a );
 								if( strcmp(cls, "String") == 0 ) {
 									StringClass = a;

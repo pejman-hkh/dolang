@@ -23,7 +23,7 @@ do_fn_new_regex( variable *a, variable *b ) {
 
 do_fn_new_class( variable *cls ) {
 
-	array *arr = safe_alloc_new(&alloc, sizeof(array));
+	array *arr = safe_alloc_new(&alloc, sizeof(array *));
 	array_init( arr );
 
 	dovar( ret, arr, DOTYPE_OBJECT );
@@ -61,9 +61,17 @@ do_sleep( variable *ths, variable *t ) {
 	}
 }
 
+do_debug1( variable *a) {
+	printf("in debug1 : \n");
+	do_print(a,a);
+	//exit(0);
+}
+
 do_debug( variable *a) {
-	printf("%s\n", a->val );
-	exit(0);
+	printf("in debug : \n");
+	do_print(a,a);
+	//exit(0);
+	//return a;
 }
 
 

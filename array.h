@@ -66,11 +66,13 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 }
 
 variable * array_get( variable *arr1, variable *key ) {
-
+	//printf("%s\n", key->val );
 	if( ! arr1->type ) {
 		dovar( ret, "", DOTYPE_UNDEF);
 		return ret;
 	}
+
+
 
 	if( arr1->type == 1 ) {
 		if( key->type == 2 ) {
@@ -94,16 +96,17 @@ variable * array_get( variable *arr1, variable *key ) {
 			return ret;
 		}
 
-	} else if( arr1->type == 3 && key->type == DOTYPE_STRING ) {
+	}
+
+	if( arr1->type == 3 && key->type == DOTYPE_STRING && strcmp(key->val, "prototype") == 0 ) {
 
 		variable *cls = do_fn_new_class( ArrayClass );
-		//dovar(a, "prototype", DOTYPE_STRING );
 
-		//variable *r = array_get( cls, a );
 		variable *ret = array_get( cls, key );
 
 		return ret;
 	}
+
 
 	array *arr = arr1->val;
 	for( int i = 0; i < arr->length; i++ ) {
@@ -201,10 +204,7 @@ int array_len1( array *arr1 ) {
 }*/
 
 void * array_set_val( variable *a, variable *b ) {
-/*	printf("%d\n", a->type );
-	printf("%d\n", b->type );
-	exit(0);
-*/
+
 	if( a->type == 5 ) {
 		memcpy( a->val, b->val, 1 );
 	} else {

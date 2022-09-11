@@ -17,6 +17,19 @@ do_new_let() {
 	return ivar;
 }
 
+
+vars_init() {
+	if( ivar == 0 ) {
+		#if Assembly
+		printf("sub $%c,%%esp\n", indvar);
+		#endif
+		*ind++ = 0x81;
+		*ind++ = 0xec;
+		indvar = ind;
+		ind += 4;
+	}	
+}
+
 do_get_val() {
 	#if Assembly 
 	printf("mov  0x4(%%eax),%%eax\n");
@@ -679,20 +692,8 @@ function_end(a) {
 	ind += 4;
 }
 
-vars_init() {
-	if( ivar == 0 ) {
-		#if Assembly 
-		printf("sub $%c,%%esp\n", indvar);
-		#endif
-		*ind++ = 0x81;
-		*ind++ = 0xec;
-		indvar = ind;
-		ind += 4;
-	}	
-}
-
 variable *do_fn_create_array() {
-	array *arr = safe_alloc_new(&alloc, sizeof(array));
+	array *arr = safe_alloc_new(&alloc, sizeof(array*));
 	array_init( arr );
 	dovar( var, arr, DOTYPE_ARRAY );
 	return var;
@@ -700,7 +701,7 @@ variable *do_fn_create_array() {
 
 
 variable *do_fn_create_object() {
-	array *arr = safe_alloc_new(&alloc, sizeof(array));
+	array *arr = safe_alloc_new(&alloc, sizeof(array *));
 	array_init( arr );
 	dovar( var, arr, DOTYPE_OBJECT );
 	return var;
@@ -717,9 +718,16 @@ do_create_array( end ) {
 	int l = do_new_let();
 
 	//init array
-	function_init(0);
-	function_call( &do_fn_create_array, "do_fn_create_array" );
-	function_end(0);
+	if( end == '}' ) {
+		function_init(0);
+		function_call( &do_fn_create_object, "do_fn_create_object" );
+		function_end(0);
+	} else {
+
+		function_init(0);
+		function_call( &do_fn_create_array, "do_fn_create_array" );
+		function_end(0);
+	}
 	do_equal(l);
 
 
@@ -1295,6 +1303,11 @@ do_main_create_function( cls, fn_name ) {
 	*ind++ = 0x89;
 	*ind++ = 0xe5;
 
+	int bivar = ivar;
+	int bindvar = indvar;
+	//ivar = 0;
+	//do_new_let();
+
 	if( strcmp(fn_name, "main") == 0 ) {
 		//create class object
 		for( int i = 0; i < cls_stk.length; i++ ) {
@@ -1320,6 +1333,9 @@ do_main_create_function( cls, fn_name ) {
 	printf("ret\n");
 	#endif
 	*ind++ = 0xc3;
+
+	//ivar = bivar;
+	//indvar = bindvar;
 }
 
 do_create_main_function( cls ) {

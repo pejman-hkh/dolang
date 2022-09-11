@@ -1,14 +1,15 @@
+
 main() {
 
-	Array.prototype.push = func( a ) {
-		
-		print( a );
-		print( this.length() );
 
+	Array.prototype.push = func( a ) {
+		this[this.length()] = a;
 	}
 
-	let a = ['test1', 'test2'];
-	//print( a.length() );
+	let b = [1,2,3,4];
+	b.push('test2');
+	b.push('test3');
 
-	a.push('test3');
+
+	print(b);
 }
