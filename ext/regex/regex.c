@@ -11,7 +11,6 @@
 
 do_regex( variable *ths, variable *pattern, variable *ex ) {
 
-
 	pcre2_code *re;
 	PCRE2_SIZE erroffset;
 	int errcode;
@@ -42,8 +41,6 @@ do_regex_exec( variable *ths, variable *subject ) {
 	dovar(k, "re", DOTYPE_STRING );
 	variable * re = array_get( ths, k );
 
-
-
 	size_t subject_size = strlen(subject->val);
 	uint32_t options = 0;
 
@@ -70,6 +67,7 @@ do_regex_exec( variable *ths, variable *subject ) {
 		ovector = pcre2_get_ovector_pointer(match_data);
 		PCRE2_SIZE i;
 		for(i = 0; i < rc; i++) {
+
 			PCRE2_SPTR start = subject->val + ovector[2*i];
 			PCRE2_SIZE slen = ovector[2*i+1] - ovector[2*i];
 			
