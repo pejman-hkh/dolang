@@ -493,7 +493,7 @@ unary() {
 			int l = ind+5;
 			do_create_callback_function();
 
-			ivar = 0;
+			ivar = bivar;
 			indvar = bindvar;
 
 		} else {
@@ -508,7 +508,7 @@ unary() {
 			next();
 			do_create_callback_function();
 
-			ivar = 0;
+			ivar = bivar;
 			indvar = bindvar;
 
 		}
