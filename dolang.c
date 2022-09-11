@@ -698,8 +698,7 @@ do_after_ident() {
 				//ivar = ivar - 4;
 				//*(int *)indvar = -ivar;
 				//int l1 = ivar;
-				int l1 = do_new_let();
-				do_equal(l1);
+
 
 				//do_call_var(l1);
 
@@ -707,6 +706,15 @@ do_after_ident() {
 				printf("------------------ call method : prototype\n");
 				#endif
 */
+
+				function_init(1);
+				function_set_arg(0);
+				function_call( &do_dot_init, "do_dot_init" );
+				function_end(1);
+
+				int l1 = do_new_let();
+				do_equal(l1);
+
 				function_init(2);
 				function_set_arg(0);
 				dovar(a1,"prototype",1);
@@ -737,7 +745,15 @@ do_after_ident() {
 				do_equal(ld);
 
 				do_call_var( l1 );
+/*
+				function_init(2);
+				do_call_var(l1);
+				function_set_arg(0);
+				function_set_arg(1);
+				function_call( &do_call_dot, "do_call_dot" );
+				function_end(2);
 
+*/
 				do_call_function_callback(ld);
 
 			} else {

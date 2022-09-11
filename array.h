@@ -87,18 +87,31 @@ variable * array_get( variable *arr1, variable *key ) {
 			}
 			
 
-		} else if( key->type == 1 ) {
+		} /*else if( key->type == 1 ) {
+
 
 			variable *cls = do_fn_new_class( StringClass );
+			variable *pt = array_get( cls, key );
 
-			variable *ret = array_get( cls, key );
+			//dovar(s, "value", DOTYPE_STRING );
+			//array_set(cls, s, arr1);
 
-			return ret;
-		}
+			//dovar(a, "prototype", DOTYPE_STRING );
+			//variable *pt = array_get( cls, a );
+
+			dovar(cons, "construct", DOTYPE_STRING );
+
+			typedef variable *( *fn )( variable *ths, variable *str);
+			variable *r = array_get(pt, cons );
+			fn construct = r->val;
+			construct(cls, arr1);
+	
+			return pt;
+		}*/
 
 	}
-
-	if( arr1->type == 3 && key->type == DOTYPE_STRING && strcmp(key->val, "prototype") == 0 ) {
+/*
+	if( arr1->type == DOTYPE_ARRAY && key->type == DOTYPE_STRING && strcmp(key->val, "prototype") == 0 ) {
 
 		variable *cls = do_fn_new_class( ArrayClass );
 
@@ -107,7 +120,7 @@ variable * array_get( variable *arr1, variable *key ) {
 		return ret;
 	}
 
-
+*/
 	array *arr = arr1->val;
 	for( int i = 0; i < arr->length; i++ ) {
 		variable *hkey = arr->key[i];
@@ -117,7 +130,7 @@ variable * array_get( variable *arr1, variable *key ) {
 		}
 	}
 
-	if( key->type == 1 && strcmp(key->val,"prototype") == 0 ) {
+	if( key->type == DOTYPE_STRING && strcmp(key->val,"prototype") == 0 ) {
 		return arr1;
 	}
 

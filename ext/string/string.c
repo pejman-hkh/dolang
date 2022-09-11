@@ -3,15 +3,34 @@
 #include "array.h"
 #include "fn.h"
 
+do_string_construct( variable *ths, variable *str ) {
+	dovar(v1,"value", DOTYPE_STRING);
+	array_set(ths, v1, str );
+	dovar(lenstr, "length", DOTYPE_STRING );
+	variable *len = do_string_length(ths);
+	array_set( ths, lenstr, len );
+
+	return ths;
+}
+
+
 do_string_length( variable *ths ) {
-	dovar(ret, strlen( ths->val ), DOTYPE_INT );
+	dovar(v1,"value", DOTYPE_STRING);
+	variable *str = array_get(ths, v1);
+
+	dovar(ret, strlen( str->val ), DOTYPE_INT );
 	return ret;
 }
 
 do_string_substr( variable *ths, variable *offset, variable *len ) {
-	char *a = ths->val;
-	char *r = safe_alloc_new( &alloc, strlen( ths->val ) + 1 );
-	memcpy( r, a, strlen( ths->val ) + 1 );
+
+	dovar(v1,"value", DOTYPE_STRING);
+	variable *str = array_get(ths, v1);
+
+	char *a = str->val;
+
+	char *r = safe_alloc_new( &alloc, strlen( a ) + 1 );
+	memcpy( r, a, strlen( a ) + 1 );
 
 	r = (int)r + offset->val;
 	*(char *)((int)r + len->val) = '\0';
@@ -22,17 +41,25 @@ do_string_substr( variable *ths, variable *offset, variable *len ) {
 }
 
 do_string_charCodeAt(variable *ths, variable *index) {
-	char *str = ths->val;
-	char a = ( (int)str + (int)index->val );
-	dovar( ret, a, DOTYPE_INT );
+	dovar(v1,"value", DOTYPE_STRING);
+	variable *str = array_get(ths, v1);
+	char *a = str->val;
+
+	char b = ( (int)a + (int)index->val );
+	dovar( ret, b, DOTYPE_INT );
 	return ret;
 }
 
 
 do_string_indexOf(variable *ths, variable *s) {
-	char *str = ths->val;
-	char * res = strstr( str, s->val );
-	int index = res - str;
+
+	dovar(v1,"value", DOTYPE_STRING);
+	variable *str = array_get(ths, v1);
+	char *a = str->val;
+
+	//char *str = ths->val;
+	char * res = strstr( a, s->val );
+	int index = res - a;
 
 	dovar( ret, index, DOTYPE_INT );
 	return ret;
@@ -42,8 +69,8 @@ do_string_indexOf(variable *ths, variable *s) {
 extern load() {
 	array *arr = malloc( sizeof( array *) );
 	array_init( arr );
+	array_set1( arr, "String%fn%construct", &do_string_construct);
 	array_set1( arr, "String%fn%length", &do_string_length);
-
 	array_set1( arr, "String%fn%substr", &do_string_substr);
 	array_set1( arr, "String%fn%charCodeAt", &do_string_charCodeAt);
 	array_set1( arr, "String%fn%indexOf", &do_string_indexOf);

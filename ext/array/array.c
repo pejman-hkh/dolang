@@ -3,21 +3,28 @@
 #include "array.h"
 #include "fn.h"
 
-do_array_construct( variable *ths ) {
+do_array_construct( variable *ths, variable *arr ) {
+	dovar(v1,"value", DOTYPE_STRING);
+	array_set(ths, v1, arr );
+	dovar(lenstr, "length", DOTYPE_STRING );
+	variable *len = do_array_length(ths);
+	array_set( ths, lenstr, len );
 
 }
 
 do_array_test( variable *ths ) {
-
 	dovar(ret, "test", DOTYPE_STRING );
 	return ret;
 }
 
 do_array_length( variable *ths ) {
 
-	array *arr = ths->val;
+	dovar(v1,"value", DOTYPE_STRING);
+	variable *arr = array_get(ths, v1);
 
-	dovar(ret, arr->length, DOTYPE_INT);
+
+	array *arr1 = arr->val;
+	dovar(ret, arr1->length, DOTYPE_INT);
 	return ret;
 }
 

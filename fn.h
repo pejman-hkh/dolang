@@ -3,6 +3,40 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+do_dot_init( variable *in ) {
+	if( in->type == DOTYPE_ARRAY ) {
+		variable *cls = do_fn_new_class( ArrayClass );
+
+
+		dovar(a, "prototype", DOTYPE_STRING );
+		variable *pt = array_get( cls, a );
+
+		dovar(cons, "construct", DOTYPE_STRING );
+
+		typedef variable *( *fn )( variable *ths, variable *arr);
+		variable *r = array_get(pt, cons );
+		fn construct = r->val;
+		construct(cls, in);		
+
+		return cls;
+	} else if( in->type == DOTYPE_STRING ) {
+		variable *cls = do_fn_new_class( StringClass );
+
+		dovar(a, "prototype", DOTYPE_STRING );
+		variable *pt = array_get( cls, a );
+
+		dovar(cons, "construct", DOTYPE_STRING );
+
+		typedef variable *( *fn )( variable *ths, variable *str);
+		variable *r = array_get(pt, cons );
+		fn construct = r->val;
+		construct(cls, in);
+		return cls;
+	} else {
+		return in;
+	}
+}
+
 do_fn_new_regex( variable *a, variable *b ) {
 
 	int l = RegExpClass;
