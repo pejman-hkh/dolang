@@ -45,7 +45,13 @@ do_string_charCodeAt(variable *ths, variable *index) {
 	variable *str = array_get(ths, v1);
 	char *a = str->val;
 
-	char b = ( (int)a + (int)index->val );
+	//printf("%s\n", a);
+	//printf("%d\n", (int)index->val);
+	//exit(0);
+	char b = *(char *)( (int)a + (int)index->val );
+
+	//printf("%d\n", b);
+
 	dovar( ret, b, DOTYPE_INT );
 	return ret;
 }

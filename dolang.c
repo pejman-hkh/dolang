@@ -1153,7 +1153,11 @@ decl(cls) {
 
 		decl(cls);
 	
-	} else if( toks.t == TOK_IDENT | toks.t == TOK_MAIN ) {
+	} else if( toks.t == TOK_IDENT | toks.t == TOK_MAIN | toks.t == TOK_FUNC ) {
+		if( toks.t == TOK_FUNC ) {
+			next();
+		}
+
 		if( toks.t == TOK_MAIN ) {
 			inMain = 1;
 		}
