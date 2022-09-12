@@ -11,9 +11,9 @@ main() {
 	}
 */
 
-	let i = []
+	let i = {}
 	i.i = 0
-	let o = []
+	let o = {}
 	o.str = '{"test":"123"}'
 	
 	i.i++

@@ -1,5 +1,5 @@
 main() {
-	var a = [];
+	var a = {};
 	a.p = "this is test";
 
 	print( a );

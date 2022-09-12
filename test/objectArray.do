@@ -1,6 +1,6 @@
 main() {
-	let o = []
-	let i = []
+	let o = {}
+	let i = {}
 	i.i = 0
 	o.l = []
 

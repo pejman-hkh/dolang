@@ -30,7 +30,7 @@ class jsonParser {
 	parseObject() {
 
 		this.next()
-		let ret = []
+		let ret = {}
 		while( this.tok() != '}' ) {
 			let k = this.parse()
 

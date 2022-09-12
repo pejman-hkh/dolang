@@ -185,6 +185,9 @@ next() {
 
 		int a = array_get1( &mt, toks.id );
 		if( isdigit( toks.c ) ) {
+					//toks.c = strtol(last_id, 0, 0);
+			//printf("%s\n", toks.id);
+
 			toks.t = 1005;
 		} else if( a != 0 ) {
 			toks.t = a;
@@ -614,8 +617,9 @@ unary() {
 			variable *var = safe_alloc_new(&alloc, sizeof(variable));
 			var->val = atoi(btoks.id);
 			var->type = 2;*/
-
-			do_call_num( atoi(btoks.id) );
+			
+			int in = strtol(btoks.id, 0, 0);
+			do_call_num( in );
 			do_convert_to_var(2);
 
 		} else if( toks.c == '=' & toks.l == 0 ) {
@@ -690,15 +694,16 @@ do_after_ident() {
 
 			next();
 
+
+			function_init(1);
+			function_set_arg(0);
+			function_call( &do_dot_init, "do_dot_init" );
+			function_end(1);
+
+
 			if( toks.c == '(' ) {
 
 				char *t = ctoks.id;
-
-
-				function_init(1);
-				function_set_arg(0);
-				function_call( &do_dot_init, "do_dot_init" );
-				function_end(1);
 
 				int l1 = do_new_let();
 				do_equal(l1);
