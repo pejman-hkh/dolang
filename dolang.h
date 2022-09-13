@@ -70,8 +70,14 @@ char *file_ext;
 #define TOK_STRING 1000
 
 char * mstrcat( char *a, char *b) {
-	char *r;
-	r = safe_alloc_new(&alloc, strlen(a)+strlen(b)+1);
+	char* result;
+    asprintf(&result, "%s%s", a, b);
+    return result;
+    
+/*	char *r;
+	char *r1;
+	r1 = r = safe_alloc_new(&alloc, strlen(a)+strlen(b)+1);
+
 	while( *a ) {
 		*(char *)r++ = *a++;
 	}
@@ -82,6 +88,6 @@ char * mstrcat( char *a, char *b) {
 
 	*r = '\0';
 
-	return safe_alloc_get(&alloc);
-}
+	return r1;
+*/}
 #endif
