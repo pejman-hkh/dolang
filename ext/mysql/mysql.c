@@ -9,7 +9,7 @@ do_mysql_connect( variable *ths, variable *host, variable *user, variable *pass,
 	msql = mysql_init(msql);
 
 	int con = mysql_real_connect( msql, host->val, user->val, pass->val, db->val, port->val, NULL, CLIENT_FOUND_ROWS );
-	dovar( ret, msql, DOTYPE_RES );
+	variable * ret = donvar( msql, DOTYPE_RES );
 	return ret;
 }
 
@@ -46,7 +46,7 @@ do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
 	}
 
 
-	dovar( ret, stmt, DOTYPE_RES );
+	variable * ret = donvar( stmt, DOTYPE_RES );
 	return ret;	
 }
 
@@ -120,7 +120,7 @@ do_mysql_stmt_prepare_result( variable *ths, variable *stmt ) {
 		exit(0);
 	}
 
-	dovar( ret, prepare_meta_result, DOTYPE_RES );
+	variable * ret = donvar( prepare_meta_result, DOTYPE_RES );
 	return ret;
 }
 
@@ -153,13 +153,13 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 
 	int status = mysql_stmt_fetch(stmt->val);
 	if (status == 1 || status == MYSQL_NO_DATA) {
-		dovar(r1, 0, DOTYPE_INT);
+		variable * r1 = donvar( 0, DOTYPE_INT );
 		return r1;
 	} 
 
 	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
 	array_init( arr1 );
-	dovar( arr, arr1, DOTYPE_ARRAY );
+	variable * arr = donvar( arr1, DOTYPE_ARRAY );
 
 	for (int i = 0; i < num_fields; ++i) {
 		if (real_length[i] > 0) {
@@ -180,8 +180,8 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 					type = DOTYPE_STRING;
 				break;
 			}
-			dovar( fn, fields[i].name, DOTYPE_STRING );
-			dovar( fv, data, type );
+			variable * fn = donvar( fields[i].name, DOTYPE_STRING );
+			variable * fv = donvar( data, type );
 
 			array_set( arr, fn, fv );
 

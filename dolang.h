@@ -15,9 +15,15 @@ variable *ArrayClass;
 variable *ObjectClass;
 variable *RegExpClass;
 
+donvar( b, c) {
+	variable *a = safe_alloc_new(&alloc, sizeof( variable ) );
+	a->val = b;
+	a->type = c;
+	return a;
+}
 
 #define dovar(a,b,c) \
-variable *a = safe_alloc_new(&alloc, sizeof( variable *) );\
+variable *a = safe_alloc_new(&alloc, sizeof( variable ) );\
 a->val = b;\
 a->type = c;
 
@@ -73,10 +79,13 @@ char * mstrcat( char *a, char *b) {
 	char* result;
     asprintf(&result, "%s%s", a, b);
     return result;
-    
-/*	char *r;
+   
+
+/*
+	char *r;
 	char *r1;
-	r1 = r = safe_alloc_new(&alloc, strlen(a)+strlen(b)+1);
+	//printf("%d\n", strlen(a)+strlen(b)+1);
+	r1 = r = malloc( strlen(a)+strlen(b)+1);
 
 	while( *a ) {
 		*(char *)r++ = *a++;
@@ -88,6 +97,9 @@ char * mstrcat( char *a, char *b) {
 
 	*r = '\0';
 
-	return r1;
-*/}
+	//printf("%s\n", r1 );
+
+	return r1;*/
+
+}
 #endif

@@ -8,10 +8,10 @@ do_dot_init( variable *in ) {
 		variable *cls = do_fn_new_class( ArrayClass );
 
 
-		dovar(a, "prototype", DOTYPE_STRING );
+		variable * a = donvar( "prototype", DOTYPE_STRING );
 		variable *pt = array_get( cls, a );
 
-		dovar(cons, "construct", DOTYPE_STRING );
+		variable * cons = donvar( "construct", DOTYPE_STRING );
 
 		typedef variable *( *fn )( variable *ths, variable *arr);
 		variable *r = array_get(pt, cons );
@@ -22,10 +22,10 @@ do_dot_init( variable *in ) {
 	} else if( in->type == DOTYPE_STRING ) {
 		variable *cls = do_fn_new_class( StringClass );
 
-		dovar(a, "prototype", DOTYPE_STRING );
+		variable * a = donvar( "prototype", DOTYPE_STRING );
 		variable *pt = array_get( cls, a );
 
-		dovar(cons, "construct", DOTYPE_STRING );
+		variable * cons = donvar( "construct", DOTYPE_STRING );
 
 		typedef variable *( *fn )( variable *ths, variable *str);
 		variable *r = array_get(pt, cons );
@@ -42,9 +42,9 @@ do_fn_new_regex( variable *a, variable *b ) {
 	int l = RegExpClass;
 
 	variable *cls = do_fn_new_class( l );
-	dovar(pk, "prototype", DOTYPE_STRING);
+	variable * pk = donvar( "prototype", DOTYPE_STRING );
 	variable *proto = array_get( cls, pk );
-	dovar(fnc, "construct", DOTYPE_STRING);
+	variable * fnc = donvar( "construct", DOTYPE_STRING );
 	variable *ret = array_get( proto, fnc );
 
 	typedef variable *( *fn )( variable *ths, variable *a, variable *b );
@@ -57,18 +57,18 @@ do_fn_new_regex( variable *a, variable *b ) {
 
 do_fn_new_class( variable *cls ) {
 
-	array *arr = safe_alloc_new(&alloc, sizeof(array *));
+	array *arr = safe_alloc_new(&alloc, sizeof(array ));
 	array_init( arr );
 
-	dovar( ret, arr, DOTYPE_OBJECT );
+	variable * ret = donvar( arr, DOTYPE_OBJECT );
 
 
 	array *arr1 = cls->val;
 	for( int i = 0; i < arr1->length; i++ ) {
 		variable *key = arr1->key[i];
 		variable *value = arr1->value[i];
-		dovar(k,key->val, key->type);
-		dovar(v,value->val, value->type);
+		variable * k = donvar( key->val, key->type );
+		variable * v = donvar( value->val, value->type );
 		array_set( ret, k, v );
 	}
 
@@ -113,7 +113,7 @@ do_microtime() {
 	struct timeval currentTime;
 	gettimeofday(&currentTime, NULL);
 	long r = currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
-	dovar(ret, r, DOTYPE_LONG);
+	variable * ret = donvar( r, DOTYPE_LONG );
 	return ret;
 }
 
@@ -173,7 +173,7 @@ void do_print( variable *ths, variable *a ) {
 void do_typeof( variable *ths, variable *a ) {
 	//printf("%d\n", a->type );
 
-	dovar(v,a->type, 2);
+	variable * v = donvar( a->type, 2 );
 
 /*	variable *v = safe_alloc_new( &alloc, sizeof(variable) );
 	v->val = a->type;
@@ -184,7 +184,7 @@ void do_typeof( variable *ths, variable *a ) {
 
 do_fn_plus_plus( variable *a ) {
 	a->val += 1;
-	dovar(ret, a->val - 1, DOTYPE_INT);
+	variable * ret = donvar( a->val - 1, DOTYPE_INT );
 	return ret;
 }
 
@@ -309,7 +309,7 @@ do_fn_equal_equal( variable *a, variable *b ) {
 
 do_fn_equal_equal1( variable *a, variable *b ) {
 	int a1 = do_fn_equal_equal( a, b);
-	dovar(ret, a1, DOTYPE_INT);
+	variable * ret = donvar( a1, DOTYPE_INT );
 	return ret;
 
 }
@@ -321,7 +321,7 @@ do_fn_not_equal( variable *a, variable *b ) {
 	printf("%d\n", b->val);
 	printf("%d\n", !a1);
 	printf("tttttttttttttt\n");*/
-	dovar(ret, !a1, DOTYPE_INT);
+	variable * ret = donvar( !a1, DOTYPE_INT );
 	return ret;
 
 }

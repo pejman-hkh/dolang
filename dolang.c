@@ -530,7 +530,7 @@ unary() {
 		do_after_ident();
 	} else if( toks.t == TOK_STRING ) {
 
-		dovar( var, toks.id, 1 );
+		variable * var = donvar( toks.id, 1 );
 		do_call_string( var );
 
 		next();
@@ -710,7 +710,7 @@ do_after_ident() {
 
 				function_init(2);
 				function_set_arg(0);
-				dovar(a1,"prototype",1);
+				variable * a1 = donvar( "prototype", 1 );
 				do_call_num(a1);
 				function_set_arg(1);
 				function_call( &array_get, "array_get" );
@@ -719,7 +719,7 @@ do_after_ident() {
 
 				function_init(2);
 				function_set_arg(0);
-				dovar(a,t,1);
+				variable * a = donvar( t, 1 );
 				do_call_num(a);
 				function_set_arg(1);
 				function_call( &array_get, "array_get" );
@@ -1132,7 +1132,7 @@ decl(cls) {
 	} else if( toks.t == TOK_VAR ) {
 		next();
 	
-		variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
+		variable *a = safe_alloc_new( &alloc, sizeof(variable ) );
 
 		char *id = toks.id;
 	/*	if( cls ) {
@@ -1302,8 +1302,10 @@ scan_ext() {
 						if( p ) {
 							int k = arr->key[i];
 
-							char *cls = safe_alloc_new( &alloc, (p-k) );
+							char *cls = malloc( (p-k) );
+		
 							memcpy( cls, k, (p-k) );
+					
 							cls[ (p-k) ] = '\0';
 				
 							int chcls = array_get1( &cls_stk, cls );
@@ -1312,7 +1314,7 @@ scan_ext() {
 								//if( strcmp(cls, "Array") == 0 )
 								array_set1( &cls_stk, cls, 1 );
 
-								variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
+								variable *a = malloc( sizeof(variable *) );
 								a->type = DOTYPE_OBJECT;
 								array_set1(&var_stk, cls, a );
 								if( strcmp(cls, "String") == 0 ) {
@@ -1359,9 +1361,10 @@ main(int n, char * t[] )
 	//init_signal();
 
 
-	buf = sbuf = safe_alloc_new( &alloc, ALLOC_SIZE);
+	buf = sbuf = malloc( ALLOC_SIZE);
 	ind = prog = mmap(0, ALLOC_SIZE, 7, 0x1002 | MAP_ANON, -1, 0);
 	vtoks = malloc( sizeof( tokens * ) * 20 );
+	
 	if (!prog) { printf("could not mmap(%d) jit executable memory\n", ALLOC_SIZE); return -1; }
 
 	array_set1( &mt, "if", TOK_IF );
@@ -1470,18 +1473,24 @@ main(int n, char * t[] )
 		*(int *)mind = n;
 	}
 
+//printf("%d\n", sizeof(array *));
+//printf("%d\n", sizeof(array ));
+//exit(0);
 
-	array *argv = safe_alloc_new( &alloc, sizeof(array *));
+	array *argv = safe_alloc_new( &alloc, sizeof(array ));
 	array_init( argv );
+	variable * vargv = donvar( argv, DOTYPE_ARRAY );
 	for( int i = 0; i < n; i++) {
 
-		dovar(r, t[i], DOTYPE_STRING);
-		dovar(a, argv, DOTYPE_ARRAY);
+		variable * r = donvar( t[i], DOTYPE_STRING );
 
-		array_set2(a, r, r);
+		//printf("%s\n", r->val );
+
+		array_set2(vargv, r, r);
+		//printf("ddddd\n");
 	}
 
-	dovar(vargv, argv, DOTYPE_ARRAY);
+	//variable * vargv = donvar( argv, DOTYPE_ARRAY );
 
 	int main = array_get1( &sym_stk, "fn%main");
 	if( main ) {

@@ -101,14 +101,14 @@ do_ternary(a) {
 
 do_call_regex() {
 	function_init(2);
-	dovar( v1, toks.id, DOTYPE_STRING );
+	variable * v1 = donvar( toks.id, DOTYPE_STRING );
 	do_call_string(v1);
 	function_set_arg(0);
 
 	next();
 	if( toks.t == TOK_IDENT ) {
 
-		dovar(v2,toks.id,DOTYPE_STRING);
+		variable * v2 = donvar( toks.id, DOTYPE_STRING );
 		do_call_string(v2);
 		function_set_arg(1);
 
@@ -693,17 +693,17 @@ function_end(a) {
 }
 
 variable *do_fn_create_array() {
-	array *arr = safe_alloc_new(&alloc, sizeof(array*));
+	array *arr = safe_alloc_new(&alloc, sizeof(array));
 	array_init( arr );
-	dovar( var, arr, DOTYPE_ARRAY );
+	variable * var = donvar( arr, DOTYPE_ARRAY );
 	return var;
 }
 
 
 variable *do_fn_create_object() {
-	array *arr = safe_alloc_new(&alloc, sizeof(array *));
+	array *arr = safe_alloc_new(&alloc, sizeof(array));
 	array_init( arr );
-	dovar( var, arr, DOTYPE_OBJECT );
+	variable * var = donvar( arr, DOTYPE_OBJECT );
 	return var;
 }
 
@@ -728,9 +728,8 @@ do_create_array( end ) {
 		function_call( &do_fn_create_array, "do_fn_create_array" );
 		function_end(0);
 	}
+
 	do_equal(l);
-
-
 	while( toks.c != end ) {
 
 		skipLine();
@@ -742,7 +741,7 @@ do_create_array( end ) {
 
 		if( toks.t == TOK_IDENT ) {
 			char *id = toks.id;
-			dovar(a,toks.id,1);
+			variable * a = donvar( toks.id, 1 );
 			do_call_string(a);
 			next();
 
@@ -964,7 +963,7 @@ do_create_var( n ) {
 	int i = 0;
 	while( do_is_not_end() ) {
 
-		variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
+		variable *a = safe_alloc_new( &alloc, sizeof(variable) );
 		char *id = toks.id;
 
 		array_set1( &var_stk, id, a );
@@ -975,7 +974,7 @@ do_create_var( n ) {
 		btoks.id = toks.id;
 		btoks.c = toks.c;
 
-		vtoks[i] = malloc( sizeof( tokens ) );
+		vtoks[i] = safe_alloc_new( &alloc, sizeof( tokens ) );
 		
 		memcpy( vtoks[i], &btoks, sizeof( tokens ) );
 
@@ -1015,7 +1014,7 @@ do_create_let( n ) {
 		btoks.id = toks.id;
 		btoks.c = toks.c;
 
-		vtoks[i] = malloc( sizeof( tokens ) );
+		vtoks[i] = safe_alloc_new( &alloc, sizeof( tokens ) );
 		
 		memcpy( vtoks[i], &btoks, sizeof( tokens ) );
 
@@ -1081,7 +1080,7 @@ do_new_class( cls ) {
 
 		function_init(2);
 		function_set_arg(0);
-		dovar(a1,"prototype",1);
+		variable * a1 = donvar( "prototype", 1 );
 		do_call_num(a1);
 		function_set_arg(1);
 		function_call( &array_get, "array_get" );
@@ -1089,7 +1088,7 @@ do_new_class( cls ) {
 
 		function_init(2);
 		function_set_arg(0);
-		dovar(a,"construct",1);
+		variable * a = donvar( "construct", 1 );
 		do_call_num(a);
 		function_set_arg(1);
 		function_call( &array_get, "array_get" );
@@ -1133,10 +1132,10 @@ do_create_main_class( cls ) {
 
 	function_init(3);
 	function_set_arg(0);
-	dovar(a,"class",1);
+	variable * a = donvar( "class", 1 );
 	do_call_num(a);
 	function_set_arg(1);
-	dovar(b,cls,1);
+	variable * b = donvar( cls, 1 );
 	do_call_num(b);
 	function_set_arg(2);
 	function_call( &array_set, "array_set" );
@@ -1145,14 +1144,14 @@ do_create_main_class( cls ) {
 	do_call_var(l);
 	function_init(3);
 	function_set_arg(0);
-	dovar(a1,"prototype",1);
+	variable * a1 = donvar( "prototype", 1 );
 	do_call_num(a1);
 	function_set_arg(1);
 
-	array *arr1 = safe_alloc_new( &alloc, sizeof( array *) );
+	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
 	array_init( arr1 );
-	dovar(arr, arr1, DOTYPE_OBJECT);
-	//dovar(b,cls,1);
+	variable * arr = donvar( arr1, DOTYPE_OBJECT );
+	//variable * b = donvar( cls, 1 );
 	do_call_num(arr);
 	function_set_arg(2);
 	function_call( &array_set, "array_set" );
@@ -1172,10 +1171,10 @@ do_create_main_class( cls ) {
 
 			function_init(3);
 			function_set_arg(0);
-			dovar(a1,v,1);
+			variable * a1 = donvar( v, 1 );
 			do_call_num(a1);
 			function_set_arg(1);
-			dovar(b1,ll,4);
+			variable * b1 = donvar( ll, 4 );
 			do_call_num(b1);
 			function_set_arg(2);
 			function_call( &array_set, "array_set" );
@@ -1194,7 +1193,7 @@ do_create_class() {
 	toks.type = 3;
 	array_set1(&cls_stk, cls, 1 );
 
-	variable *a = safe_alloc_new( &alloc, sizeof(variable *) );
+	variable *a = safe_alloc_new( &alloc, sizeof(variable ) );
 	a->type = DOTYPE_OBJECT;
 	array_set1(&var_stk, cls, a );
 
@@ -1263,7 +1262,7 @@ do_create_callback_function() {
 
 	*(int *)b = ind - b - 4;
 
-	dovar(a, b+4, 4);
+	variable * a = donvar( b+4, 4 );
 	do_call_num(a);
 }
 

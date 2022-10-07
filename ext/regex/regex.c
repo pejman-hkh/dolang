@@ -36,8 +36,8 @@ do_regex( variable *ths, variable *pattern, variable *ex ) {
 		return 1;
 	}
 
-	dovar(k, "re", DOTYPE_STRING );
-	dovar(v, re, DOTYPE_RES );
+	variable * k = donvar( "re", DOTYPE_STRING );
+	variable * v = donvar( re, DOTYPE_RES );
 	array_set( ths, k, v );
 
 	return ths;
@@ -46,7 +46,7 @@ do_regex( variable *ths, variable *pattern, variable *ex ) {
 do_regex_exec( variable *ths, variable *subject ) {
 
 	//printf("%s\n", subject->val );
-	dovar(k, "re", DOTYPE_STRING );
+	variable * k = donvar( "re", DOTYPE_STRING );
 	variable * re = array_get( ths, k );
 
 	size_t subject_size;//= strlen(subject->val);
@@ -60,9 +60,9 @@ do_regex_exec( variable *ths, variable *subject ) {
 	PCRE2_SIZE* ovector;
 
 	match_data = pcre2_match_data_create(ovecsize, NULL);
-	dovar(sl, "lastIndex", DOTYPE_STRING);
-	dovar(sind, "index", DOTYPE_STRING);
-	dovar(slstr, "str", DOTYPE_STRING);
+	variable * sl = donvar( "lastIndex", DOTYPE_STRING );
+	variable * sind = donvar( "index", DOTYPE_STRING );
+	variable * slstr = donvar( "str", DOTYPE_STRING );
 	
 	char *msub = subject->val;
 
@@ -72,7 +72,7 @@ do_regex_exec( variable *ths, variable *subject ) {
 	}
 
 	if( ! msub ) {
-		dovar(rz, 0, DOTYPE_INT);
+		variable * rz = donvar( 0, DOTYPE_INT );
 		return rz;
 	}
 
@@ -82,10 +82,10 @@ do_regex_exec( variable *ths, variable *subject ) {
 
 	array *r = safe_alloc_new( &alloc, sizeof( array *) );
 	array_init(r);
-	dovar( arr, r, DOTYPE_ARRAY );
+	variable * arr = donvar( r, DOTYPE_ARRAY );
 
 	if(rc == 0) {
-		dovar(ml, 0, DOTYPE_INT);
+		variable * ml = donvar( 0, DOTYPE_INT );
 		array_set(ths, sl, ml);
 		//fprintf(stderr,"offset vector too small: %d",rc);
 	}
@@ -110,24 +110,24 @@ do_regex_exec( variable *ths, variable *subject ) {
 			memcpy(s,start, slen);
 			s[slen] = '\0';
 
-			dovar(ml, lindx+ovector[2*i+1], DOTYPE_INT);
+			variable * ml = donvar( lindx+ovector[2*i+1], DOTYPE_INT );
 			
-			dovar(str1, start+slen, DOTYPE_STRING);
+			variable * str1 = donvar( start+slen, DOTYPE_STRING );
 			array_set(ths, slstr, str1);
 
 			array_set(ths, sl, ml);
 
-			dovar(indt, lindx+ovector[2*i], DOTYPE_INT);
+			variable * indt = donvar( lindx+ovector[2*i], DOTYPE_INT );
 			array_set(ths, sind, indt);
 
-			dovar(k, i, DOTYPE_INT);
-			dovar(v, s, DOTYPE_STRING);
+			variable * k = donvar( i, DOTYPE_INT );
+			variable * v = donvar( s, DOTYPE_STRING );
 
 			array_set( arr, k, v );
 
 		}
 	} else {
-		dovar(ml, 0, DOTYPE_INT);
+		variable * ml = donvar( 0, DOTYPE_INT );
 		array_set(ths, sl, ml);
 	}
 
@@ -136,7 +136,7 @@ do_regex_exec( variable *ths, variable *subject ) {
 	//pcre2_code_free(re->val);
 	//printf("dddd\n");
 	if( r->length == 0 ) {
-		dovar(rz, 0, DOTYPE_INT);
+		variable * rz = donvar( 0, DOTYPE_INT );
 		return rz;	
 	}
 

@@ -15,13 +15,18 @@ variable * array_get( variable *arr1, variable *key) ;
 
 array_init( array *arr ) {
 	arr->length = 0;
-	arr->key = malloc( sizeof(variable)  * (arr->length+2) );
-	arr->value = malloc( sizeof(variable)  * (arr->length+2) );
+	arr->key = safe_alloc_new( &alloc, sizeof(variable )  * (arr->length+2) );
+	arr->value = safe_alloc_new( &alloc, sizeof(variable )  * (arr->length+2) );
 }
 
 array_relloc( array *arr ) {
-	arr->key = realloc(arr->key, sizeof(variable) * (arr->length+2) );
-	arr->value = realloc(arr->value, sizeof(variable) * (arr->length+2) );
+
+	if( arr->length == 0 ) {
+		array_init( arr );
+	}
+
+	arr->key = realloc(arr->key, sizeof(variable ) * (arr->length+2) );
+	arr->value = realloc(arr->value, sizeof(variable ) * (arr->length+2) );
 }
 
 
@@ -29,11 +34,11 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 	array *arr = arr1->val;
 
 	int index = arr->length;
-	int exists = 0;
 
+
+	int exists = 0;
 	for( int i = 0; i < arr->length; i++ ) {
 		variable *hkey = arr->key[i];
-
 		if( do_fn_equal_equal( key, hkey ) ) {
 			index = i;
 			exists = 1;
@@ -41,15 +46,13 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 		}
 	}
 
-
-	//do_print( arr1 );
-
 	if( ! exists ) 
 		array_relloc( arr );
 
 
 	arr->key[ index ] = key;
 	arr->value[ index ] = value;	
+
 
 	if( ! exists ) {
 		arr->length++;
@@ -60,7 +63,7 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 
 void *array_set2( variable *arr1, variable *key, variable *value ) {
 	array *arr = arr1->val;
-	dovar(index,arr->length, DOTYPE_INT);
+	variable * index = donvar( arr->length, DOTYPE_INT );
 	
 	array_set( arr1, index, key);
 }
@@ -68,59 +71,27 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 variable * array_get( variable *arr1, variable *key ) {
 	//printf("%s\n", key->val );
 	if( ! arr1->type ) {
-		dovar( ret, "", DOTYPE_UNDEF);
+		variable * ret = donvar( "", DOTYPE_UNDEF );
 		return ret;
 	}
-
-
 
 	if( arr1->type == 1 ) {
 		if( key->type == 2 ) {
 			int index = key->val;
 			if( index > strlen(arr1->val) ) {
-				dovar( ret, 0, 2);
+				variable * ret = donvar( 0, 2 );
 				return ret;
 			} else {
 				char *d = arr1->val+index;
-				dovar( ret, d, 5);
+				variable * ret = donvar( d, 5 );
 				return ret;
 			}
 			
 
-		} /*else if( key->type == 1 ) {
-
-
-			variable *cls = do_fn_new_class( StringClass );
-			variable *pt = array_get( cls, key );
-
-			//dovar(s, "value", DOTYPE_STRING );
-			//array_set(cls, s, arr1);
-
-			//dovar(a, "prototype", DOTYPE_STRING );
-			//variable *pt = array_get( cls, a );
-
-			dovar(cons, "construct", DOTYPE_STRING );
-
-			typedef variable *( *fn )( variable *ths, variable *str);
-			variable *r = array_get(pt, cons );
-			fn construct = r->val;
-			construct(cls, arr1);
-	
-			return pt;
-		}*/
+		} 
 
 	}
-/*
-	if( arr1->type == DOTYPE_ARRAY && key->type == DOTYPE_STRING && strcmp(key->val, "prototype") == 0 ) {
 
-		variable *cls = do_fn_new_class( ArrayClass );
-
-		variable *ret = array_get( cls, key );
-
-		return ret;
-	}
-
-*/
 	array *arr = arr1->val;
 	for( int i = 0; i < arr->length; i++ ) {
 		variable *hkey = arr->key[i];
@@ -137,9 +108,9 @@ variable * array_get( variable *arr1, variable *key ) {
 	variable *k = safe_alloc_new( &alloc, sizeof(variable) );
 	*k = *key;
 
-	variable *val = safe_alloc_new( &alloc, sizeof(variable*) );
+	variable *val = safe_alloc_new( &alloc, sizeof(variable) );
 
-	dovar( v, val, DOTYPE_UNDEF );
+	variable * v = donvar( val, DOTYPE_UNDEF );
 
 	array_set( arr1, k, v );
 
@@ -212,16 +183,11 @@ int array_len1( array *arr1 ) {
 	return arr1->length;
 }
 
-/*variable *array_iter( array *arr ) {
-	return arr->i++ < arr->length;
-}*/
-
 void * array_set_val( variable *a, variable *b ) {
 
 	if( a->type == 5 ) {
 		memcpy( a->val, b->val, 1 );
 	} else {
-		//a->type = b->type;
 		*a = *b;
 	}
 

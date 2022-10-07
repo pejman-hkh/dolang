@@ -4,27 +4,27 @@
 #include "fn.h"
 
 do_array_construct( variable *ths, variable *arr ) {
-	dovar(v1,"value", DOTYPE_STRING);
+	variable * v1 = donvar( "value", DOTYPE_STRING );
 	array_set(ths, v1, arr );
-	dovar(lenstr, "length", DOTYPE_STRING );
+	variable * lenstr = donvar( "length", DOTYPE_STRING );
 	variable *len = do_array_length(ths);
 	array_set( ths, lenstr, len );
 
 }
 
 do_array_test( variable *ths ) {
-	dovar(ret, "test", DOTYPE_STRING );
+	variable * ret = donvar( "test", DOTYPE_STRING );
 	return ret;
 }
 
 do_array_length( variable *ths ) {
 
-	dovar(v1,"value", DOTYPE_STRING);
+	variable * v1 = donvar( "value", DOTYPE_STRING );
 	variable *arr = array_get(ths, v1);
 
 
 	array *arr1 = arr->val;
-	dovar(ret, arr1->length, DOTYPE_INT);
+	variable * ret = donvar( arr1->length, DOTYPE_INT );
 	return ret;
 }
 
