@@ -101,14 +101,14 @@ do_ternary(a) {
 
 do_call_regex() {
 	function_init(2);
-	variable * v1 = donvar( toks.id, DOTYPE_STRING );
+	variable * v1 = dostring(toks.id);
 	do_call_string(v1);
 	function_set_arg(0);
 
 	next();
 	if( toks.t == TOK_IDENT ) {
 
-		variable * v2 = donvar( toks.id, DOTYPE_STRING );
+		variable * v2 = dostring(toks.id);
 		do_call_string(v2);
 		function_set_arg(1);
 

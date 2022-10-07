@@ -1482,7 +1482,7 @@ main(int n, char * t[] )
 	variable * vargv = donvar( argv, DOTYPE_ARRAY );
 	for( int i = 0; i < n; i++) {
 
-		variable * r = donvar( t[i], DOTYPE_STRING );
+		variable * r = dostring(t[i]);
 
 		//printf("%s\n", r->val );
 

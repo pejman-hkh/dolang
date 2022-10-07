@@ -75,6 +75,15 @@ char *file_ext;
 #define TOK_IDENT 999
 #define TOK_STRING 1000
 
+
+dostring( a ) {
+	return donvar(a, DOTYPE_STRING);
+}
+
+doint( a ) {
+	return donvar(a, DOTYPE_INT);
+}
+
 char * mstrcat( char *a, char *b) {
 	char* result;
     asprintf(&result, "%s%s", a, b);

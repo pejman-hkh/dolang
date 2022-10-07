@@ -63,7 +63,7 @@ void *array_set( variable *arr1, variable *key, variable *value ) {
 
 void *array_set2( variable *arr1, variable *key, variable *value ) {
 	array *arr = arr1->val;
-	variable * index = donvar( arr->length, DOTYPE_INT );
+	variable * index = doint(arr->length);
 	
 	array_set( arr1, index, key);
 }

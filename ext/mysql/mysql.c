@@ -153,7 +153,7 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 
 	int status = mysql_stmt_fetch(stmt->val);
 	if (status == 1 || status == MYSQL_NO_DATA) {
-		variable * r1 = donvar( 0, DOTYPE_INT );
+		variable * r1 = doint(0);
 		return r1;
 	} 
 
@@ -180,7 +180,7 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 					type = DOTYPE_STRING;
 				break;
 			}
-			variable * fn = donvar( fields[i].name, DOTYPE_STRING );
+			variable * fn = dostring(fields[i].name);
 			variable * fv = donvar( data, type );
 
 			array_set( arr, fn, fv );

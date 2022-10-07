@@ -10,7 +10,7 @@ do_curl_init( variable *ths ) {
     if( ! curl ) {
         printf("warning : problem in curl init\n");
     }
-    variable * ret = donvar( curl, DOTYPE_INT );
+    variable * ret = doint(curl);
     return ret;
 }
 
@@ -60,7 +60,7 @@ do_curl_exec( variable *ths, variable *curl ) {
     curl_easy_setopt(curl->val, CURLOPT_WRITEDATA, &s);
     res = curl_easy_perform(curl->val);
 
-    variable * ret = donvar( s.ptr, DOTYPE_STRING );
+    variable * ret = dostring(s.ptr);
     return ret;
 }
 

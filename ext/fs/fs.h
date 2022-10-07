@@ -7,13 +7,13 @@ do_fopen( variable *ths, variable *fn, variable *s ) {
 		printf("warning: file %s deosn't exists\n", fpath);
 	}
 
-	variable * ret = donvar( f, DOTYPE_INT );
+	variable * ret = doint(f);
 	return ret;
 }
 
 do_feof( variable *ths, variable *fp ) {
 	int a = feof( fp->val );
-	variable * ret = donvar( a, DOTYPE_INT );
+	variable * ret = doint(a);
 	return ret;
 }
 
@@ -29,7 +29,7 @@ do_fgetc( variable *ths, variable *fp ) {
 	*r++ = c;
 	*r++ = '\0';
 	
-	variable * ret = donvar( a, DOTYPE_STRING );
+	variable * ret = dostring(a);
 
 	return ret;
 }
@@ -45,13 +45,13 @@ do_fsize( variable *ths, variable *fp ) {
 	}
 
 
-	variable * ret = donvar( size, DOTYPE_INT );
+	variable * ret = doint(size);
 	return ret;
 }
 
 
 do_fread( variable *ths, variable *fp, variable * size, variable *count ) {
-	variable * ret = donvar( "", DOTYPE_STRING );
+	variable * ret = dostring("");
 	if( ! fp->val ) {
 	} else {	
 		int ss = count->val;

@@ -8,10 +8,10 @@ do_dot_init( variable *in ) {
 		variable *cls = do_fn_new_class( ArrayClass );
 
 
-		variable * a = donvar( "prototype", DOTYPE_STRING );
+		variable * a = dostring("prototype");
 		variable *pt = array_get( cls, a );
 
-		variable * cons = donvar( "construct", DOTYPE_STRING );
+		variable * cons = dostring("construct");
 
 		typedef variable *( *fn )( variable *ths, variable *arr);
 		variable *r = array_get(pt, cons );
@@ -22,10 +22,10 @@ do_dot_init( variable *in ) {
 	} else if( in->type == DOTYPE_STRING ) {
 		variable *cls = do_fn_new_class( StringClass );
 
-		variable * a = donvar( "prototype", DOTYPE_STRING );
+		variable * a = dostring("prototype");
 		variable *pt = array_get( cls, a );
 
-		variable * cons = donvar( "construct", DOTYPE_STRING );
+		variable * cons = dostring("construct");
 
 		typedef variable *( *fn )( variable *ths, variable *str);
 		variable *r = array_get(pt, cons );
@@ -42,9 +42,9 @@ do_fn_new_regex( variable *a, variable *b ) {
 	int l = RegExpClass;
 
 	variable *cls = do_fn_new_class( l );
-	variable * pk = donvar( "prototype", DOTYPE_STRING );
+	variable * pk = dostring("prototype");
 	variable *proto = array_get( cls, pk );
-	variable * fnc = donvar( "construct", DOTYPE_STRING );
+	variable * fnc = dostring("construct");
 	variable *ret = array_get( proto, fnc );
 
 	typedef variable *( *fn )( variable *ths, variable *a, variable *b );
@@ -184,7 +184,7 @@ void do_typeof( variable *ths, variable *a ) {
 
 do_fn_plus_plus( variable *a ) {
 	a->val += 1;
-	variable * ret = donvar( a->val - 1, DOTYPE_INT );
+	variable * ret = doint(a->val - 1);
 	return ret;
 }
 
@@ -309,7 +309,7 @@ do_fn_equal_equal( variable *a, variable *b ) {
 
 do_fn_equal_equal1( variable *a, variable *b ) {
 	int a1 = do_fn_equal_equal( a, b);
-	variable * ret = donvar( a1, DOTYPE_INT );
+	variable * ret = doint(a1);
 	return ret;
 
 }
@@ -321,7 +321,7 @@ do_fn_not_equal( variable *a, variable *b ) {
 	printf("%d\n", b->val);
 	printf("%d\n", !a1);
 	printf("tttttttttttttt\n");*/
-	variable * ret = donvar( !a1, DOTYPE_INT );
+	variable * ret = doint(!a1);
 	return ret;
 
 }
