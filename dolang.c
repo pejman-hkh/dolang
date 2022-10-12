@@ -6,10 +6,9 @@
 #include <dirent.h>
 #include "signal.h"
 #include "dolang.h"
-
 #include "safe_alloc.h"
-
 #include "array.h"
+
 #define ALLOC_SIZE 99999999
 
 char ch;
@@ -1477,9 +1476,9 @@ main(int n, char * t[] )
 //printf("%d\n", sizeof(array ));
 //exit(0);
 
-	array *argv = safe_alloc_new( &alloc, sizeof(array ));
-	array_init( argv );
-	variable * vargv = donvar( argv, DOTYPE_ARRAY );
+/*	array *argv = safe_alloc_new( &alloc, sizeof(array ));
+	array_init( argv );*/
+	variable * vargv = doarray();
 	for( int i = 0; i < n; i++) {
 
 		variable * r = dostring(t[i]);
@@ -1490,7 +1489,7 @@ main(int n, char * t[] )
 		//printf("ddddd\n");
 	}
 
-	//variable * vargv = donvar( argv, DOTYPE_ARRAY );
+	//variable * vargv = doarray( argv );
 
 	int main = array_get1( &sym_stk, "fn%main");
 	if( main ) {

@@ -75,9 +75,9 @@ do_regex_exec( variable *ths, variable *subject ) {
 
 	rc = pcre2_match(re->val, msub, subject_size, 0, options, match_data, NULL);
 
-	array *r = safe_alloc_new( &alloc, sizeof( array *) );
-	array_init(r);
-	variable * arr = donvar( r, DOTYPE_ARRAY );
+/*	array *r = safe_alloc_new( &alloc, sizeof( array *) );
+	array_init(r);*/
+	variable * arr = doarray();
 
 	if(rc == 0) {
 
@@ -120,6 +120,8 @@ do_regex_exec( variable *ths, variable *subject ) {
 	pcre2_match_data_free(match_data);
 	//pcre2_code_free(re->val);
 	//printf("dddd\n");
+	array *r = arr->val;
+
 	if( r->length == 0 ) {
 		return doint(0);	
 	}

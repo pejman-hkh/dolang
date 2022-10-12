@@ -155,9 +155,9 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 		return doint(0);
 	} 
 
-	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
-	array_init( arr1 );
-	variable * arr = donvar( arr1, DOTYPE_ARRAY );
+/*	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
+	array_init( arr1 );*/
+	variable * arr = doarray();
 
 	for (int i = 0; i < num_fields; ++i) {
 		if (real_length[i] > 0) {

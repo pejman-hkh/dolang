@@ -1,3 +1,5 @@
+#ifndef doarrayh
+#define doarrayh 1
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -210,3 +212,5 @@ void * array_free( array *arr ) {
 	free(arr->key);
 	free(arr->value);
 }
+
+#endif

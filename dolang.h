@@ -75,9 +75,22 @@ char *file_ext;
 #define TOK_IDENT 999
 #define TOK_STRING 1000
 
+#include "array.h";
 
 dostring( a ) {
 	return donvar(a, DOTYPE_STRING);
+}
+
+doobject( a ) {
+	return donvar(a, DOTYPE_OBJECT);
+}
+
+doarray() {
+
+	array *b = safe_alloc_new( &alloc, sizeof(array ));
+	array_init( b );
+
+	return donvar(b, DOTYPE_ARRAY);
 }
 
 doint( a ) {

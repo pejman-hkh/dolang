@@ -32,9 +32,7 @@ do_dot_init( variable *in ) {
 
 do_fn_new_regex( variable *a, variable *b ) {
 
-	int l = RegExpClass;
-
-	variable *cls = do_fn_new_class( l );
+	variable *cls = do_fn_new_class( RegExpClass );
 	variable *proto = array_get( cls, dostring("prototype") );
 	variable *ret = array_get( proto, dostring("construct") );
 
@@ -51,7 +49,7 @@ do_fn_new_class( variable *cls ) {
 	array *arr = safe_alloc_new(&alloc, sizeof(array ));
 	array_init( arr );
 
-	variable * ret = donvar( arr, DOTYPE_OBJECT );
+	variable * ret = doobject( arr );
 
 
 	array *arr1 = cls->val;

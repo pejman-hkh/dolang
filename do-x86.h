@@ -107,9 +107,7 @@ do_call_regex() {
 
 	next();
 	if( toks.t == TOK_IDENT ) {
-
-		variable * v2 = dostring(toks.id);
-		do_call_string(v2);
+		do_call_string( dostring(toks.id) );
 		function_set_arg(1);
 
 		next();
@@ -693,17 +691,15 @@ function_end(a) {
 }
 
 variable *do_fn_create_array() {
-	array *arr = safe_alloc_new(&alloc, sizeof(array));
-	array_init( arr );
-	variable * var = donvar( arr, DOTYPE_ARRAY );
-	return var;
+
+	return doarray();
 }
 
 
 variable *do_fn_create_object() {
 	array *arr = safe_alloc_new(&alloc, sizeof(array));
 	array_init( arr );
-	variable * var = donvar( arr, DOTYPE_OBJECT );
+	variable * var = doobject( arr );
 	return var;
 }
 
@@ -1150,7 +1146,7 @@ do_create_main_class( cls ) {
 
 	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
 	array_init( arr1 );
-	variable * arr = donvar( arr1, DOTYPE_OBJECT );
+	variable * arr = doobject( arr1 );
 	//variable * b = donvar( cls, 1 );
 	do_call_num(arr);
 	function_set_arg(2);
