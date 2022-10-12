@@ -17,10 +17,8 @@ do_array_test( variable *ths ) {
 
 do_array_length( variable *ths ) {
 	variable *arr = array_get(ths, dostring("value"));
-
 	array *arr1 = arr->val;
-	variable * ret = doint(arr1->length);
-	return ret;
+	return doint(arr1->length);
 }
 
 extern load() {
