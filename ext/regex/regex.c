@@ -105,14 +105,9 @@ do_regex_exec( variable *ths, variable *subject ) {
 			memcpy(s,start, slen);
 			s[slen] = '\0';
 
-			variable * str1 = dostring(start+slen);
-			array_set(ths, dostring("str"), str1);
-
+			array_set(ths, dostring("str"), dostring(start+slen));
 			array_set(ths, dostring("lastIndex"), doint(lindx+ovector[2*i+1]));
-
-			variable * indt = doint(lindx+ovector[2*i]);
-			array_set(ths, dostring("index"), indt);
-
+			array_set(ths, dostring("index"), doint(lindx+ovector[2*i]));
 			array_set( arr, doint(i), dostring(s) );
 
 		}

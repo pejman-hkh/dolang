@@ -152,8 +152,7 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 
 	int status = mysql_stmt_fetch(stmt->val);
 	if (status == 1 || status == MYSQL_NO_DATA) {
-		variable * r1 = doint(0);
-		return r1;
+		return doint(0);
 	} 
 
 	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );

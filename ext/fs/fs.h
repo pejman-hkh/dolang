@@ -7,8 +7,7 @@ do_fopen( variable *ths, variable *fn, variable *s ) {
 		printf("warning: file %s deosn't exists\n", fpath);
 	}
 
-	variable * ret = doint(f);
-	return ret;
+	return doint(f);
 }
 
 do_feof( variable *ths, variable *fp ) {

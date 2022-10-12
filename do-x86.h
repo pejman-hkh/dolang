@@ -101,8 +101,8 @@ do_ternary(a) {
 
 do_call_regex() {
 	function_init(2);
-	variable * v1 = dostring(toks.id);
-	do_call_string(v1);
+
+	do_call_string( dostring(toks.id) );
 	function_set_arg(0);
 
 	next();

@@ -10,8 +10,7 @@ do_curl_init( variable *ths ) {
     if( ! curl ) {
         printf("warning : problem in curl init\n");
     }
-    variable * ret = doint(curl);
-    return ret;
+    return doint(curl);
 }
 
 do_curl_setopt( variable *ths, variable *curl, variable *opt, variable *opt_val ) {

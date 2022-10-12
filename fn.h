@@ -174,8 +174,7 @@ void do_typeof( variable *ths, variable *a ) {
 
 do_fn_plus_plus( variable *a ) {
 	a->val += 1;
-	variable * ret = doint(a->val - 1);
-	return ret;
+	return doint(a->val - 1);
 }
 
 do_fn_minus_minus( variable *a ) {
@@ -299,8 +298,7 @@ do_fn_equal_equal( variable *a, variable *b ) {
 
 do_fn_equal_equal1( variable *a, variable *b ) {
 	int a1 = do_fn_equal_equal( a, b);
-	variable * ret = doint(a1);
-	return ret;
+	return doint(a1);
 
 }
 
