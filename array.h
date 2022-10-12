@@ -80,7 +80,7 @@ variable * array_get( variable *arr1, variable *key ) {
 		if( key->type == 2 ) {
 			int index = key->val;
 			if( index > strlen(arr1->val) ) {
-				return donvar( 0, 2 );
+				return doint( 0 );
 			} else {
 				char *d = arr1->val+index;
 				return donvar( d, 5 );
