@@ -29,9 +29,7 @@ do_fgetc( variable *ths, variable *fp ) {
 	*r++ = c;
 	*r++ = '\0';
 	
-	variable * ret = dostring(a);
-
-	return ret;
+	return dostring(a);
 }
 
 do_fsize( variable *ths, variable *fp ) {
@@ -44,9 +42,7 @@ do_fsize( variable *ths, variable *fp ) {
 		rewind (fp->val);
 	}
 
-
-	variable * ret = doint(size);
-	return ret;
+	return doint(size);
 }
 
 

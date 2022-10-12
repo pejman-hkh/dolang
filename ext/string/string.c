@@ -4,29 +4,22 @@
 #include "fn.h"
 
 do_string_construct( variable *ths, variable *str ) {
-	variable * v1 = dostring("value");
-	array_set(ths, v1, str );
-	variable * lenstr = dostring("length");
-	variable *len = do_string_length(ths);
+	array_set(ths, dostring("value"), str );
 
-	array_set( ths, lenstr, len );
+	array_set( ths, dostring("length"), do_string_length(ths) );
 
 	return ths;
 }
 
 
 do_string_length( variable *ths ) {
-	variable * v1 = dostring("value");
-	variable *str = array_get(ths, v1);
-
-	variable * ret = doint(strlen( str->val ));
-	return ret;
+	variable *str = array_get(ths, dostring("value"));
+	return doint(strlen( str->val ));
 }
 
 do_string_substr( variable *ths, variable *offset, variable *len ) {
 
-	variable * v1 = dostring("value");
-	variable *str = array_get(ths, v1);
+	variable *str = array_get(ths, dostring("value"));
 
 	char *a = str->val;
 
@@ -36,52 +29,45 @@ do_string_substr( variable *ths, variable *offset, variable *len ) {
 	r = (int)r + offset->val;
 	*(char *)((int)r + len->val) = '\0';
 
-	variable * ret = dostring(r);
-
-	return ret;
+	return dostring(r);
 }
 
 do_string_charCodeAt(variable *ths, variable *index) {
-	variable * v1 = dostring("value");
-	variable *str = array_get(ths, v1);
+
+	variable *str = array_get(ths, dostring("value"));
 	char *a = str->val;
 	char b = *(char *)( (int)a + (int)index->val );
-	variable * ret = doint(b);
-	return ret;
+
+	return doint(b);
 }
 
 do_string_charAt(variable *ths, variable *index) {
-	variable * v1 = dostring("value");
-	variable *str = array_get(ths, v1);
+
+	variable *str = array_get(ths, dostring("value"));
 	char *a = str->val;
 	char * b = safe_alloc_new( &alloc, 2);
 	*b++ = *(char *)( (int)a + (int)index->val );
 	*b++ = '\0';
 
-	variable * ret = dostring(b-2);
-	return ret;
+	return dostring(b-2);
 }
 
 do_string_fromCharCode(variable *ths, variable *index) {
 	char * b = safe_alloc_new( &alloc, 2);
 	*b++ = index->val;
 	*b++ = '\0';
-
-	variable * ret = dostring(b-2);
-	return ret;
+	return dostring(b-2);
 }
 
 do_string_indexOf(variable *ths, variable *s) {
 
-	variable * v1 = dostring("value");
-	variable *str = array_get(ths, v1);
+	variable *str = array_get(ths, dostring("value"));
 	char *a = str->val;
 
 	char * res = strstr( a, s->val );
 	int index = res - a;
 
-	variable * ret = doint(index);
-	return ret;
+	return doint(index);
 }
 
 

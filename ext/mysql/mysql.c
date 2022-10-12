@@ -120,8 +120,7 @@ do_mysql_stmt_prepare_result( variable *ths, variable *stmt ) {
 		exit(0);
 	}
 
-	variable * ret = donvar( prepare_meta_result, DOTYPE_RES );
-	return ret;
+	return donvar( prepare_meta_result, DOTYPE_RES );
 }
 
 do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
@@ -180,10 +179,8 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 					type = DOTYPE_STRING;
 				break;
 			}
-			variable * fn = dostring(fields[i].name);
-			variable * fv = donvar( data, type );
 
-			array_set( arr, fn, fv );
+			array_set( arr, dostring(fields[i].name), donvar( data, type ) );
 
 		}
 	}

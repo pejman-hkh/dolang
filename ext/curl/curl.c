@@ -60,8 +60,7 @@ do_curl_exec( variable *ths, variable *curl ) {
     curl_easy_setopt(curl->val, CURLOPT_WRITEDATA, &s);
     res = curl_easy_perform(curl->val);
 
-    variable * ret = dostring(s.ptr);
-    return ret;
+    return dostring(s.ptr);
 }
 
 do_curl_close( variable *ths, variable *curl ) {

@@ -36,9 +36,7 @@ do_regex( variable *ths, variable *pattern, variable *ex ) {
 		return 1;
 	}
 
-	variable * k = dostring("re");
-	variable * v = donvar( re, DOTYPE_RES );
-	array_set( ths, k, v );
+	array_set( ths, dostring("re"), donvar( re, DOTYPE_RES ) );
 
 	return ths;
 }
@@ -46,8 +44,8 @@ do_regex( variable *ths, variable *pattern, variable *ex ) {
 do_regex_exec( variable *ths, variable *subject ) {
 
 	//printf("%s\n", subject->val );
-	variable * k = dostring("re");
-	variable * re = array_get( ths, k );
+
+	variable * re = array_get( ths, dostring("re") );
 
 	size_t subject_size;//= strlen(subject->val);
 	uint32_t options = 0;
@@ -60,20 +58,17 @@ do_regex_exec( variable *ths, variable *subject ) {
 	PCRE2_SIZE* ovector;
 
 	match_data = pcre2_match_data_create(ovecsize, NULL);
-	variable * sl = dostring("lastIndex");
-	variable * sind = dostring("index");
-	variable * slstr = dostring("str");
-	
+
 	char *msub = subject->val;
 
-	variable *lastStr = array_get(ths, slstr );
+	variable *lastStr = array_get(ths, dostring("str") );
 	if( lastStr->type != DOTYPE_UNDEF ) {
 		msub = lastStr->val;
 	}
 
 	if( ! msub ) {
-		variable * rz = doint(0);
-		return rz;
+
+		return doint(0);
 	}
 
 	subject_size = strlen(msub);
@@ -85,14 +80,14 @@ do_regex_exec( variable *ths, variable *subject ) {
 	variable * arr = donvar( r, DOTYPE_ARRAY );
 
 	if(rc == 0) {
-		variable * ml = doint(0);
-		array_set(ths, sl, ml);
+
+		array_set(ths, dostring("lastIndex"), doint(0));
 		//fprintf(stderr,"offset vector too small: %d",rc);
 	}
 	else if(rc > 0)
 	{
 
-		variable *lastIndex = array_get(ths, sl );
+		variable *lastIndex = array_get(ths, dostring("lastIndex") );
 		int lindx = 0;
 		if( lastIndex->type != DOTYPE_UNDEF ) {
 			lindx = (int)lastIndex->val;
@@ -110,15 +105,13 @@ do_regex_exec( variable *ths, variable *subject ) {
 			memcpy(s,start, slen);
 			s[slen] = '\0';
 
-			variable * ml = doint(lindx+ovector[2*i+1]);
-			
 			variable * str1 = dostring(start+slen);
-			array_set(ths, slstr, str1);
+			array_set(ths, dostring("str"), str1);
 
-			array_set(ths, sl, ml);
+			array_set(ths, dostring("lastIndex"), doint(lindx+ovector[2*i+1]));
 
 			variable * indt = doint(lindx+ovector[2*i]);
-			array_set(ths, sind, indt);
+			array_set(ths, dostring("index"), indt);
 
 			variable * k = doint(i);
 			variable * v = dostring(s);
@@ -127,8 +120,8 @@ do_regex_exec( variable *ths, variable *subject ) {
 
 		}
 	} else {
-		variable * ml = doint(0);
-		array_set(ths, sl, ml);
+
+		array_set(ths, dostring("lastIndex"), doint(0));
 	}
 
 
@@ -136,8 +129,7 @@ do_regex_exec( variable *ths, variable *subject ) {
 	//pcre2_code_free(re->val);
 	//printf("dddd\n");
 	if( r->length == 0 ) {
-		variable * rz = doint(0);
-		return rz;	
+		return doint(0);	
 	}
 
 	return arr;
