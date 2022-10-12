@@ -113,10 +113,7 @@ do_regex_exec( variable *ths, variable *subject ) {
 			variable * indt = doint(lindx+ovector[2*i]);
 			array_set(ths, dostring("index"), indt);
 
-			variable * k = doint(i);
-			variable * v = dostring(s);
-
-			array_set( arr, k, v );
+			array_set( arr, doint(i), dostring(s) );
 
 		}
 	} else {
