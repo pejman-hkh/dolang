@@ -7,14 +7,10 @@ do_dot_init( variable *in ) {
 	if( in->type == DOTYPE_ARRAY ) {
 		variable *cls = do_fn_new_class( ArrayClass );
 
-
-		variable * a = dostring("prototype");
-		variable *pt = array_get( cls, a );
-
-		variable * cons = dostring("construct");
+		variable *pt = array_get( cls, dostring("prototype") );
 
 		typedef variable *( *fn )( variable *ths, variable *arr);
-		variable *r = array_get(pt, cons );
+		variable *r = array_get(pt, dostring("construct") );
 		fn construct = r->val;
 		construct(cls, in);		
 
@@ -22,13 +18,10 @@ do_dot_init( variable *in ) {
 	} else if( in->type == DOTYPE_STRING ) {
 		variable *cls = do_fn_new_class( StringClass );
 
-		variable * a = dostring("prototype");
-		variable *pt = array_get( cls, a );
-
-		variable * cons = dostring("construct");
+		variable *pt = array_get( cls, dostring("prototype") );
 
 		typedef variable *( *fn )( variable *ths, variable *str);
-		variable *r = array_get(pt, cons );
+		variable *r = array_get(pt, dostring("construct") );
 		fn construct = r->val;
 		construct(cls, in);
 		return cls;
@@ -42,10 +35,8 @@ do_fn_new_regex( variable *a, variable *b ) {
 	int l = RegExpClass;
 
 	variable *cls = do_fn_new_class( l );
-	variable * pk = dostring("prototype");
-	variable *proto = array_get( cls, pk );
-	variable * fnc = dostring("construct");
-	variable *ret = array_get( proto, fnc );
+	variable *proto = array_get( cls, dostring("prototype") );
+	variable *ret = array_get( proto, dostring("construct") );
 
 	typedef variable *( *fn )( variable *ths, variable *a, variable *b );
 
@@ -67,9 +58,8 @@ do_fn_new_class( variable *cls ) {
 	for( int i = 0; i < arr1->length; i++ ) {
 		variable *key = arr1->key[i];
 		variable *value = arr1->value[i];
-		variable * k = donvar( key->val, key->type );
-		variable * v = donvar( value->val, value->type );
-		array_set( ret, k, v );
+
+		array_set( ret, donvar( key->val, key->type ), donvar( value->val, value->type ) );
 	}
 
 	return ret;
