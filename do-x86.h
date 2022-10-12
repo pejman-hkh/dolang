@@ -697,10 +697,7 @@ variable *do_fn_create_array() {
 
 
 variable *do_fn_create_object() {
-	array *arr = safe_alloc_new(&alloc, sizeof(array));
-	array_init( arr );
-	variable * var = doobject( arr );
-	return var;
+	return doobject();
 }
 
 do_create_array( end ) {
@@ -1144,9 +1141,9 @@ do_create_main_class( cls ) {
 	do_call_num(a1);
 	function_set_arg(1);
 
-	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
-	array_init( arr1 );
-	variable * arr = doobject( arr1 );
+/*	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
+	array_init( arr1 );*/
+	variable * arr = doobject( );
 	//variable * b = donvar( cls, 1 );
 	do_call_num(arr);
 	function_set_arg(2);

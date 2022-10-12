@@ -46,11 +46,10 @@ do_fn_new_regex( variable *a, variable *b ) {
 
 do_fn_new_class( variable *cls ) {
 
-	array *arr = safe_alloc_new(&alloc, sizeof(array ));
+/*	array *arr = safe_alloc_new(&alloc, sizeof(array ));
 	array_init( arr );
-
-	variable * ret = doobject( arr );
-
+*/
+	variable * ret = doobject();
 
 	array *arr1 = cls->val;
 	for( int i = 0; i < arr1->length; i++ ) {

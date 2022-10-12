@@ -81,7 +81,10 @@ dostring( a ) {
 	return donvar(a, DOTYPE_STRING);
 }
 
-doobject( a ) {
+doobject() {
+	array *a = safe_alloc_new(&alloc, sizeof(array));
+	array_init( a );
+
 	return donvar(a, DOTYPE_OBJECT);
 }
 
