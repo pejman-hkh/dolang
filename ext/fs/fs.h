@@ -53,7 +53,7 @@ do_fread( variable *ths, variable *fp, variable * size, variable *count ) {
 		char *buf = safe_alloc_new( &alloc, sizeof( char ) * ss );
 		fread( buf, fp->val, 1, fp->val );
 
-		//variable * ret = donvar( buf, 1 );
+		//variable * ret = dostring( buf );
 		ret->val = buf;
 
 	}

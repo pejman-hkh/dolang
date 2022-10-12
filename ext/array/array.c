@@ -5,13 +5,10 @@
 
 do_array_construct( variable *ths, variable *arr ) {
 	array_set(ths, dostring("value"), arr );
-	variable *len = do_array_length(ths);
-	array_set( ths, dostring("length"), len );
-
+	array_set( ths, dostring("length"), do_array_length(ths) );
 }
 
 do_array_test( variable *ths ) {
-
 	return dostring("test");
 }
 

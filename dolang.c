@@ -529,8 +529,7 @@ unary() {
 		do_after_ident();
 	} else if( toks.t == TOK_STRING ) {
 
-		variable * var = donvar( toks.id, 1 );
-		do_call_string( var );
+		do_call_string( dostring( toks.id ) );
 
 		next();
 		do_after_ident();
@@ -709,8 +708,8 @@ do_after_ident() {
 
 				function_init(2);
 				function_set_arg(0);
-				variable * a1 = donvar( "prototype", 1 );
-				do_call_num(a1);
+		
+				do_call_num( dostring( "prototype" ) );
 				function_set_arg(1);
 				function_call( &array_get, "array_get" );
 				function_end(2);
@@ -718,8 +717,8 @@ do_after_ident() {
 
 				function_init(2);
 				function_set_arg(0);
-				variable * a = donvar( t, 1 );
-				do_call_num(a);
+	
+				do_call_num( dostring( t ) );
 				function_set_arg(1);
 				function_call( &array_get, "array_get" );
 				function_end(2);

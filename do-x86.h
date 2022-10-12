@@ -734,8 +734,8 @@ do_create_array( end ) {
 
 		if( toks.t == TOK_IDENT ) {
 			char *id = toks.id;
-			variable * a = donvar( toks.id, 1 );
-			do_call_string(a);
+
+			do_call_string( dostring( toks.id ) );
 			next();
 
 			if( toks.c == ',' || toks.c == '.' || toks.c == '[' || toks.c == ']' || toks.c == '}' ) {
@@ -1073,16 +1073,16 @@ do_new_class( cls ) {
 
 		function_init(2);
 		function_set_arg(0);
-		variable * a1 = donvar( "prototype", 1 );
-		do_call_num(a1);
+
+		do_call_num( dostring( "prototype" ) );
 		function_set_arg(1);
 		function_call( &array_get, "array_get" );
 		function_end(2);
 
 		function_init(2);
 		function_set_arg(0);
-		variable * a = donvar( "construct", 1 );
-		do_call_num(a);
+
+		do_call_num( dostring( "construct" ) );
 		function_set_arg(1);
 		function_call( &array_get, "array_get" );
 		function_end(2);
@@ -1125,11 +1125,11 @@ do_create_main_class( cls ) {
 
 	function_init(3);
 	function_set_arg(0);
-	variable * a = donvar( "class", 1 );
-	do_call_num(a);
+
+	do_call_num( dostring( "class" ) );
 	function_set_arg(1);
-	variable * b = donvar( cls, 1 );
-	do_call_num(b);
+
+	do_call_num( dostring( cls ) );
 	function_set_arg(2);
 	function_call( &array_set, "array_set" );
 	function_end(3);
@@ -1137,14 +1137,14 @@ do_create_main_class( cls ) {
 	do_call_var(l);
 	function_init(3);
 	function_set_arg(0);
-	variable * a1 = donvar( "prototype", 1 );
-	do_call_num(a1);
+
+	do_call_num( dostring( "prototype" ) );
 	function_set_arg(1);
 
 /*	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
 	array_init( arr1 );*/
 	variable * arr = doobject( );
-	//variable * b = donvar( cls, 1 );
+	//variable * b = dostring( cls );
 	do_call_num(arr);
 	function_set_arg(2);
 	function_call( &array_set, "array_set" );
@@ -1164,8 +1164,8 @@ do_create_main_class( cls ) {
 
 			function_init(3);
 			function_set_arg(0);
-			variable * a1 = donvar( v, 1 );
-			do_call_num(a1);
+
+			do_call_num( dostring( v ) );
 			function_set_arg(1);
 			variable * b1 = donvar( ll, 4 );
 			do_call_num(b1);
