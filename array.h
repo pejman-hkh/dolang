@@ -71,20 +71,17 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 variable * array_get( variable *arr1, variable *key ) {
 	//printf("%s\n", key->val );
 	if( ! arr1->type ) {
-		variable * ret = donvar( "", DOTYPE_UNDEF );
-		return ret;
+		return donvar( "", DOTYPE_UNDEF );
 	}
 
 	if( arr1->type == 1 ) {
 		if( key->type == 2 ) {
 			int index = key->val;
 			if( index > strlen(arr1->val) ) {
-				variable * ret = donvar( 0, 2 );
-				return ret;
+				return donvar( 0, 2 );
 			} else {
 				char *d = arr1->val+index;
-				variable * ret = donvar( d, 5 );
-				return ret;
+				return donvar( d, 5 );
 			}
 			
 
