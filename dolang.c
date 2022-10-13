@@ -570,7 +570,7 @@ unary() {
 		} else if( toks.t == TOK_STRING & btoks.c == '+' ) {
 		
 		} else  if( btoks.t == 2050 ) {
-			do_call_num( dofloat( btoks.id ) );
+			do_call_num( dofloat( atof(btoks.id) ) );
 		} else  if( btoks.t == 1005 ) {
 
 			int in = strtol(btoks.id, 0, 0);

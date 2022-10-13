@@ -135,7 +135,7 @@ void do_print( variable *ths, variable *a ) {
 	} else if( a->type == 2 ) {
 		printf("%d", a->val );
 	} else if( a->type == 12 ) {
-		printf("%s", a->val );
+		printf("%f", a->floatVal );
 	} else if( a->type == 3 ) {
 		do_print_array(ths, a);	
 	} else if( a->type == 11 ) {
@@ -193,13 +193,8 @@ variable *do_fn_add( variable *a, variable *b ) {
 	variable *var = safe_alloc_new( &alloc, sizeof(variable));
 
 	if( a->type == 12 && b->type == 12 ) {
-		float c = (float)atof(a->val) + (float)atof( b->val);
-
-		int len = snprintf(NULL, 0, "%f", c);
-		char *result = malloc(len + 1);
-		snprintf(result, len + 1, "%f", c);
-
-		return dofloat( result );
+		float c = (float)(a->floatVal) + (float)( b->floatVal );
+		return dofloat( c );
 	} else if( a->type == 1 && b->type == 5 ) {
 		char * r = safe_alloc_new( &alloc, sizeof( char *) );
 		memcpy( r, b->val, 2);

@@ -8,6 +8,7 @@ safe_alloc alloc;
 typedef struct {
 	char type;
 	void * val;
+	float floatVal;
 } variable;
 
 variable *StringClass;
@@ -79,8 +80,13 @@ char *file_ext;
 
 #include "array.h";
 
-dofloat( a ) {
-	return donvar(a, DOTYPE_FLOAT);
+dofloat( float b ) {
+	variable *a = safe_alloc_new(&alloc, sizeof( variable ) );
+	a->floatVal = b;
+	a->type = DOTYPE_FLOAT;
+	return a;
+
+	//return donvar(a, DOTYPE_FLOAT);
 }
 
 dostring( a ) {
