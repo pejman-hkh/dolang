@@ -1213,8 +1213,10 @@ scan_ext() {
 									RegExpClass = a;
 								} else if( strcmp(cls, "Array") == 0 ) {
 									ArrayClass = a;
-								} else if( strcmp(cls, "object") == 0 ) {
+								} else if( strcmp(cls, "Object") == 0 ) {
 									ObjectClass = a;
+								} else if( strcmp(cls, "Math") == 0 ) {
+									MathClass = a;
 								}
 							}
 

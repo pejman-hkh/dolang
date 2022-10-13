@@ -15,6 +15,7 @@ variable *StringClass;
 variable *ArrayClass;
 variable *ObjectClass;
 variable *RegExpClass;
+variable *MathClass;
 
 donvar( b, c) {
 	variable *a = safe_alloc_new(&alloc, sizeof( variable ) );
