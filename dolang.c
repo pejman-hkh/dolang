@@ -175,15 +175,23 @@ next() {
 
 		toks.id = buf;
 		toks.c = ch;
-		while( isid() ) {
+		int is_float = 0;
+		int is_num = isdigit( toks.c );
+		while( isid() | ( is_num & ch == '.' ) ) {
+			if( ch == '.' & is_num ) is_float = 1;
 			*(char *)buf++ = ch;
 			inp();
 		}
 		*(char *)buf++ = 0;
 
-		int a = array_get1( &mt, toks.id );
-		if( isdigit( toks.c ) ) {
+		//printf("%d\n", is_float );
+		//printf("%d\n", isdigit( toks.c ) );
 
+		int a = array_get1( &mt, toks.id );
+		if( is_float ) {
+			toks.t = 2050;
+		} else if( is_num ) {
+			//printf("%f\n", toks.c );
 			toks.t = 1005;
 		} else if( a != 0 ) {
 			toks.t = a;
@@ -561,6 +569,8 @@ unary() {
 
 		} else if( toks.t == TOK_STRING & btoks.c == '+' ) {
 		
+		} else  if( btoks.t == 2050 ) {
+			do_call_num( dofloat( btoks.id ) );
 		} else  if( btoks.t == 1005 ) {
 
 			int in = strtol(btoks.id, 0, 0);
@@ -1273,6 +1283,7 @@ main(int n, char * t[] )
 	array_set1( &mt, "true", TOK_TRUE );
 	array_set1( &mt, "false", TOK_FALSE );
 	array_set1( &mt, "do", TOK_DO );
+	array_set1( &mt, "const", TOK_CONST );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );

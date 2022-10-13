@@ -58,6 +58,7 @@ char *file_ext;
 #define TOK_FALSE 30
 #define TOK_DO 31
 #define TOK_REGEX 32
+#define TOK_CONST 33
 
 
 #define DOTYPE_STRING 1
@@ -71,11 +72,16 @@ char *file_ext;
 #define DOTYPE_UNDEF 9
 #define DOTYPE_REGEX 10
 #define DOTYPE_OBJECT 11
+#define DOTYPE_FLOAT 12
 
 #define TOK_IDENT 999
 #define TOK_STRING 1000
 
 #include "array.h";
+
+dofloat( a ) {
+	return donvar(a, DOTYPE_FLOAT);
+}
 
 dostring( a ) {
 	return donvar(a, DOTYPE_STRING);
