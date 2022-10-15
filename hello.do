@@ -39,7 +39,7 @@ class test1 {
 class json {
 
 	encode( arr ) {
-		print( arr[0].name );
+		//print( arr[0].name );
 
 		this.name = arr[0].name;
 
@@ -62,11 +62,11 @@ class json {
 
 main() {
 
-	var name = "Test";
+	var name = "Test\n";
 	print(name);
 
-	var arr = [];
-	arr.test = "this is test";
+	var arr = {};
+	arr.test = "this is test\n";
 	print( arr.test );
 
 
@@ -89,8 +89,9 @@ main() {
 	
 	}
 
+	print( arr2 );
 
-	var arr1 = [0 : ['name' : 'first'] ];
+	var arr1 = [0 : {'name' : 'first'} ];
 
 	var j = new json;
 	j.encode( arr1 );
@@ -98,7 +99,7 @@ main() {
 	print( j.name );
 
 
-	var arr1 = [0 : ['name' : 'second'] ];
+	var arr1 = [0 : {'name' : 'second'} ];
 
 	var json1 = new json;
 	json1.encode( arr1 );
@@ -106,10 +107,6 @@ main() {
 	print( json1.name );
 
 	print("\n\n\n");
-	//arr[0].name = "awli";
-
-	//print( "here id is : "+arr[1].name+"\n" );
-	//print("\n\n\n");
 
 	for( var k,v in arr ) {
 		print(k);
