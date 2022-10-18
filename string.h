@@ -155,23 +155,72 @@ char *string_substr( string *str, int s, int l ) {
 	return "";
 }
 
+typedef struct {
+	int i;
+	int is;
+} stringIter;
+
+char string_iter( string *str, stringIter *it ) {
+
+	if( it->i == str->i ) {
+		return 0;
+	}
+
+	char *s = str->strings[it->i];
+	char p = s[it->is];
+
+	if( p == '\0' ) {
+
+		if( it->i < str->i-1 ) {
+			s = str->strings[++it->i];
+			it->is = 0;
+
+		}
+	}
+
+	return s[it->is++];
+}
+
 int string_cmp( string *str1, string *str2 ) {
 
-	string *ret = newstring("");
-	string_line( str1, ret );	
+	string *lstr1 = newstring("");
+	string_line( str1, lstr1 );	
 
-	string *ret1 = newstring("");
-	string_line( str2, ret1 );
+	string *lstr2 = newstring("");
+	string_line( str2, lstr2 );
 
-	if( ret->i != ret1->i ) {
+	if( string_len( lstr1 ) != string_len( lstr2 ) ) {
 		return -2;
 	}
+	stringIter si1;
+	si1.i = 0;
+	si1.is = 0;
+
+	stringIter si2;
+	si2.i = 0;
+	si2.is = 0;
 
 
-	for( int i = 0 ; i < ret->i; i++ ) {
+	int j = 1;
+	while( 1 ) {
+		char a = string_iter( lstr1, &si1 );
+		char b = string_iter( lstr2, &si2 );
+	
+
+		if( a != b ) {
+			return -1;
+		}
+
+		if( ! a ) {
+			break;
+		}
+	}
+
+/*	for( int i = 0 ; i < ret->i; i++ ) {
+		//char *sstr = ret->
 		if( strcmp( ret->strings[i], ret1->strings[i]) != 0 )
 			return -1;
-	}
+	}*/
 
 	return 0;
 }
