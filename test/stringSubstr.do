@@ -3,5 +3,7 @@ main() {
 
 	let ss = str.substr(1,5);
 
+	print(ss);
+
 
 }	
