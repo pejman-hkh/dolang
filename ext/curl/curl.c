@@ -16,15 +16,15 @@ do_curl_init( variable *ths ) {
 do_curl_setopt( variable *ths, variable *curl, variable *opt, variable *opt_val ) {
     int opt1 = opt->val;
 
-    curl_easy_setopt(curl->val, opt1, opt_val->val );
+    curl_easy_setopt(curl->val, opt1, string_val( opt_val->val) );
 }
 
-struct string {
+struct string_curl {
     char *ptr;
     size_t len;
 };
 
-void init_string(struct string *s) {
+void init_string_curl(struct string_curl *s) {
     s->len = 0;
     s->ptr = malloc(s->len+1);
     if (s->ptr == NULL) {
@@ -34,7 +34,7 @@ void init_string(struct string *s) {
     s->ptr[0] = '\0';
 }
 
-size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
+size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string_curl *s)
 {
     size_t new_len = s->len + size*nmemb;
     s->ptr = realloc(s->ptr, new_len+1);
@@ -52,8 +52,8 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
 
 do_curl_exec( variable *ths, variable *curl ) {
     CURLcode res;
-    struct string s;
-    init_string(&s);
+    struct string_curl s;
+    init_string_curl(&s);
 
     curl_easy_setopt(curl->val, CURLOPT_WRITEFUNCTION, writefunc);
     curl_easy_setopt(curl->val, CURLOPT_WRITEDATA, &s);
