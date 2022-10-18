@@ -68,16 +68,13 @@ do_string_indexOf(variable *ths, variable *s) {
 		char *sstr = nstr->strings[i];
 		while( *sstr ) {
 			if( *sstr == *s1 ) {
-				char *sstr1 = sstr;
-				while( *s1 ) {
-					if( *s1++ != *sstr1++  ) {
-						s1 = s2;
-						break;
-					}
-				}
-				if( *s1 == '\0' ) {
-					return doint(it);
-				}
+				s1++;
+			} else {
+				s1 = s2;
+			}
+
+			if( *s1 == '\0' ) {
+				return doint(it - strlen(s2) + 1 );
 			}
 
 			sstr++;

@@ -5,5 +5,13 @@ main() {
 
 	print(ss);
 
+	print("\n")
+	print( str.indexOf('is') );
+	print("\n")
+
+	let text = "Hello world, welcome to the universe.";
+	let result = text.indexOf("welcome");
+
+	print( result )
 
 }	
