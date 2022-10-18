@@ -91,12 +91,14 @@ variable * array_get( variable *arr1, variable *key ) {
 	}
 
 	array *arr = arr1->val;
+
 	for( int i = 0; i < arr->length; i++ ) {
 		variable *hkey = arr->key[i];
-		/*if( hkey->type == DOTYPE_STRING ) {
-			string_print( hkey );
-		}*/
-
+/*		do_print(key, key);
+		printf(":");
+		do_print(hkey, hkey);
+		printf("\n");
+		printf("\n");*/
 		if( do_fn_equal_equal( key, hkey ) ) {
 			return arr->value[i];
 		}
@@ -113,7 +115,6 @@ variable * array_get( variable *arr1, variable *key ) {
 
 	variable * v = donvar( val, DOTYPE_UNDEF );
 	array_set( arr1, k, v );
-
 	return v;
 }
 

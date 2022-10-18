@@ -288,6 +288,7 @@ do_fn_equal_equal( variable *a, variable *b ) {
 	} 
 
 	if( b->type == 1 ) {
+
 		int cmp = string_cmp( a->val, b->val );
 
 		if( cmp == 0 ) {

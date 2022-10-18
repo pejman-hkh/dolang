@@ -674,6 +674,7 @@ do_after_ident() {
 				do_call_function_callback(ld);
 
 			} else {
+		
 				do_call_object(&ctoks);
 			}
 		} else if( toks.c == '[') {
