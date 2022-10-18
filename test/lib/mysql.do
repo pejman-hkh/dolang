@@ -45,7 +45,9 @@ class mysqlStmt {
 
 class mysql {
 	construct( host, user, pass, db ) {
+
 		this.connect( host, user, pass, db );
+	
 		return this;
 	}
 

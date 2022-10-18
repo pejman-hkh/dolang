@@ -18,8 +18,11 @@ main() {
 	
 	i.i++
 
+
 	while( o.str[i.i] != '}' ) {
 		print( "str : "+o.str[i.i]+" ###\n" )
 		i.i++
+		
+
 	}
 }

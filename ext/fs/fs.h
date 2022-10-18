@@ -1,7 +1,8 @@
 do_fopen( variable *ths, variable *fn, variable *s ) {
 	FILE *f;
-	char *fpath = mstrcat(mainPath,fn->val);
-	f = fopen( fpath, s->val );
+	char *fpath = mstrcat(mainPath,string_val(fn->val) );
+
+	f = fopen( fpath, string_val(s->val) );
 
 	if( ! f ) {
 		printf("warning: file %s deosn't exists\n", fpath);
@@ -18,8 +19,7 @@ do_feof( variable *ths, variable *fp ) {
 
 do_fgetc( variable *ths, variable *fp ) {
 	char c = fgetc( fp->val );
-	char *r;
-	char *a;
+	char *r, *a;
 	r = a = safe_alloc_new( &alloc, 2 );
 	if( c == EOF ) {
 		c = '\0';
@@ -54,7 +54,7 @@ do_fread( variable *ths, variable *fp, variable * size, variable *count ) {
 		fread( buf, fp->val, 1, fp->val );
 
 		//variable * ret = dostring( buf );
-		ret->val = buf;
+		string_append(ret->val, buf);
 
 	}
 	return ret;

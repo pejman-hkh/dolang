@@ -1,6 +1,7 @@
 #include "dolang.h"
 #include "safe_alloc.h"
 #include "array.h"
+#include "string.h"
 #include "fn.h"
 
 do_string_construct( variable *ths, variable *str ) {
@@ -14,29 +15,20 @@ do_string_construct( variable *ths, variable *str ) {
 
 do_string_length( variable *ths ) {
 	variable *str = array_get(ths, dostring("value"));
-	return doint(strlen( str->val ));
+	return doint(string_len( str->val ));
 }
 
 do_string_substr( variable *ths, variable *offset, variable *len ) {
 
 	variable *str = array_get(ths, dostring("value"));
 
-	char *a = str->val;
-
-	char *r = safe_alloc_new( &alloc, strlen( a ) + 1 );
-	memcpy( r, a, strlen( a ) + 1 );
-
-	r = (int)r + offset->val;
-	*(char *)((int)r + len->val) = '\0';
-
-	return dostring(r);
+	return dostring( string_substr( str->val, offset->val, len->val ) );
 }
 
 do_string_charCodeAt(variable *ths, variable *index) {
 
 	variable *str = array_get(ths, dostring("value"));
-	char *a = str->val;
-	char b = *(char *)( (int)a + (int)index->val );
+	char b = *(char *)string_substr( str->val, index->val, 1 );
 
 	return doint(b);
 }
@@ -46,7 +38,7 @@ do_string_charAt(variable *ths, variable *index) {
 	variable *str = array_get(ths, dostring("value"));
 	char *a = str->val;
 	char * b = safe_alloc_new( &alloc, 2);
-	*b++ = *(char *)( (int)a + (int)index->val );
+	*b++ = *(char *)string_substr( str->val, index->val, 1 );
 	*b++ = '\0';
 
 	return dostring(b-2);
@@ -60,14 +52,47 @@ do_string_fromCharCode(variable *ths, variable *index) {
 }
 
 do_string_indexOf(variable *ths, variable *s) {
-
 	variable *str = array_get(ths, dostring("value"));
-	char *a = str->val;
+
+	string *nstr = newstring("");
+	string_line( str->val, nstr );
+
+	char *s1, *s2;
+	s1 = s2 = string_val(s->val);
+
+	int it = 0;
+	char *ssr, *ssr1;
+
+	for( int i = 0; i < nstr->i; i++ ) {
+		char *sstr = nstr->strings[i];
+		while( *sstr ) {
+			if( *sstr == *s1 ) {
+				char *sstr1 = sstr;
+				while( *s1 ) {
+					if( *s1++ != *sstr1++  ) {
+						s1 = s2;
+						break;
+					}
+				}
+				if( *s1 == '\0' ) {
+					return doint(it);
+				}
+			}
+
+			sstr++;
+			it++;
+		}
+	}
+	return doint(0);
+
+
+/*	char *a = str->val;
+
 
 	char * res = strstr( a, s->val );
-	int index = res - a;
+	int index = res - a;*/
 
-	return doint(index);
+	//return doint(index);
 }
 
 

@@ -1,9 +1,9 @@
-[class:test,prototype:[construct:func(),a:func()]
-]
-[class:test,prototype:[construct:func(),a:func()]
-]
-[class:test,prototype:[construct:func(),a:func()]
-,g:test]
+{class:test,prototype:{construct:func(),a:func()}
+}
+{class:test,prototype:{construct:func(),a:func()}
+}
+{class:test,prototype:{construct:func(),a:func()}
+,g:test}
 here
-[class:test,prototype:[construct:func(),a:func()]
-,g:test]
+{class:test,prototype:{construct:func(),a:func()}
+,g:test}

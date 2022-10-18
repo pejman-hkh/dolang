@@ -1,4 +1,4 @@
-[test:123,test1:321,array:[0:a,1:b,2:c,3:d]
-,inner:[aa:11,bb:22,cc:33]
-]
-123
+{test:123,test1:321,array:[0:a,1:b,2:c,3:d]
+,inner:{aa:11,bb:22,cc:33}
+}
+undefined

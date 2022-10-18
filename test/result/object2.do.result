@@ -1,4 +1,4 @@
-[g:test
-,a:func(),b:func()]
+{g:test
+,a:func(),b:func()}
 test
 in b

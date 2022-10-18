@@ -6,21 +6,25 @@ main() {
 	let indexOfFirst = paragraph.indexOf(searchTerm);
 
 	print( indexOfFirst );
+	print("\n")
 
 	let sentence = 'The quick brown fox jumps over the lazy dog.';
 
 	let index = 4;
 
 	print("The character at index "+index+" is "+sentence.charAt(index)+" ");
+	print("\n")
 
 	// expected output: "The character at index 4 is q"
 
 
 	print( String.fromCharCode(65) );
+	print("\n")
 
 	let l = "test".length
 
 	print(l)
+	print("\n")
 
 	String.prototype.test = func() {
 		print( this )
@@ -29,8 +33,10 @@ main() {
 	let a = new String("test")
 
 	print( a )
+	print("\n")
 
 	print( a.length() )
+	print("\n")
 
 	print(a.substr(1,2))
 	print("\n")
@@ -41,7 +47,7 @@ main() {
 	a.test()
 
 
-	let l = "test".length();
+	let l = "test".length;
 
 	print(l)
 

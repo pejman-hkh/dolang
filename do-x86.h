@@ -691,7 +691,6 @@ function_end(a) {
 }
 
 variable *do_fn_create_array() {
-
 	return doarray();
 }
 
@@ -897,11 +896,13 @@ do_call_object( tokens *ctoks ) {
 
 		function_init(2);
 		function_set_arg(0);
+	/*	;
+		
 		variable *var = safe_alloc_new(&alloc, sizeof(variable));
 		var->val = ctoks->id;
-		var->type = 1;
-
-		do_call_string( var );
+		var->type = DOTYPE_STRING;
+*/
+		do_call_string( dostring( ctoks->id ) );
 		function_set_arg(1);
 		function_call( &array_get, "array_get" );
 		function_end(2);
@@ -1111,14 +1112,9 @@ do_create_main_class( cls ) {
 	function_call( &do_fn_create_object, "do_fn_create_object" );
 	function_end(0);
 
-	/*vars_init();
-	ivar = ivar - 4;
-	*(int *)indvar = -ivar;
-	int l = ivar;*/
 	int l = do_new_let();
 	do_equal(l);
 
-	//do_call_var(l);
 	//set class name and all methods address in object
 	char *t;
 	t = mstrcat(cls, "%fn%");
@@ -1141,10 +1137,8 @@ do_create_main_class( cls ) {
 	do_call_num( dostring( "prototype" ) );
 	function_set_arg(1);
 
-/*	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
-	array_init( arr1 );*/
-	variable * arr = doobject( );
-	//variable * b = dostring( cls );
+	variable * arr = doobject();
+
 	do_call_num(arr);
 	function_set_arg(2);
 	function_call( &array_set, "array_set" );
@@ -1167,8 +1161,8 @@ do_create_main_class( cls ) {
 
 			do_call_num( dostring( v ) );
 			function_set_arg(1);
-			variable * b1 = donvar( ll, 4 );
-			do_call_num(b1);
+
+			do_call_num( donvar( ll, DOTYPE_FUNC ) );
 			function_set_arg(2);
 			function_call( &array_set, "array_set" );
 			function_end(3);
@@ -1255,8 +1249,8 @@ do_create_callback_function() {
 
 	*(int *)b = ind - b - 4;
 
-	variable * a = donvar( b+4, 4 );
-	do_call_num(a);
+
+	do_call_num( donvar( b+4, DOTYPE_FUNC ) );
 }
 
 do_main_create_function( cls, fn_name ) {

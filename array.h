@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "string.h"
 
 
 typedef struct {
@@ -34,9 +35,7 @@ array_relloc( array *arr ) {
 
 void *array_set( variable *arr1, variable *key, variable *value ) {
 	array *arr = arr1->val;
-
 	int index = arr->length;
-
 
 	int exists = 0;
 	for( int i = 0; i < arr->length; i++ ) {
@@ -76,31 +75,34 @@ variable * array_get( variable *arr1, variable *key ) {
 		return donvar( "", DOTYPE_UNDEF );
 	}
 
-	if( arr1->type == 1 ) {
-		if( key->type == 2 ) {
+	if( arr1->type == DOTYPE_STRING ) {
+
+		if( key->type == DOTYPE_INT ) {
 			int index = key->val;
-			if( index > strlen(arr1->val) ) {
+			if( index > string_len(arr1->val) ) {
 				return doint( 0 );
 			} else {
-				char *d = arr1->val+index;
-				return donvar( d, 5 );
+
+				char *d = string_index( (string *)arr1->val, (int)index );
+		
+				return donvar( d, DOTYPE_CHAR );
 			}
-			
-
-		} 
-
+		}
 	}
 
 	array *arr = arr1->val;
 	for( int i = 0; i < arr->length; i++ ) {
 		variable *hkey = arr->key[i];
-	
+		/*if( hkey->type == DOTYPE_STRING ) {
+			string_print( hkey );
+		}*/
+
 		if( do_fn_equal_equal( key, hkey ) ) {
 			return arr->value[i];
 		}
 	}
 
-	if( key->type == DOTYPE_STRING && strcmp(key->val,"prototype") == 0 ) {
+	if( key->type == DOTYPE_STRING && string_cmp1(key->val,"prototype") == 0 ) {
 		return arr1;
 	}
 
@@ -110,7 +112,6 @@ variable * array_get( variable *arr1, variable *key ) {
 	variable *val = safe_alloc_new( &alloc, sizeof(variable) );
 
 	variable * v = donvar( val, DOTYPE_UNDEF );
-
 	array_set( arr1, k, v );
 
 	return v;

@@ -8,9 +8,9 @@ do_mysql_connect( variable *ths, variable *host, variable *user, variable *pass,
 	MYSQL *msql = NULL;
 	msql = mysql_init(msql);
 
-	int con = mysql_real_connect( msql, host->val, user->val, pass->val, db->val, port->val, NULL, CLIENT_FOUND_ROWS );
-	variable * ret = donvar( msql, DOTYPE_RES );
-	return ret;
+	int con = mysql_real_connect( msql, string_val(host->val), string_val(user->val), string_val(pass->val), string_val(db->val), port->val, NULL, CLIENT_FOUND_ROWS );
+
+	return donvar( msql, DOTYPE_RES );
 }
 
 do_mysql_options( variable *ths, variable *msql, variable *opt, variable *opt_val ) {
@@ -38,7 +38,7 @@ do_mysql_stmt( variable *ths, variable *msql, variable *sql ) {
 		exit(0);
 	}
 
-	if ( mysql_stmt_prepare(stmt, sql->val, strlen(sql->val) ) )
+	if ( mysql_stmt_prepare(stmt, string_val(sql->val), string_len(sql->val) ) )
 	{
 		fprintf(stderr, " mysql_stmt_prepare(), SELECT failed\n");
 		fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
@@ -67,8 +67,8 @@ do_mysql_stmt_bind( variable *ths, variable *stmt, variable *bd ) {
 			bind[i].buffer = (char *) &(v->val); 
 	
 		} else if( v->type == 1 ) {
-			char *data = v->val;
-			int len = strlen( data ) + 1;
+			char *data = string_val(v->val);
+			int len = string_len( v->val ) + 1;
 			length[i] = len;
 
 
@@ -155,8 +155,6 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 		return doint(0);
 	} 
 
-/*	array *arr1 = safe_alloc_new( &alloc, sizeof( array ) );
-	array_init( arr1 );*/
 	variable * arr = doarray();
 
 	for (int i = 0; i < num_fields; ++i) {
@@ -179,7 +177,7 @@ do_mysql_stmt_fetch( variable *ths, variable *stmt, variable *res ) {
 				break;
 			}
 
-			array_set( arr, dostring(fields[i].name), donvar( data, type ) );
+			array_set( arr, dostring(fields[i].name), donvar1( data, type ) );
 
 		}
 	}

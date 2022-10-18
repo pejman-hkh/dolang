@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 do_dot_init( variable *in ) {
+	//printf("%d\n", in->type );
 	if( in->type == DOTYPE_ARRAY ) {
 		variable *cls = do_fn_new_class( ArrayClass );
 
@@ -21,6 +22,7 @@ do_dot_init( variable *in ) {
 		variable *pt = array_get( cls, dostring("prototype") );
 
 		typedef variable *( *fn )( variable *ths, variable *str);
+
 		variable *r = array_get(pt, dostring("construct") );
 		fn construct = r->val;
 		construct(cls, in);
@@ -45,10 +47,6 @@ do_fn_new_regex( variable *a, variable *b ) {
 }
 
 do_fn_new_class( variable *cls ) {
-
-/*	array *arr = safe_alloc_new(&alloc, sizeof(array ));
-	array_init( arr );
-*/
 	variable * ret = doobject();
 
 	array *arr1 = cls->val;
@@ -58,6 +56,8 @@ do_fn_new_class( variable *cls ) {
 
 		array_set( ret, donvar( key->val, key->type ), donvar( value->val, value->type ) );
 	}
+
+	//do_print( ret, ret );
 
 	return ret;
 }
@@ -95,6 +95,9 @@ do_debug( variable *a) {
 	//return a;
 }
 
+do_exit() {
+	exit(0);
+}
 
 do_microtime() {
 	struct timeval currentTime;
@@ -109,9 +112,9 @@ do_set_val( variable *a, variable *b ) {
 	return a;
 }
 
-do_print_array( variable *ths, variable *arr1 ) {
+print_array( variable *ths, variable *arr1, char *s, char *e ) {
 	array *arr = arr1->val;
-	printf("[");
+	printf(s);
 	char *pre = "";
 	for( int i = 0; i < arr->length; i++ ) {
 		printf("%s", pre);
@@ -123,15 +126,23 @@ do_print_array( variable *ths, variable *arr1 ) {
 		
 		pre = ",";
 	}
-	printf("]\n");
+	printf(e);	
+	printf("\n");	
 }
 
+do_print_array( variable *ths, variable *arr1 ) {
+	print_array( ths, arr1, "[", "]");
+}
+
+do_print_object( variable *ths, variable *arr1 ) {
+	print_array( ths, arr1, "{", "}");
+}
 
 void do_print( variable *ths, variable *a ) {
 
 	if( a->type == 0 ) {
 	} else if( a->type == 1 ) {
-		printf("%s", a->val );
+		string_print( a->val );
 	} else if( a->type == 2 ) {
 		printf("%d", a->val );
 	} else if( a->type == 12 ) {
@@ -139,7 +150,7 @@ void do_print( variable *ths, variable *a ) {
 	} else if( a->type == 3 ) {
 		do_print_array(ths, a);	
 	} else if( a->type == 11 ) {
-		do_print_array(ths, a);	
+		do_print_object(ths, a);	
 	} else if( a->type == 4 ) {
 		printf("func()");
 	} else if( a->type == 5 ) {
@@ -160,13 +171,6 @@ void do_print( variable *ths, variable *a ) {
 }
 
 void do_typeof( variable *ths, variable *a ) {
-	//printf("%d\n", a->type );
-
-
-/*	variable *v = safe_alloc_new( &alloc, sizeof(variable) );
-	v->val = a->type;
-	v->type = 2;
-*/
 	return doint( a->type );
 }
 
@@ -192,51 +196,50 @@ int do_fn_shift_right( int a, int b ) {
 variable *do_fn_add( variable *a, variable *b ) {
 	variable *var = safe_alloc_new( &alloc, sizeof(variable));
 
-	if( a->type == 12 && b->type == 12 ) {
+	if( a->type == DOTYPE_FLOAT && b->type == DOTYPE_FLOAT ) {
 		float c = (float)(a->floatVal) + (float)( b->floatVal );
 		return dofloat( c );
-	} else if( a->type == 1 && b->type == 5 ) {
+	} else if( a->type == 1 && b->type == DOTYPE_CHAR ) {
 		char * r = safe_alloc_new( &alloc, sizeof( char *) );
 		memcpy( r, b->val, 2);
 		*(r+1) = '\0';
 
-		var->val = mstrcat( r, a->val );
+		var->val = string_cat2( r, a->val );
 		var->type = 1;
 
-	} else if( a->type == 5 && b->type == 1 ) {
+	} else if( a->type == DOTYPE_CHAR && b->type == DOTYPE_STRING ) {
 
 		char * r = safe_alloc_new( &alloc, sizeof( char *) );
 		memcpy( r, a->val, 2);
 		*(r+1) = '\0';
 
-		var->val = mstrcat( b->val, r );
+		var->val = string_cat1( b->val, r );
 		var->type = 1;
 
-
-	} else if( a->type == 1 && b->type == 2 ) {
+	} else if( a->type == DOTYPE_STRING && b->type == DOTYPE_INT ) {
 		int x = b->val;
 		int length = snprintf( NULL, 0, "%d", x );
 		char* str = safe_alloc_new( &alloc, length + 1 );
 		snprintf( str, length + 1, "%d", x );
 
-		var->val = mstrcat( str, a->val );
+		var->val = string_cat2( str, a->val );
 		var->type = 1;
-	} else if( a->type == 2 && b->type == 1 ) {
+	} else if( a->type == DOTYPE_INT && b->type == DOTYPE_STRING ) {
 
 		int x = a->val;
 		int length = snprintf( NULL, 0, "%d", x );
 		char* str = safe_alloc_new( &alloc, length + 1 );
 		snprintf( str, length + 1, "%d", x );
 
-		var->val = mstrcat( b->val, str );
+		var->val = string_cat1( b->val, str );
 		var->type = 1;
 
-	} else if( a->type == 2 ) {
+	} else if( a->type == DOTYPE_INT ) {
 		var->val = (int)a->val+(int)b->val;
 		var->type = 2;
-	} else if( a->type == 1 ) {
+	} else if( a->type == DOTYPE_STRING ) {
 
-		var->val = mstrcat( b->val, a->val );
+		var->val = string_cat( b->val, a->val );
 		var->type = 1;
 	}
 
@@ -253,26 +256,25 @@ do_to_var( int a ) {
 	return var;
 }
 
-
 do_fn_equal_equal( variable *a, variable *b ) {
 
 	if( b->type == 5 ) {
-		char *g = safe_alloc_new( &alloc, 2 );
+		char *g = safe_alloc_new( &alloc, 2 * sizeof( char * ) );
 		memcpy( g, b->val, 1 );
 		g[1] = '\0';
 
-		if( strcmp( a->val, g ) == 0 ) {
+		if( string_cmp1( a->val, g ) == 0 ) {
 			return 1;
 		}
 		return 0;
 	}
 
 	if( a->type == 5 ) {
-		char *g = safe_alloc_new( &alloc, 2 );
+		char *g = safe_alloc_new( &alloc, 2 * sizeof( char *) );
 		memcpy( g, a->val, 1 );
 		g[1] = '\0';
 
-		if( strcmp( g, b->val ) == 0 ) {
+		if( string_cmp2( g, b->val ) == 0 ) {
 			return 1;
 		}
 
@@ -286,7 +288,8 @@ do_fn_equal_equal( variable *a, variable *b ) {
 	} 
 
 	if( b->type == 1 ) {
-		int cmp = strcmp( a->val, b->val );
+		int cmp = string_cmp( a->val, b->val );
+
 		if( cmp == 0 ) {
 			return 1;
 		}
@@ -298,21 +301,12 @@ do_fn_equal_equal( variable *a, variable *b ) {
 
 
 do_fn_equal_equal1( variable *a, variable *b ) {
-	int a1 = do_fn_equal_equal( a, b);
-	return doint(a1);
+	return doint( do_fn_equal_equal( a, b) );
 
 }
 
 do_fn_not_equal( variable *a, variable *b ) {
-
-	int a1 = do_fn_equal_equal( a, b);
-/*	printf("%d\n", a->val);
-	printf("%d\n", b->val);
-	printf("%d\n", !a1);
-	printf("tttttttttttttt\n");*/
-	variable * ret = doint(!a1);
-	return ret;
-
+	return doint( ! do_fn_equal_equal( a, b) );
 }
 
 #endif

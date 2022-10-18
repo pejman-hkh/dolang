@@ -1,5 +1,5 @@
 main() {
-	print("test");
+	print("test\n");
 
 	var o = { 'a' : '123', 'b' : 321 };
 

@@ -4,6 +4,7 @@ class jsonParser {
 		this.i = 0
 		this.res = this.parse()
 
+
 	}
 
 	skipSpace() {
@@ -86,6 +87,7 @@ class jsonParser {
 
 	parse() {
 		let a = this.tok()
+
 		if( a == "{" ) {
 			return this.parseObject()
 		} else if( a == '"' ) {

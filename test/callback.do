@@ -7,7 +7,7 @@ each( arr, cb ) {
 
 main() {
 	
-	var arr = [0 : ['name' : 'second'], 1 : ['name' : 'test1'] ];
+	var arr = [0 : {'name' : 'second'}, 1 : {'name' : 'test1'} ];
 
 	each(arr, func( k, v) {
 		print( k );

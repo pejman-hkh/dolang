@@ -1,14 +1,14 @@
 115
 y o 
-[class:String,prototype:[construct:func(),length:func(),substr:func(),charCodeAt:func(),charAt:func(),indexOf:func(),fromCharCode:func()]
-]
-[class:Array,prototype:[construct:func(),test:func(),length:func()]
-]
-ello
+{class:String,prototype:{construct:func(),length:func(),substr:func(),charCodeAt:func(),charAt:func(),indexOf:func(),fromCharCode:func()}
+}
+{class:Array,prototype:{construct:func(),test:func(),length:func()}
+}
+ello 
 11
 2
 test1
-[class:Test,prototype:[a:func(),b:func()]
-]
+{class:Test,prototype:{a:func(),b:func()}
+}
 in a
 in b

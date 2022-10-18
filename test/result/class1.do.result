@@ -1,5 +1,5 @@
 this is c
 this is c
-[class:test,prototype:[a:func(),b:func()]
+{class:test,prototype:{a:func(),b:func()}
 ,c:this is c
-,a:this is a,b:this is b]
+,a:this is a,b:this is b}

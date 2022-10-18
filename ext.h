@@ -2,6 +2,7 @@
 //#include "ext/curl.h"
 
 set_extensions() {
+	array_set1( &ext, "exit", &do_exit);
 	array_set1( &ext, "print", &do_print);
 	array_set1( &ext, "typeof", &do_typeof);
 	array_set1( &ext, "array_init", &array_init);

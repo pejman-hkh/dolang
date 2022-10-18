@@ -80,18 +80,19 @@ char *file_ext;
 #define TOK_STRING 1000
 
 #include "array.h";
+#include "string.h";
 
 dofloat( float b ) {
 	variable *a = safe_alloc_new(&alloc, sizeof( variable ) );
 	a->floatVal = b;
 	a->type = DOTYPE_FLOAT;
 	return a;
-
-	//return donvar(a, DOTYPE_FLOAT);
 }
 
-dostring( a ) {
-	return donvar(a, DOTYPE_STRING);
+dostring( char *a ) {
+	string *s = newstring( a );
+
+	return donvar(s, DOTYPE_STRING);
 }
 
 doobject() {
@@ -112,6 +113,21 @@ doarray() {
 doint( a ) {
 	return donvar(a, DOTYPE_INT);
 }
+
+
+donvar1( b, c ) {
+	if( c == DOTYPE_STRING ) {
+		return dostring(b);
+	} else if( c == DOTYPE_FLOAT ) {
+		return dofloat( b );
+	} else if( c == DOTYPE_OBJECT ) {
+		return doobject();
+	} else if( c == DOTYPE_ARRAY ) {
+		return doarray();
+	}
+	return donvar( b, c );
+}
+
 
 char * mstrcat( char *a, char *b) {
 	char* result;

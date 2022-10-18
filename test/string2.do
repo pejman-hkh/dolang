@@ -20,7 +20,7 @@ main() {
 
 	print( String )
 	print( Array )
-	print( Object )
+	//print( Object )
 
 	String.prototype.test = func() {
 		return 2;
