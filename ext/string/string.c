@@ -51,6 +51,7 @@ do_string_fromCharCode(variable *ths, variable *index) {
 	return dostring(b-2);
 }
 
+//this function should modify
 do_string_indexOf(variable *ths, variable *s) {
 	variable *str = array_get(ths, dostring("value"));
 
@@ -84,15 +85,6 @@ do_string_indexOf(variable *ths, variable *s) {
 		}
 	}
 	return doint(0);
-
-
-/*	char *a = str->val;
-
-
-	char * res = strstr( a, s->val );
-	int index = res - a;*/
-
-	//return doint(index);
 }
 
 
