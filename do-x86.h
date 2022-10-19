@@ -1837,3 +1837,31 @@ do_for_in() {
 	*(int *)ind = n;
 	ind += 4;
 }
+
+
+do_try() {
+	next();
+
+	block();
+
+	if( toks.t == TOK_CATCH ) {
+		next();
+		skip('(');
+		expr();
+		skip(')');
+
+		block();
+
+	}
+
+	if( toks.t == TOK_FINALLY ) {
+		next();
+		block();
+
+	}
+
+}
+
+do_throw( char *err ) {
+	//printf("hhhh\n");
+}

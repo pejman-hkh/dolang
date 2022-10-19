@@ -15,11 +15,18 @@ do_console_log( variable *ths, variable *in ) {
 	return ths;
 }
 
+do_console_error( variable *ths, variable *in ) {
+	do_print( ths, in );
+
+	return ths;
+}
+
 extern load() {
 	array *arr = malloc( sizeof( array *) );
 	array_init( arr );
 	array_set1( arr, "console%fn%construct", &do_console_construct);
 	array_set1( arr, "console%fn%log", &do_console_log);
+	array_set1( arr, "console%fn%error", &do_console_error);
 
 	
 	return arr;

@@ -1,11 +1,11 @@
 main() {
 
-	console.log('test');
+	console.log('test\n')
 
-/*	try {
-	  nonExistentFunction();
+	try {
+		nonExistentFunction();
 	} catch (error) {
-	  console.error(error);
-	}*/
+		console.error(error)
+	}
 
 }

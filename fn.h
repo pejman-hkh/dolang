@@ -3,6 +3,10 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+do_fn_throw() {
+	
+}
+
 do_dot_init( variable *in ) {
 	//printf("%d\n", in->type );
 	if( in->type == DOTYPE_ARRAY ) {

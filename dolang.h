@@ -62,6 +62,7 @@ char *file_ext;
 #define TOK_DO 31
 #define TOK_REGEX 32
 #define TOK_CONST 33
+#define TOK_FINALLY 34
 
 
 #define DOTYPE_STRING 1

@@ -89,6 +89,7 @@ getq()
 
 
 skip( s ) {
+	skipLine();
 	if( toks.c == s ) {
 		next();
 	} else {
@@ -594,6 +595,18 @@ unary() {
 			} else {			
 				btoks.type = 1;
 				int l = get_tokv( &btoks, 0 );
+				if( ! l ) {
+					//l = do_fn_throw;
+				/*	char *e = "function ";
+					strcat(e, btoks.id);
+					strcat(e, "not exists");
+					printf("%s\n", e);
+					do_throw( e );*/
+					//print_tok();
+					//exit(0);
+
+				}
+
 				int ind_fn = do_call_function( l, btoks.id );
 
 				if( ind_fn ) {
@@ -601,6 +614,7 @@ unary() {
 				}
 
 				do_after_ident();
+				
 			}
 
 		} else if( btoks.t == TOK_IDENT  ) {
@@ -858,6 +872,8 @@ block() {
 	} else if( toks.t == 2022 ) {
 		next();
 		block();
+	} else if( toks.t == TOK_TRY ) {
+		do_try();
 	} else if( toks.t == TOK_LET ) {		
 		next();
 		do_create_let(4);		
@@ -1289,6 +1305,7 @@ main(int n, char * t[] )
 	array_set1( &mt, "false", TOK_FALSE );
 	array_set1( &mt, "do", TOK_DO );
 	array_set1( &mt, "const", TOK_CONST );
+	array_set1( &mt, "finally", TOK_FINALLY );
 
 	array_init( &sym_stk );
 	array_init( &var_stk );
