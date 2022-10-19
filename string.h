@@ -216,12 +216,6 @@ int string_cmp( string *str1, string *str2 ) {
 		}
 	}
 
-/*	for( int i = 0 ; i < ret->i; i++ ) {
-		//char *sstr = ret->
-		if( strcmp( ret->strings[i], ret1->strings[i]) != 0 )
-			return -1;
-	}*/
-
 	return 0;
 }
 
