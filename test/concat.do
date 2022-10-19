@@ -11,7 +11,7 @@ main() {
 
   let str = "";
   for(let i = 0; i < 30000; i++) {
-    str = str + str1 + str2;
+    str += str1 + str2;
   }
   
   print( str )
