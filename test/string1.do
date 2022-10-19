@@ -2,7 +2,7 @@ main() {
 
 
 	var s3 = "test";
-	print( s3[1] );
+	print( s3[0] );
 	print("\n");
 
 	print( s3[1]+"\n" )

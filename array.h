@@ -187,7 +187,7 @@ int array_len1( array *arr1 ) {
 void * array_set_val( variable *a, variable *b ) {
 
 	if( a->type == 5 ) {
-		memcpy( a->val, b->val, 1 );
+		memcpy( a->val, string_val(b->val), 1 );
 	} else {
 		*a = *b;
 	}
