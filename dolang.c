@@ -1218,6 +1218,8 @@ scan_ext() {
 									ObjectClass = a;
 								} else if( strcmp(cls, "Math") == 0 ) {
 									MathClass = a;
+								} else if( strcmp(cls, "console") == 0 ) {
+									consoleClass = a;
 								}
 							}
 
