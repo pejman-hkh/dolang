@@ -107,9 +107,14 @@ class jsonParser {
 
 main() {
 
+	if ( typeof(console) == 32 ) {
+	    var console = { log: func( a ) {
+	    	print( a );
+	    }};
+	}
+
 	let a = new jsonParser('{ "test": "123" , "test1" : "321", "array" : [ "a", "b", "c", "d" ], "inner" : {"aa" : "11", "bb" : "22", "cc" : "33"} }')
 	print( a.res )
 	print( a.res.test )
-
 
 }

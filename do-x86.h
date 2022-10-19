@@ -59,13 +59,12 @@ do_else_ternary(a) {
 	ind += 4;
 
 
-    int n;
-    while (a) {
-        n = *(int *)a;
-        *(int *)a = ind - a - 4;
-        a = n;
-    }
-
+	int n;
+	while (a) {
+		n = *(int *)a;
+		*(int *)a = ind - a - 4;
+		a = n;
+	}
 
 	return b;
 }
@@ -1491,16 +1490,13 @@ do_patch_and_and(a) {
 	int s = ind;
 	ind += 4;
 
-    int n;
-    while (a) {
-        n = *(int *)a;
-        *(int *)a = ind - a - 4;
-        a = n;
-    }
+	int n;
+	while (a) {
+		n = *(int *)a;
+		*(int *)a = ind - a - 4;
+		a = n;
+	}
 
-	/**(int *)a = ind - a - 4;
-	*(int *)d = ind - d - 4;
-	*/
 	#if Assembly
 	printf("mov 0,%%eax\n");
 	#endif
@@ -1614,16 +1610,72 @@ do_shift_right() {
 }
 
 do_less_equal() {
+	do_get_var_value();
 
+	#if Assembly 
+	printf("cmp %%eax,%%ecx\n");
+	#endif	
+	*ind++ = 0x39;
+	*ind++ = 0xc1;
+	#if Assembly 
+	printf("mov $0x0,%%eax\n");
+	#endif
+	*ind++ = 0xb8;
+	ind += 4;
+
+	#if Assembly 
+	printf("setle %%al\n");
+	#endif
+	*ind++ = 0x0f;
+	*ind++ = 0x9e;
+	*ind++ = 0xc0;
+
+	do_convert_to_var(2);	
 }
 
 do_greater_than() {
 
+	#if Assembly 
+	printf("cmp %%eax,%%ecx\n");
+	#endif	
+	*ind++ = 0x39;
+	*ind++ = 0xc1;
+	#if Assembly 
+	printf("mov $0x0,%%eax\n");
+	#endif
+	*ind++ = 0xb8;
+	ind += 4;
+
+	#if Assembly 
+	printf("setg %%al\n");
+	#endif
+	*ind++ = 0x0f;
+	*ind++ = 0x9f;
+	*ind++ = 0xc0;	
+	
 }
 
 
 do_greater_equal() {
+	do_get_var_value();
+	#if Assembly 
+	printf("cmp %%eax,%%ecx\n");
+	#endif	
+	*ind++ = 0x39;
+	*ind++ = 0xc1;
+	#if Assembly 
+	printf("mov $0x0,%%eax\n");
+	#endif
+	*ind++ = 0xb8;
+	ind += 4;
 
+	#if Assembly 
+	printf("setge %%al\n");
+	#endif
+	*ind++ = 0x0f;
+	*ind++ = 0x9d;
+	*ind++ = 0xc0;
+	do_convert_to_var(2);
 }
 
 do_not() {
@@ -1698,11 +1750,6 @@ do_plus_equal() {
 
 do_for_in() {
 
-/*	vars_init();
-
-	ivar = ivar - 4;
-	*(int *)indvar = -ivar;
-	int l = ivar;*/
 	int l = do_new_let();
 
 	do_call_var(l);
@@ -1717,12 +1764,10 @@ do_for_in() {
 
 	function_init(1);
 	expr();
-/*	ivar = ivar - 4;
-	*(int *)indvar = -ivar;
-	int l1 = ivar;*/
+
 	int l1 = do_new_let();
 
-	//do_call_var(l1);
+
 	do_equal(l1);
 	function_set_arg(0);
 	function_call( &array_len, "array_len" );

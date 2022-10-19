@@ -33,4 +33,5 @@ main() {
 	if( !s ) {
 		print("s is zero ")
 	}
+
 }
