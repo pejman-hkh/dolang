@@ -3,8 +3,8 @@
 #include "array.h"
 #include "fn.h"
 
-do_math_construct( variable *ths, variable *str ) {
-	array_set(ths, dostring("value"), str );
+do_math_construct( variable *ths, variable *num ) {
+	array_set(ths, dostring("value"), num );
 
 	return ths;
 }

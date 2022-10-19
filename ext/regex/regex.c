@@ -17,10 +17,10 @@ do_regex( variable *ths, variable *pattern, variable *ex ) {
 	PCRE2_UCHAR8 buffer[128];
 
 
-	size_t pattern_size = strlen(pattern->val);
+	size_t pattern_size = string_len(pattern->val);
 	uint32_t options = 0;
 
-	char *a = pattern->val;
+	char *a = string_val(pattern->val);
 	//a = mstrcat("/", pattern->val);
 	//a = mstrcat(a, "/");
 	//a = mstrcat(a, ex->val );
@@ -44,7 +44,6 @@ do_regex( variable *ths, variable *pattern, variable *ex ) {
 do_regex_exec( variable *ths, variable *subject ) {
 
 	//printf("%s\n", subject->val );
-
 	variable * re = array_get( ths, dostring("re") );
 
 	size_t subject_size;//= strlen(subject->val);
@@ -59,11 +58,11 @@ do_regex_exec( variable *ths, variable *subject ) {
 
 	match_data = pcre2_match_data_create(ovecsize, NULL);
 
-	char *msub = subject->val;
+	char *msub = string_val(subject->val);
 
 	variable *lastStr = array_get(ths, dostring("str") );
 	if( lastStr->type != DOTYPE_UNDEF ) {
-		msub = lastStr->val;
+		msub = string_val(lastStr->val);
 	}
 
 	if( ! msub ) {
@@ -71,12 +70,10 @@ do_regex_exec( variable *ths, variable *subject ) {
 		return doint(0);
 	}
 
-	subject_size = strlen(msub);
+	subject_size = string_len(subject->val);
 
 	rc = pcre2_match(re->val, msub, subject_size, 0, options, match_data, NULL);
 
-/*	array *r = safe_alloc_new( &alloc, sizeof( array *) );
-	array_init(r);*/
 	variable * arr = doarray();
 
 	if(rc == 0) {
