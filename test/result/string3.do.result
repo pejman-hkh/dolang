@@ -6,7 +6,7 @@ A
 ,value:test,length:4}
 
 4
-est
+es
 101
 1
 {class:String,prototype:{construct:func(),length:func(),substr:func(),charCodeAt:func(),charAt:func(),indexOf:func(),fromCharCode:func(),test:func()}

@@ -143,7 +143,7 @@ char *string_substr( string *str, int s, int l ) {
 				*ssr++ = *sstr;
 			}
 
-			if( it == s + l ) {
+			if( it == s + l - 1 ) {
 				*ssr = '\0';
 				return ssr1;
 			}

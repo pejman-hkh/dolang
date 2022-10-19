@@ -15,12 +15,12 @@ function main() {
 	            let b = string.charCodeAt(i++);
 	            let c = string.charCodeAt(i++);
 
+
 	            
 	            a = a ? a : 0;
 	            b = b ? b : 0;
 	            c = c ? c : 0;
 
-	   
 	            let b1 = ( a >> 2 ) & 0x3F;
 	            let b2 = ( ( a & 0x3 ) << 4 ) | ( ( b >> 4 ) & 0xF );
 	            let b3 = ( ( b & 0xF ) << 2 ) | ( ( c >> 6 ) & 0x3 );
@@ -35,8 +35,9 @@ function main() {
 
 	            result = result + this.characters.charAt( b1 ) + this.characters.charAt( b2 ) + this.characters.charAt( b3 ) + this.characters.charAt( b4 );
 
-
+	  		
 	        } while ( i < string.length );
+
 
 	        return result;
 	    } ,
