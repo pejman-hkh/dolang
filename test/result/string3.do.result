@@ -2,13 +2,21 @@
 The character at index 4 is q 
 A
 4
-{class:String,prototype:{construct:func(),length:func(),substr:func(),charCodeAt:func(),charAt:func(),indexOf:func(),fromCharCode:func(),test:func()}
-,value:test,length:4}
+{
+class:String,
+prototype:{construct:func(),length:func(),substr:func(),charCodeAt:func(),charAt:func(),indexOf:func(),fromCharCode:func(),test:func()},
+value:test,
+length:4
+}
 
 4
 es
 101
 1
-{class:String,prototype:{construct:func(),length:func(),substr:func(),charCodeAt:func(),charAt:func(),indexOf:func(),fromCharCode:func(),test:func()}
-,value:test,length:4}
+{
+class:String,
+prototype:{construct:func(),length:func(),substr:func(),charCodeAt:func(),charAt:func(),indexOf:func(),fromCharCode:func(),test:func()},
+value:test,
+length:4
+}
 4

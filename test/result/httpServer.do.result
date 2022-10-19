@@ -1,4 +1,6 @@
-{class:httpServer,prototype:{listen:func(),route:func()}
+{
+class:httpServer,
+prototype:{listen:func(),route:func()}
 }
 listen on port8080
 route for /

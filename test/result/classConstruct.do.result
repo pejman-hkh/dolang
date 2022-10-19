@@ -3,5 +3,7 @@ here
 in a
 in a
 in b
-{class:test,prototype:{construct:func(),a:func(),b:func()}
+{
+class:test,
+prototype:{construct:func(),a:func(),b:func()}
 }

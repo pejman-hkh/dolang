@@ -1,4 +1,6 @@
 in g
-{class:a,prototype:{construct:func(),g:func(),l:func()}
+{
+class:a,
+prototype:{construct:func(),g:func(),l:func()}
 }
 in l

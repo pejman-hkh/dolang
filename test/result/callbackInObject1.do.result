@@ -1,3 +1,5 @@
-{a:func()}
+{
+a:func()
+}
 in function in object1
 in function in object1+++++

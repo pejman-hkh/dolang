@@ -15,6 +15,12 @@ class jsonParser {
 	}
 
 	next() {
+		this.skipSpace()
+		this.i++
+		this.skipSpace()
+	}
+
+	next1() {
 		this.i++
 	}
 
@@ -24,28 +30,28 @@ class jsonParser {
 
 	parseObject() {
 		this.next()
-		this.skipSpace()
+		
 		let ret = {}
 		while( this.tok() != '}' ) {
 			let k = this.parse()
 
-			this.skipSpace()
+			
 			this.next()
-			this.skipSpace()
+			
 			let v = this.parse()
 			//print(k);
 			ret[k] = v
-			this.skipSpace()
+			
 
 			if( this.tok() == ',' ) {
 				this.next()
-				this.skipSpace()
+				
 			}
 
 		}
 
 		this.next()
-		this.skipSpace()
+		
 		return ret
 	}
 
@@ -53,19 +59,19 @@ class jsonParser {
 
 		let a = ""
 		this.next()	
-		this.skipSpace()
+		
 		while( this.tok() != '"' ) {
 			a = a + this.tok()
-			this.next()
+			this.next1()
 		}
 		this.next()
-		this.skipSpace()
+		
 		return a
 	}
 
 	parseArray() {
 		this.next()
-		this.skipSpace()
+		
 		let ret = []
 		let i = 0
 		while( this.tok() != ']' ) {
@@ -77,11 +83,11 @@ class jsonParser {
 
 			if( this.tok() == ',' ) {
 				this.next()
-				this.skipSpace()
+				
 			}
 		}
 		this.next()
-		this.skipSpace()
+		
 		return ret
 	}
 

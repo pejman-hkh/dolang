@@ -1,3 +1,4 @@
-{a:{b:func()}
+{
+a:{b:func()}
 }
 in function in object

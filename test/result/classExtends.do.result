@@ -1,3 +1,5 @@
 in a
-{class:b,prototype:{a:func(),b:func()}
+{
+class:b,
+prototype:{a:func(),b:func()}
 }

@@ -113,7 +113,7 @@ do_set_val( variable *a, variable *b ) {
 	return a;
 }
 
-print_array( variable *ths, variable *arr1, char *s, char *e ) {
+print_array( variable *ths, variable *arr1, char *s, char *e, char*pr ) {
 	array *arr = arr1->val;
 	printf(s);
 	char *pre = "";
@@ -123,20 +123,29 @@ print_array( variable *ths, variable *arr1, char *s, char *e ) {
 		variable *k = arr->key[i];
 
 		printf(":");
-		do_print( ths, arr->value[i] );
+		variable *v = arr->value[i];
+		if( v->type == DOTYPE_OBJECT ) {
+			do_print_object1( ths, arr->value[i] );
+		} else {
+			do_print( ths, arr->value[i] );
+		}
 		
-		pre = ",";
+		pre = pr;
 	}
 	printf(e);	
-	printf("\n");	
+	//printf("\n");	
 }
 
 do_print_array( variable *ths, variable *arr1 ) {
-	print_array( ths, arr1, "[", "]");
+	print_array( ths, arr1, "[", "]", ",");
 }
 
 do_print_object( variable *ths, variable *arr1 ) {
-	print_array( ths, arr1, "{", "}");
+	print_array( ths, arr1, "{\n", "\n}", ",\n");
+}
+
+do_print_object1( variable *ths, variable *arr1 ) {
+	print_array( ths, arr1, "{", "}", ",");
 }
 
 void do_print( variable *ths, variable *a ) {
@@ -150,8 +159,10 @@ void do_print( variable *ths, variable *a ) {
 		printf("%f", a->floatVal );
 	} else if( a->type == DOTYPE_ARRAY ) {
 		do_print_array(ths, a);	
+		printf("\n");
 	} else if( a->type == DOTYPE_OBJECT ) {
-		do_print_object(ths, a);	
+		do_print_object(ths, a);
+		printf("\n");
 	} else if( a->type == DOTYPE_FUNC ) {
 		printf("func()");
 	} else if( a->type == DOTYPE_CHAR ) {
