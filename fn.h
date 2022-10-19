@@ -142,28 +142,28 @@ do_print_object( variable *ths, variable *arr1 ) {
 void do_print( variable *ths, variable *a ) {
 
 	if( a->type == 0 ) {
-	} else if( a->type == 1 ) {
+	} else if( a->type == DOTYPE_STRING ) {
 		string_print( a->val );
-	} else if( a->type == 2 ) {
+	} else if( a->type == DOTYPE_INT ) {
 		printf("%d", a->val );
-	} else if( a->type == 12 ) {
+	} else if( a->type == DOTYPE_FLOAT ) {
 		printf("%f", a->floatVal );
-	} else if( a->type == 3 ) {
+	} else if( a->type == DOTYPE_ARRAY ) {
 		do_print_array(ths, a);	
-	} else if( a->type == 11 ) {
+	} else if( a->type == DOTYPE_OBJECT ) {
 		do_print_object(ths, a);	
-	} else if( a->type == 4 ) {
+	} else if( a->type == DOTYPE_FUNC ) {
 		printf("func()");
-	} else if( a->type == 5 ) {
+	} else if( a->type == DOTYPE_CHAR ) {
 		char * r = safe_alloc_new( &alloc, sizeof( char *) );
 		memcpy( r, a->val, 2);
 		*(r+1) = '\0';		
 		printf("%s", r );
-	} else if( a->type == 6 ) {
+	} else if( a->type == DOTYPE_LONG ) {
 		printf("%ld", a->val );
-	} else if( a->type == 7 ) {
+	} else if( a->type == DOTYPE_RES ) {
 		printf("#res");
-	} else if( a->type == 9 ) {
+	} else if( a->type == DOTYPE_UNDEF ) {
 		printf("undefined");
 	} else {
 		printf("%d", a );
@@ -259,7 +259,7 @@ do_to_var( int a ) {
 
 do_fn_equal_equal( variable *a, variable *b ) {
 
-	if( b->type == 5 ) {
+	if( b->type == DOTYPE_CHAR ) {
 		char *g = safe_alloc_new( &alloc, 2 * sizeof( char * ) );
 		memcpy( g, b->val, 1 );
 		g[1] = '\0';
@@ -270,7 +270,7 @@ do_fn_equal_equal( variable *a, variable *b ) {
 		return 0;
 	}
 
-	if( a->type == 5 ) {
+	if( a->type == DOTYPE_CHAR ) {
 		char *g = safe_alloc_new( &alloc, 2 * sizeof( char *) );
 		memcpy( g, a->val, 1 );
 		g[1] = '\0';
@@ -282,13 +282,13 @@ do_fn_equal_equal( variable *a, variable *b ) {
 		return 0;
 	}
 
-	if( b->type == 2 ) {
+	if( b->type == DOTYPE_INT ) {
 		if( (int)a->val == (int)b->val) {
 			return 1;
 		}
 	} 
 
-	if( b->type == 1 ) {
+	if( b->type == DOTYPE_STRING ) {
 
 		int cmp = string_cmp( a->val, b->val );
 

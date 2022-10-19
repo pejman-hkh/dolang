@@ -33,7 +33,7 @@ function main() {
 	                b4 = 64;
 	            }
 
-	            result = result + this.characters.charAt( b1 ) + this.characters.charAt( b2 ) + this.characters.charAt( b3 ) + this.characters.charAt( b4 );
+	            result +=  this.characters.charAt( b1 ) + this.characters.charAt( b2 ) + this.characters.charAt( b3 ) + this.characters.charAt( b4 );
 
 	  		
 	        } while ( i < string.length );
@@ -59,7 +59,7 @@ function main() {
 	            let b = ( ( b2 & 0xF  ) << 4 ) | ( ( b3 >> 2 ) & 0xF );
 	            let c = ( ( b3 & 0x3  ) << 6 ) | ( b4 & 0x3F );
 
-	            result = result + (String.fromCharCode(a) + (b?String.fromCharCode(b):'') + (c?String.fromCharCode(c):'') );
+	            result +=  (String.fromCharCode(a) + (b?String.fromCharCode(b):'') + (c?String.fromCharCode(c):'') );
 
 	        } while( i < string.length );
 
