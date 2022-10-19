@@ -595,17 +595,6 @@ unary() {
 			} else {			
 				btoks.type = 1;
 				int l = get_tokv( &btoks, 0 );
-				if( ! l ) {
-					//l = do_fn_throw;
-				/*	char *e = "function ";
-					strcat(e, btoks.id);
-					strcat(e, "not exists");
-					printf("%s\n", e);
-					do_throw( e );*/
-					//print_tok();
-					//exit(0);
-
-				}
 
 				int ind_fn = do_call_function( l, btoks.id );
 
@@ -1368,8 +1357,21 @@ main(int n, char * t[] )
 		char *t;
 		t = mstrcat("fn%", ind_fns.value[i]);
 		int l = array_get1( &sym_stk, t );
+		if( ! l ) {
+			l = do_fn_throw;
+		/*	char *e = "function ";
+			strcat(e, btoks.id);
+			strcat(e, "not exists");
+			printf("%s\n", e);
+			do_throw( e );*/
+			//print_tok();
+			//exit(0);
+
+		}
 		int mind = ind_fns.key[i];
 		int n = l - (mind -1) - 5;
+
+
 	
 		*(int *)mind = n;
 
