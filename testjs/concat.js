@@ -3,15 +3,15 @@ let str2 = "defghijklmnñopqrstuvwxyz";
 
 let a = "test";
 let b = " test1";
-print( a + b );
+console.log( a + b );
 
-print( a.length );
+console.log( a.length );
 
 let str = "";
 for(let i = 0; i < 30000; i++) {
   str += str1 + str2;
 }
 
-print( str )
-print("\n")
-print( str.length )
+console.log( str )
+console.log("\n")
+console.log( str.length )

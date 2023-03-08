@@ -1,13 +1,13 @@
 function each( arr, cb ) {
-	for( var k,v in arr ) {
+	for( let k,v in arr ) {
 		cb( k, v );
 	}
 }
 
 
-let arr = [0 : {'name' : 'second'}, 1 : {'name' : 'test1'} ];
+let arr = [{'name' : 'second'}, {'name' : 'test1'} ];
 
-each(arr, func( k, v) {
-	print( k );
-	print( v );
+each(arr, function( k, v) {
+	console.log( k );
+	console.log( v );
 });

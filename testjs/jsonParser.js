@@ -39,7 +39,7 @@ class jsonParser {
 			this.next()
 			
 			let v = this.parse()
-			//print(k);
+			//console.log(k);
 			ret[k] = v
 			
 
@@ -107,6 +107,7 @@ class jsonParser {
 
 
 let a = new jsonParser('{ "test": "123" , "test1" : "321", "array" : [ "a", "b", "c", "d" ], "inner" : {"aa" : "11", "bb" : "22", "cc" : "33"} }')
-print( a.res )
-print( a.res.test )
+console.log(a)
+console.log( a.res )
+console.log( a.res.test )
 

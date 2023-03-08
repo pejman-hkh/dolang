@@ -65,8 +65,8 @@ var  Base64 = {
 };
 var e = Base64.encode('test')
 
-print( e )
-print("\n")
+console.log( e )
+console.log("\n")
 var d = Base64.decode(e)
-print( d )
+console.log( d )
 

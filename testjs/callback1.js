@@ -1,17 +1,17 @@
 
 var s = "test s";
-var l = func( a ) {
+var l = function( a ) {
 
-	print("in callback\n");
-	print( a );
+	console.log("in callback\n");
+	console.log( a );
 };
 
 l("test\n");
 
-var add = func( a , b ) {
+var add = function( a , b ) {
 	return a+b;
 };
 
 
-print( "sum of 2 and 4 is : "+add( 2, 4)+"\n" );
+console.log( "sum of 2 and 4 is : "+add( 2, 4)+"\n" );
 

@@ -1,4 +1,12 @@
 {
+class:jsonParser,
+prototype:{construct:func(),skipSpace:func(),next:func(),next1:func(),tok:func(),parseObject:func(),parseStr:func(),parseArray:func(),parse:func()},
+str:{ "test": "123" , "test1" : "321", "array" : [ "a", "b", "c", "d" ], "inner" : {"aa" : "11", "bb" : "22", "cc" : "33"} },
+i:120,
+res:{test:123,test1:321,array:[0:a,1:b,2:c,3:d]
+,inner:{aa:11,bb:22,cc:33}}
+}
+{
 test:123,
 test1:321,
 array:[0:a,1:b,2:c,3:d]
