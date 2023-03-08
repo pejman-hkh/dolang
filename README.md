@@ -1,11 +1,10 @@
 **Under Development**
 
-
-Do lang is simple and tiny jit compiling programming language and it is very similar to js
+Do is a jit compiler for js and dolang
 
 There are many samples of language in test directory
 
-Do lang now just supports x86 cpu but in the next time it will support another cpu structurs ...
+Do now just supports x86 cpu but in the next time it will support another cpu structurs ...
 
 
 Make it :
