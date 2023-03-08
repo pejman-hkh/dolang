@@ -6,6 +6,7 @@
 *.s
 *.so
 !Makefile
+!LICENSE
 testc
 testlangs
 conf.h
