@@ -1,12 +1,13 @@
 
-Array.prototype.push = func( a ) {
-	this.value[this.length()] = a;
+Array.prototype.push = function( a ) {
+	this.value[this.length] = a;
 }
 
-Array.prototype.toString = func() {
+Array.prototype.toString = function() {
 	let ret = "";
 	let pre = "";
-	for( let k,v in this.value ) {
+	for( let k in this.value ) {
+		let v = this.value[k];
 		ret = ret + pre + v;
 		pre = ",";
 	}
@@ -19,4 +20,4 @@ let b = [1,2,3,4];
 b.push('test2');
 b.push('test3');
 
-print(b.toString());
+console.log(b.toString());

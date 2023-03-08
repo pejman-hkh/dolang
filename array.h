@@ -14,7 +14,7 @@ typedef struct {
 } array;
 
 variable * array_get( variable *arr1, variable *key) ;
-
+void * array_get1( array *arr, void *key );
 
 array_init( array *arr ) {
 	arr->length = 0;
@@ -70,7 +70,6 @@ void *array_set2( variable *arr1, variable *key, variable *value ) {
 }
 
 variable * array_get( variable *arr1, variable *key ) {
-	//printf("%s\n", key->val );
 	if( ! arr1->type ) {
 		return donvar( "", DOTYPE_UNDEF );
 	}

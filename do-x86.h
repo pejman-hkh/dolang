@@ -980,7 +980,7 @@ do_create_var( n ) {
 		memcpy( vtoks[i], &btoks, sizeof( tokens ) );
 
 		i++;
-
+		vtoks_i++;
 		next();
 		if( toks.c == ',' )
 			skip(',');
@@ -1355,7 +1355,7 @@ do_create_main_function( cls ) {
 		do_create_main_class( cls1 );
 		do_equal(a);
 	}
-	
+
 	while( ch != EOF ) {
 		block();
 	}
@@ -1828,18 +1828,20 @@ do_for_in() {
 
 	do_equal(k);
 
-	//vtoks[1]->type = 2;
-	int v = array_get1( &var_stk, vtoks[1]->id );//get_tokv( vtoks[1], 0 );
+	if( vtoks_i >= 2 ) {
+		//vtoks[1]->type = 2;
+		int v = array_get1( &var_stk, vtoks[1]->id );//get_tokv( vtoks[1], 0 );
 
-	function_init(2);
-	do_call_var(l1);
-	function_set_arg(0);
-	do_call_var(l);
-	function_set_arg(1);
-	function_call( &array_value, "array_value" );
-	function_end(2);
+		function_init(2);
+		do_call_var(l1);
+		function_set_arg(0);
+		do_call_var(l);
+		function_set_arg(1);
+		function_call( &array_value, "array_value" );
+		function_end(2);
 
-	do_equal(v);
+		do_equal(v);
+	}
 
 
 	block();

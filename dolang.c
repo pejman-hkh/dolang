@@ -55,7 +55,7 @@ array ind_cls;
 //array var_type;
 //array var_ref;
 tokens ** vtoks;
-
+int vtoks_i = 0;
 
 int inMain = 0;
 

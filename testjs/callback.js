@@ -1,5 +1,6 @@
 function each( arr, cb ) {
-	for( let k,v in arr ) {
+	for( let k in arr ) {
+		let v = arr[k];
 		cb( k, v );
 	}
 }
