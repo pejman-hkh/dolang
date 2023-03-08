@@ -198,6 +198,22 @@ do_remain() {
 
 do_div() {
 
+	#if Assembly 
+	printf("xchg %%eax,%%ecx\n");
+	#endif
+	*ind++ = 0x91;
+
+	#if Assembly 
+	printf("cdq\n");
+	#endif
+	*ind++ = 0x99;
+	
+	#if Assembly 
+	printf("idiv %%ecx\n");
+	#endif
+	*ind++ = 0xf7;
+	*ind++ = 0xf9;
+
 }
 
 do_sub() {
@@ -228,7 +244,7 @@ do_return() {
 
 do_call_string( variable *var ) {
 	#if Assembly 
-	printf("------------------ string : %s \n", var->val );
+	printf("------------------ string : %s \n", string_val(var->val) );
 	printf("mov 0x%x,%%eax\n", var->val );
 	#endif
 	*ind++ = 0xb8;
@@ -689,14 +705,6 @@ function_end(a) {
 	ind += 4;
 }
 
-variable *do_fn_create_array() {
-	return doarray();
-}
-
-
-variable *do_fn_create_object() {
-	return doobject();
-}
 
 do_create_array( end ) {
 
@@ -711,12 +719,12 @@ do_create_array( end ) {
 	//init array
 	if( end == '}' ) {
 		function_init(0);
-		function_call( &do_fn_create_object, "do_fn_create_object" );
+		function_call( &doobject, "doobject" );
 		function_end(0);
 	} else {
 
 		function_init(0);
-		function_call( &do_fn_create_array, "do_fn_create_array" );
+		function_call( &doarray, "doarray" );
 		function_end(0);
 	}
 
@@ -1108,7 +1116,7 @@ do_create_main_class( cls ) {
 
 	//create object for class
 	function_init(0);
-	function_call( &do_fn_create_object, "do_fn_create_object" );
+	function_call( &doobject, "doobject" );
 	function_end(0);
 
 	int l = do_new_let();
@@ -1325,7 +1333,7 @@ do_main_create_function( cls, fn_name ) {
 
 do_create_main_function( cls ) {
 
-	#if Assembly 
+/*	#if Assembly 
 	printf("push %%ebp\n");
 	#endif
 	*ind++ = 0x55;
@@ -1335,7 +1343,19 @@ do_create_main_function( cls ) {
 	#endif					
 	*ind++ = 0x89;
 	*ind++ = 0xe5;
+*/
 
+	for( int i = 0; i < cls_stk.length; i++ ) {
+		char *cls1 = cls_stk.key[i];
+		//printf("%s\n", cls1);
+		//exit(0);
+
+		int a = array_get1( &var_stk, cls1);
+
+		do_create_main_class( cls1 );
+		do_equal(a);
+	}
+	
 	while( ch != EOF ) {
 		block();
 	}
@@ -1841,15 +1861,39 @@ do_for_in() {
 
 do_try() {
 	next();
+	#if Assembly 
+	printf("jmp  $\n");
+	#endif
+	*ind++ = 0xe9;
+	*(int *)ind = 9;
+	ind += 4;	
+
+	#if Assembly 
+	printf("jmp  $\n");
+	#endif
+	*ind++ = 0xe9;
+	*(int *)ind = 0;
+	catchInd = ind;
+	ind += 4;
 
 	block();
 
+	#if Assembly 
+	printf("jmp  $\n");
+	#endif
+	*ind++ = 0xe9;
+	*(int *)ind = 0;
+	int afterCatchInd = ind;
+	ind += 4;
+
 	if( toks.t == TOK_CATCH ) {
+		
 		next();
 		skip('(');
 		expr();
 		skip(')');
-
+	
+		*(int *)catchInd = ind - catchInd - 4;
 		block();
 
 	}
@@ -1857,11 +1901,21 @@ do_try() {
 	if( toks.t == TOK_FINALLY ) {
 		next();
 		block();
-
 	}
+
+	*(int *)afterCatchInd = ind - afterCatchInd - 4;
 
 }
 
 do_throw( char *err ) {
-	//printf("hhhh\n");
+	
+	//jmp to first catch
+/*	#if Assembly 
+	printf("jmp  $\n");
+	#endif
+	*ind++ = 0xe9;
+	*(int *)ind = 0;
+	catchInd = ind;
+	ind += 4;*/
+
 }

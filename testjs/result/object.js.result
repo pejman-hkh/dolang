@@ -1,5 +1,9 @@
-[p:this is test]
-test[g:test
-,a:func(),b:func()]
+[]
+test{
+g:test
+,
+a:func(),
+b:func()
+}
 test
 in b

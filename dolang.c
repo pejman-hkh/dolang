@@ -33,7 +33,7 @@ array ext;
 char *thisClass;
 
 int line = 0;
-
+int catchInd = 0;
 
 typedef struct
 {
@@ -1359,11 +1359,14 @@ main(int n, char * t[] )
 		int l = array_get1( &sym_stk, t );
 		if( ! l ) {
 			l = do_fn_throw;
-		/*	char *e = "function ";
-			strcat(e, btoks.id);
+			char *e = malloc( 100 * sizeof( char *) );
+			memset(e,0, sizeof(e));
+
+			strcat(e, "function ");
+			strcat(e, ind_fns.value[i]);
 			strcat(e, "not exists");
-			printf("%s\n", e);
-			do_throw( e );*/
+			//printf("%s\n", e);
+			do_throw( e );
 			//print_tok();
 			//exit(0);
 

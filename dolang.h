@@ -9,6 +9,7 @@ typedef struct {
 	char type;
 	void * val;
 	float floatVal;
+	//double num;
 } variable;
 
 variable *StringClass;

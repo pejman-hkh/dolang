@@ -1,9 +1,18 @@
 class test {
+	construct( a ) {
+		print(a+"\n")
+	}
+
 	a() {
 		print("in a\n")
+		return this
+	}
+
+	b() {
+		print("in b\n");
 	}
 }
 
-var a = new test
-a.a()
+let a = new test('test')
+a.a().b()
 print("here")
