@@ -18,7 +18,7 @@ Usage :
 
 
 **Base64**
-`
+```
 var  Base64 = {
     characters: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=" ,
 
@@ -90,7 +90,7 @@ print( e )
 print("\n")
 var d = Base64.decode(e)
 print( d )
-`
+```
 
 
 **JsonParser**
