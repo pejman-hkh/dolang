@@ -854,9 +854,47 @@ print_ind() {
 
 block() {
 
+
 	if( toks.t == 1006 ) {
 		next();
 		block();
+
+	} else if( toks.t == TOK_IMPORT ) {
+
+		next();
+
+		char *fn;
+		fn = toks.id;
+		next();
+
+
+		while( toks.c == '.' ) {
+			next();
+			fn = mstrcat(fn, "/");
+			fn = mstrcat(fn, toks.id );
+
+		}
+		
+		fn = mstrcat(mainPath, fn);
+		fn = mstrcat( fn ,".js");
+
+		FILE *f1;
+		f1 = fopen( fn, "r");
+		if( f1 == NULL ) {
+			printf("file not exists !\n");
+			exit(0);
+		}
+
+		do_run_js( f1 );
+		fclose(f1);
+
+		file = mainFile;
+		inp();
+		next();
+
+		block();
+
+		//decl_js(cls);
 
 	} else if( toks.t == 2022 ) {
 		next();
@@ -1103,6 +1141,7 @@ decl_js( cls ) {
 
 		next();
 		decl_js(cls);
+
 	} else if( toks.t == TOK_IDENT && thisClass ) {
 
 		ivar = 0;
