@@ -5,7 +5,7 @@ do
     f="$(basename -- $entry)"
 
     echo $entry
-    ./dolang $entry > "testjs/result/"$f".result"
+    ./do $entry > "testjs/result/"$f".result"
   fi
 
 done

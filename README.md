@@ -14,12 +14,12 @@ Make it :
 
 Usage :
 
-`./dolang filename.do `
+`./do filename.do `
 
 
 JS Usage :
 
-`./dolang filename.js `
+`./do filename.js `
 
 
 **Base64**
