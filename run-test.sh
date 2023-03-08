@@ -5,7 +5,7 @@ do
     f="$(basename -- $entry)"
 
     echo $entry
-    ./do $entry > "test/result/"$f".result"
+    ./doit $entry > "test/result/"$f".result"
   fi
 
 done

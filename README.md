@@ -13,12 +13,12 @@ Make it :
 
 Usage :
 
-`./do filename.do `
+`./doit filename.do `
 
 
 JS Usage :
 
-`./do filename.js `
+`./doit filename.js `
 
 
 **Base64**
