@@ -17,6 +17,11 @@ Usage :
 `./dolang filename.do `
 
 
+JS Usage :
+
+`./dolang filename.js `
+
+
 **Base64**
 ```
 var  Base64 = {
