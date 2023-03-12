@@ -1,9 +1,9 @@
-var a = "test";
-var b = 20;
-function test(g) {
-	print(g);
-	print( b - g )
-	print( a );
+var x2 = 3
+
+function f() {
+	console.log(x2)
+
+	return 0
 }
 
-test(10);
+console.log( f() )

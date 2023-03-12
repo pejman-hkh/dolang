@@ -121,11 +121,11 @@ tokv_id( tokens *tok1, char *cls ) {
 		id = mstrcat(t, id);
 	} else if( tok1->type == 1 ) {
 		id = mstrcat("fn%", id);	
-	} else if( tok1->type == 2 ) {
+	} /*else if( tok1->type == 2 ) {
 		id = mstrcat("var%", id);
 	} else if( tok1->type == 3 ) {
 		id = mstrcat("object%", id);
-	}
+	}*/
 
 	return id;	
 }

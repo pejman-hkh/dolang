@@ -1,0 +1,7 @@
+in test1
+in a
+in test1
+{
+class:test1,
+prototype:{construct:func(),a:func()}
+}

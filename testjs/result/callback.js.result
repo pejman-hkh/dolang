@@ -4,3 +4,6 @@ name:second
 1{
 name:test1
 }
+in callback
+test
+sum of 2 and 4 is : 6
