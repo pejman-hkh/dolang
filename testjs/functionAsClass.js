@@ -1,5 +1,3 @@
-
-
 function test1() {
 	console.log('in test1\n')
 }
