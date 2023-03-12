@@ -1,4 +1,6 @@
-[]
+{
+p:this is test
+}
 test{
 g:test
 ,

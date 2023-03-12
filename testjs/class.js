@@ -1,18 +1,18 @@
 class test {
 	construct( a ) {
-		print(a+"\n")
+		console.log(a+"\n")
 	}
 
 	a() {
-		print("in a\n")
+		console.log("in a\n")
 		return this
 	}
 
 	b() {
-		print("in b\n");
+		console.log("in b\n");
 	}
 }
 
 let a = new test('test')
 a.a().b()
-print("here")
+console.log("here")
