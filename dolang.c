@@ -502,13 +502,36 @@ unary() {
 
 			ivar = 0;
 			toks.type = 1;
+			int ll = ind+5;
 			set_tokv( &toks, ind + 5, 0 );
+			char *cls = toks.id;
 
 			next();
 			do_create_callback_function();
 
 			ivar = bivar;
 			indvar = bindvar;
+
+			variable *a = safe_alloc_new( &alloc, sizeof(variable ) );
+			a->type = DOTYPE_OBJECT;
+			array_set1(&var_stk, cls, a );
+			variable *arr = do_create_main_class( cls );
+			do_equal(a);
+
+
+			do_call_num(arr);
+
+			function_init(3);
+			function_set_arg(0);
+
+			do_call_num( dostring( "construct" ) );
+			function_set_arg(1);
+
+			do_call_num( donvar( ll, DOTYPE_FUNC ) );
+			function_set_arg(2);
+			function_call( &array_set, "array_set" );
+			function_end(3);
+		
 
 		}
 
@@ -589,7 +612,14 @@ unary() {
 		} else if( toks.c == '(' ) {
 
 			int l1 = array_get1( &var_stk, btoks.id );
-			if( l1 ) {
+
+			char *id = mstrcat("fn%", btoks.id);
+
+			int l2 = array_get1( &sym_stk, id );
+			//printf("%d\n", l2);
+			//exit(0);
+
+			if( l1 && !l2 ) {
 
 				do_call_function_callback( l1 );
 

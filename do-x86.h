@@ -1178,6 +1178,7 @@ do_create_main_class( cls ) {
 	}
 
 	do_call_var(l);
+	return arr;
 }
 
 do_create_class() {

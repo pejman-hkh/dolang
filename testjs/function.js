@@ -1,15 +1,9 @@
-class test {
-	a() {
-		print("here1\n")
-	}
-
-	b() {
-
-	}
+function test() {
+	print('in test');
 }
 
+print('here');
 
-var s = new test;
-s.a()
+test();
 
-print( s )
+print('here1');
