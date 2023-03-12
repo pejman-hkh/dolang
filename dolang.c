@@ -503,6 +503,7 @@ unary() {
 			ivar = 0;
 			toks.type = 1;
 			set_tokv( &toks, ind + 5, 0 );
+
 			next();
 			do_create_callback_function();
 
@@ -1143,7 +1144,6 @@ decl_js( cls ) {
 		decl_js(cls);
 
 	} else if( toks.t == TOK_IDENT && thisClass ) {
-
 		ivar = 0;
 		toks.type = 1;
 		set_tokv( &toks, ind + 5, thisClass );
