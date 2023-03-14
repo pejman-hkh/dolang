@@ -22,13 +22,13 @@ JS Usage :
 
 
 **My Tasks**
-- let, var, const and scope of theme should change and test
-- add fpu for numbers for float point numbers ( all number type should save as long and number type like js )
+- let, var, const and scope of them should change and test
+- add fpu for numbers for float point numbers ( all number type should save as long and change number type like js )
 - add js closure
 - edit nested function
 - change array type and don't use this.value in it
 - check all types
-- add === and !== and change types and ...
+- add === and !== and
 - throw and try and catch and finnaly should add
 - switch statement should add
 - arguments in functions should add
