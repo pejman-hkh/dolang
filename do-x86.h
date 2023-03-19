@@ -1111,6 +1111,34 @@ do_new_class( cls ) {
 
 }
 
+do_fn_create_main_class( cls ) {
+
+}
+
+do_create_main_class1( cls ) {
+	//this should change and is should use do_fn_create_main_class and call it with function_init and function_call for use in compile instead jit compile
+	variable * object = doobject();
+	array_set( object, dostring( "class" ), cls );
+	variable * prototype = doobject();
+	array_set( object, dostring( "prototype" ), prototype );
+	char *t;
+	t = mstrcat(cls, "%fn%");
+	for( int i = 0; i < sym_stk.length ; i++ ) {
+		int p = strstr(sym_stk.key[i], t );
+		if( p ) {
+			int ll = sym_stk.value[i];
+
+			int len = strlen(cls);
+			char *v = safe_alloc_new(&alloc, sizeof( char *) );
+			v = sym_stk.key[i];
+			v += len+4;
+
+			array_set(prototype, dostring( v ), donvar( ll, DOTYPE_FUNC ) );
+		}
+	}
+	do_call_num(object);
+	return prototype;
+}
 //do_call_class( cls ) {	
 do_create_main_class( cls ) {	
 
@@ -1183,6 +1211,11 @@ do_create_main_class( cls ) {
 
 do_create_class() {
 	next();
+
+	if(toks.c == '{') {
+		toks.id = dostring("test");
+	}
+
 	char *cls = toks.id;
 	thisClass = cls;
 	toks.type = 3;
@@ -1191,10 +1224,10 @@ do_create_class() {
 	variable *a = safe_alloc_new( &alloc, sizeof(variable ) );
 	a->type = DOTYPE_OBJECT;
 	array_set1(&var_stk, cls, a );
-
-
 	set_tokv( &toks, cls, 0 );
-	next();
+	if(toks.c != '{') {
+		next();
+	}
 
 	if( toks.t == TOK_EXTENDS ) {
 		//printf("ddddddddd\n");
@@ -1231,6 +1264,7 @@ do_create_class() {
 
 	skip('{');
 	if( strcmp(file_ext, "js") == 0 ) {
+
 		decl_js( cls );
 
 	} else {
@@ -1240,6 +1274,7 @@ do_create_class() {
 
 	skip('}');
 
+	//do_call_var(a);
 	return cls;
 }
 
@@ -1311,7 +1346,7 @@ do_main_create_function( cls, fn_name ) {
 
 			int a = array_get1( &var_stk, cls1);
 
-			do_create_main_class( cls1 );
+			do_create_main_class1( cls1 );
 			do_equal(a);
 		}
 
@@ -1353,7 +1388,7 @@ do_create_main_function( cls ) {
 
 		int a = array_get1( &var_stk, cls1);
 
-		do_create_main_class( cls1 );
+		do_create_main_class1( cls1 );
 		do_equal(a);
 	}
 

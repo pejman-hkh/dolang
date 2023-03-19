@@ -515,7 +515,7 @@ unary() {
 			variable *a = safe_alloc_new( &alloc, sizeof(variable ) );
 			a->type = DOTYPE_OBJECT;
 			array_set1(&var_stk, cls, a );
-			variable *arr = do_create_main_class( cls );
+			variable *arr = do_create_main_class1( cls );
 			do_equal(a);
 
 
@@ -539,7 +539,7 @@ unary() {
 		char *cls1 = do_create_class();
 		int a = array_get1( &var_stk, cls1);
 
-		do_create_main_class( cls1 );
+		do_create_main_class1( cls1 );
 		do_equal(a);
 
 
@@ -1186,7 +1186,8 @@ decl_js( cls ) {
 		if( inMain ){
 			if( ch == EOF ) return;
 			block();		
-		} else {		
+		} else {
+
 			inMain = 1;
 			ivar = 0;
 			tokens btoks;
